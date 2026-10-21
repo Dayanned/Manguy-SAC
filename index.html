@@ -448,4 +448,268 @@
         function calculateShippingCost(distanceKm, subtotal) {
             if (couponApplied) return 0.00; // Cupón ruleta
 
-            // Tarifa base S/ 2.00 hasta 1km + S/ 0.80
+            // Tarifa base S/ 2.00 hasta 1km + S/ 0.80 por km adicional
+            let baseRate = 2.00;
+            if (distanceKm > 1.0) {
+                baseRate += (distanceKm - 1.0) * 0.80;
+            }
+
+            // Descuento del 50% en envío para compras superiores a S/ 20.00
+            if (subtotal >= 20.00) {
+                baseRate = baseRate * 0.5;
+            }
+
+            return Math.max(1.50, baseRate); // Costo mínimo S/ 1.50
+        }
+
+        function addToCart(name, price) {
+            const item = cart.find(i => i.name === name);
+            if (item) {
+                item.qty++;
+            } else {
+                cart.push({ name, price, qty: 1 });
+            }
+            updateCartUI();
+            openCart();
+        }
+
+        function updateCartUI() {
+            const badge = document.getElementById('cart-badge');
+            const totalQty = cart.reduce((acc, i) => acc + i.qty, 0);
+            badge.innerText = totalQty;
+
+            const list = document.getElementById('cart-items-list');
+            if (cart.length === 0) {
+                list.innerHTML = '<p class="text-xs text-botanical/60 text-center py-4">Tu carrito está vacío.</p>';
+                return;
+            }
+
+            const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            const shippingCost = calculateShippingCost(currentDistanceKm, subtotal);
+            const total = subtotal + shippingCost;
+
+            list.innerHTML = cart.map(i => {
+                const itemTotal = i.price * i.qty;
+                return `
+                    <div class="flex justify-between items-center text-xs">
+                        <div>
+                            <p class="font-bold">${i.name}</p>
+                            <p class="text-[10px] text-botanical/60">S/ ${i.price.toFixed(2)} x ${i.qty}</p>
+                        </div>
+                        <span class="font-bold text-mangogold">S/ ${itemTotal.toFixed(2)}</span>
+                    </div>
+                `;
+            }).join('') + `
+                <div class="pt-3 border-t border-bordercolor space-y-1 text-xs">
+                    <div class="flex justify-between text-botanical/70">
+                        <span>Subtotal:</span>
+                        <span>S/ ${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between text-botanical/70">
+                        <span>Delivery (${currentDistanceKm.toFixed(1)} km):</span>
+                        <span class="${couponApplied ? 'text-green-600 font-bold' : ''}">${couponApplied ? 'GRATIS' : 'S/ ' + shippingCost.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-sm pt-2 border-t border-bordercolor">
+                        <span>Total a Pagar:</span>
+                        <span class="text-mangogold">S/ ${total.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openCart() {
+            document.getElementById('cart-modal').classList.remove('hidden');
+            setTimeout(initMap, 200);
+        }
+
+        function closeCart() {
+            document.getElementById('cart-modal').classList.add('hidden');
+        }
+
+        function initMap() {
+            if (map) return;
+            map = L.map('checkout-map').setView([ORIGIN_LAT, ORIGIN_LNG], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Marcador de Origen
+            L.circleMarker([ORIGIN_LAT, ORIGIN_LNG], {
+                radius: 7,
+                color: '#2D402B',
+                fillColor: '#E8822A',
+                fillOpacity: 1
+            }).addTo(map).bindPopup('Punto de Despacho (Av. Julio C. Tello 151)');
+
+            marker = L.marker([selectedLat, selectedLng], { draggable: true }).addTo(map);
+
+            function updateLocationInfo(lat, lng) {
+                selectedLat = parseFloat(lat.toFixed(6));
+                selectedLng = parseFloat(lng.toFixed(6));
+                
+                // Calcular distancia real
+                currentDistanceKm = calculateDistance(ORIGIN_LAT, ORIGIN_LNG, selectedLat, selectedLng);
+                document.getElementById('dist-km').innerText = `${currentDistanceKm.toFixed(2)} km`;
+
+                updateCartUI();
+
+                // Reverse Geocoding
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${selectedLat}&lon=${selectedLng}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.display_name) {
+                            document.getElementById('cust-address').value = data.display_name;
+                        }
+                    })
+                    .catch(() => {});
+            }
+
+            marker.on('dragend', function (e) {
+                const pos = marker.getLatLng();
+                updateLocationInfo(pos.lat, pos.lng);
+            });
+
+            map.on('click', function (e) {
+                marker.setLatLng(e.latlng);
+                updateLocationInfo(e.latlng.lat, e.latlng.lng);
+            });
+
+            updateLocationInfo(selectedLat, selectedLng);
+        }
+
+        function spinSlots() {
+            const btn = document.getElementById('spin-btn');
+            btn.disabled = true;
+            document.getElementById('game-status').innerText = 'Girando frutas... 🥭🍋';
+
+            const fruits = ['🥭', '🍋', '🍹'];
+            let count = 0;
+
+            const interval = setInterval(() => {
+                document.getElementById('slot1').innerText = fruits[Math.floor(Math.random() * fruits.length)];
+                document.getElementById('slot2').innerText = fruits[Math.floor(Math.random() * fruits.length)];
+                document.getElementById('slot3').innerText = fruits[Math.floor(Math.random() * fruits.length)];
+                count++;
+
+                if (count > 12) {
+                    clearInterval(interval);
+                    document.getElementById('slot1').innerText = '🥭';
+                    document.getElementById('slot2').innerText = '🍋';
+                    document.getElementById('slot3').innerText = '🍹';
+                    
+                    document.getElementById('game-status').innerText = '¡COMBINACIÓN GANADORA!';
+                    document.getElementById('reward-banner').classList.remove('hidden');
+                    couponApplied = true;
+                    updateCartUI();
+                    btn.disabled = false;
+                }
+            }, 100);
+        }
+
+        function updateMixer(val) {
+            document.getElementById('mango-val').innerText = val;
+            document.getElementById('maracuya-val').innerText = 100 - val;
+
+            const title = document.getElementById('mix-title');
+            const desc = document.getElementById('mix-desc');
+
+            if (val > 65) {
+                title.innerText = 'Perfil Dulce & Cremoso';
+                desc.innerText = 'Predominancia limpia de Mango Kent, textura de cuerpo suave e ideal para paladares dulces.';
+            } else if (val < 45) {
+                title.innerText = 'Perfil Cítrico Refrescante';
+                desc.innerText = 'Sabor vibrante liderado por la Maracuyá, excelente para acompañar días calurosos.';
+            } else {
+                title.innerText = 'Fórmula Equilibrada Clásica';
+                desc.innerText = 'Entrada dulce y cremosa de Mango Kent que se funde con un toque acentuado y refrescante de Maracuyá al final.';
+            }
+        }
+
+        function handleCheckout(e) {
+            e.preventDefault();
+            if (cart.length === 0) {
+                alert('Tu carrito está vacío. Añade una botella primero.');
+                return;
+            }
+
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const address = document.getElementById('cust-address').value;
+            const method = document.getElementById('pay-method').value;
+
+            const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            const shippingCost = calculateShippingCost(currentDistanceKm, subtotal);
+            const total = subtotal + shippingCost;
+            const orderNum = Math.floor(1000 + Math.random() * 9000);
+            const dateStr = new Date().toLocaleString('es-PE');
+
+            currentOrderData = {
+                orderNum, dateStr, name, phone, address, method, subtotal, shippingCost, total,
+                distanceKm: currentDistanceKm.toFixed(2),
+                items: [...cart], lat: selectedLat, lng: selectedLng
+            };
+
+            document.getElementById('order-num').innerText = orderNum;
+            document.getElementById('order-date').innerText = dateStr;
+            document.getElementById('rec-name').innerText = name;
+            document.getElementById('rec-phone').innerText = phone;
+            document.getElementById('rec-address').innerText = address;
+            document.getElementById('rec-dist').innerText = currentDistanceKm.toFixed(2);
+            document.getElementById('rec-method').innerText = method;
+
+            document.getElementById('rec-items').innerHTML = cart.map(i => `
+                <div class="flex justify-between">
+                    <span>${i.qty}x ${i.name}</span>
+                    <span class="font-bold">S/ ${(i.price * i.qty).toFixed(2)}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('rec-subtotal').innerText = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('rec-shipping').innerText = couponApplied ? 'GRATIS' : `S/ ${shippingCost.toFixed(2)}`;
+            document.getElementById('rec-total').innerText = `S/ ${total.toFixed(2)}`;
+
+            const itemsText = cart.map(i => `• *${i.qty}x ${i.name}* — S/ ${(i.price * i.qty).toFixed(2)}`).join('\n');
+            const mapUrl = `https://www.google.com/maps?q=${selectedLat},${selectedLng}`;
+
+            const rawMessage = `🥭 *NUEVO PEDIDO MANGUYÁ* 🥭\n\n` +
+                `📋 *Orden #:* ${orderNum}\n` +
+                `👤 *Cliente:* ${name}\n` +
+                `📱 *Teléfono:* ${phone}\n` +
+                `📍 *Dirección:* ${address}\n` +
+                `📏 *Distancia:* ${currentDistanceKm.toFixed(2)} km\n` +
+                `🗺️ *Ubicación GPS:* ${mapUrl}\n` +
+                `💳 *Método de Pago:* ${method}\n\n` +
+                `🛒 *Detalle del Pedido:*\n${itemsText}\n\n` +
+                `💵 *Subtotal:* S/ ${subtotal.toFixed(2)}\n` +
+                `🛵 *Envío:* ${couponApplied ? 'GRATIS' : 'S/ ' + shippingCost.toFixed(2)}\n` +
+                `💰 *TOTAL A PAGAR:* S/ ${total.toFixed(2)}`;
+
+            document.getElementById('wa-btn-link').href = `https://wa.me/51918591764?text=${encodeURIComponent(rawMessage)}`;
+
+            closeCart();
+            document.getElementById('receipt-modal').classList.remove('hidden');
+
+            cart = [];
+            updateCartUI();
+        }
+
+        function closeReceipt() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+        }
+
+        function downloadPDF() {
+            if (!currentOrderData) return;
+            const element = document.getElementById('printable-receipt');
+            const opt = {
+                margin:       0.3,
+                filename:     `Comprobante_Manguya_${currentOrderData.orderNum}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+</html>
