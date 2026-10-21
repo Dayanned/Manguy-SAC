@@ -50,10 +50,7 @@
         .quiz-option .option-number { display:inline-flex; width:28px; height:28px; align-items:center; justify-content:center; border-radius:9px; background:#fef3c7; color:#92400e; font-weight:800; font-size:12px; margin-bottom:10px; }
         .quiz-progress-track { height:5px; border-radius:99px; background:rgba(255,255,255,.3); overflow:hidden; margin-top:12px; }
         .quiz-progress-fill { height:100%; background:#fff; border-radius:99px; transition:width .25s ease; }
-        #printable-receipt { background:#fff !important; color:#202820 !important; width:100%; max-width:100%; min-width:0; box-sizing:border-box; overflow-wrap:anywhere; }
-        #receipt-modal > div { box-sizing:border-box; }
-        #printable-receipt img { max-width:100%; }
-        #receipt-items-list, #receipt-client-address { overflow-wrap:anywhere; word-break:break-word; }
+        #printable-receipt { background:#fff !important; color:#202820 !important; }
         #printable-receipt * { color-adjust:exact; -webkit-print-color-adjust:exact; }
         @media (prefers-reduced-motion: reduce) { .animate-float { animation:none; } *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
     </style>
@@ -495,15 +492,15 @@
     </div>
 
     <!-- ORDER RECEIPT MODAL -->
-    <div id="receipt-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-start sm:items-center justify-center p-2 sm:p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl w-full max-w-xl min-w-0 p-3 sm:p-6 space-y-4 max-h-[96vh] overflow-y-auto shadow-2xl relative box-border">
+    <div id="receipt-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-6 max-h-[90vh] overflow-y-auto shadow-2xl relative">
             
             <button type="button" onclick="closeReceiptModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
             <!-- Printable Receipt Area Blindado -->
-            <div id="printable-receipt" style="display:block; width:100%; max-width:100%; min-width:0; box-sizing:border-box; overflow-wrap:anywhere; background-color:#FAF7F2; padding:clamp(12px, 4vw, 24px); border-radius:14px; border:1px solid #E5E0D8; text-align:left; color:#2D402B;">
+            <div id="printable-receipt" style="background-color: #FAF7F2; padding: 24px; border-radius: 20px; border: 1px solid #E5E0D8; text-align: left; color: #2D402B;">
                 <div style="text-align: center; border-bottom: 1px dashed #E5E0D8; padding-bottom: 15px; margin-bottom: 15px;">
                     <img src="assets/img/Logo.png" alt="Manguyá Logo" style="height: 55px; margin: 0 auto 10px auto; object-fit: contain;">
                     <p style="font-size: 10px; text-transform: uppercase; font-weight: bold; color: #2D402B;">Comprobante de Pedido #<span id="receipt-id">001</span></p>
@@ -533,10 +530,12 @@
             </div>
 
             <div class="space-y-3">
-                <button type="button" onclick="sendToWhatsApp()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> Enviar ticket completo por WhatsApp
+                <button type="button" onclick="downloadPDFReceipt()" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
+                    <i class="fa-solid fa-file-arrow-down"></i> Descargar Comprobante PDF
                 </button>
-                <p class="text-xs text-gray-500 text-center">Se abrirá WhatsApp con el pedido completo listo para enviar. Solo pulsa “Enviar”.</p>
+                <button type="button" onclick="sendToWhatsApp()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Mensaje a WhatsApp
+                </button>
             </div>
 
         </div>
@@ -1012,48 +1011,27 @@
         }
 
         function sendToWhatsApp() {
-            const order = currentOrderData;
-            if (!order) {
-                alert('Primero genera un pedido para enviar el ticket.');
-                return;
-            }
+            if (!currentOrderData) return;
 
-            const money = value => `S/ ${Number(value || 0).toFixed(2)}`;
-            const itemsText = order.items
-                .map(item => `• ${item.quantity} x ${item.name} — ${money(item.price * item.quantity)}`)
-                .join('\n');
+            const itemsText = currentOrderData.items.map(i => `- ${i.quantity}x ${i.name} (S/ ${(i.price * i.quantity).toFixed(2)})`).join('\n');
+            
+            const rawMessage = `NUEVO PEDIDO MANGUYA\n\n` +
+                `Orden #: ${currentOrderData.id}\n` +
+                `Cliente: ${currentOrderData.name}\n` +
+                `Telefono: ${currentOrderData.phone}\n` +
+                `Direccion: ${currentOrderData.address}\n` +
+                `Distancia: ${currentOrderData.dist} km\n` +
+                `GPS: https://maps.google.com/?q=${currentOrderData.coords}\n` +
+                `Metodo de Pago: ${currentOrderData.paymentMethod}\n\n` +
+                `DETALLE DEL PEDIDO:\n${itemsText}\n\n` +
+                `Subtotal: S/ ${currentOrderData.subtotal.toFixed(2)}\n` +
+                `Delivery antes del descuento: S/ ${currentOrderData.deliveryBeforeDiscount.toFixed(2)}\n` +
+                (currentOrderData.deliveryDiscount > 0 ? `Descuento delivery: - S/ ${currentOrderData.deliveryDiscount.toFixed(2)} (${currentOrderData.discountReason})\n` : '') +
+                `Delivery final: S/ ${currentOrderData.deliveryFee.toFixed(2)}\n` +
+                `TOTAL A PAGAR: S/ ${currentOrderData.total.toFixed(2)}`;
 
-            const message = [
-                '🥭 *MANGUYÁ — TICKET DE PEDIDO*',
-                `Pedido N.º ${order.id}`,
-                `Fecha: ${order.date}`,
-                '',
-                '*DATOS DEL CLIENTE*',
-                `Nombre: ${order.name}`,
-                `Teléfono: ${order.phone}`,
-                `Dirección: ${order.address}`,
-                `Distancia: ${order.dist} km`,
-                `Ubicación: https://maps.google.com/?q=${order.coords}`,
-                `Pago: ${order.paymentMethod}`,
-                '',
-                '*PRODUCTOS*',
-                itemsText,
-                '',
-                `Subtotal: ${money(order.subtotal)}`,
-                `Delivery: ${money(order.deliveryBeforeDiscount)}`,
-                ...(order.deliveryDiscount > 0
-                    ? [`Descuento en delivery: - ${money(order.deliveryDiscount)}`]
-                    : []),
-                `TOTAL A PAGAR: ${money(order.total)}`,
-                '',
-                '¡Gracias por elegir Manguyá! 🥭'
-            ].join('\n');
-
-            // WhatsApp no permite adjuntar archivos automáticamente mediante wa.me;
-            // abre el chat con el ticket completo como mensaje listo para enviar.
-            const phone = '51918591764';
-            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+            const phone = "51918591764";
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(rawMessage)}`, '_blank');
         }
 
         async function downloadPDFReceipt() {
