@@ -27,8 +27,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- html2pdf.js for Receipt Download -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- No se carga librería de PDF: el ticket se envía por WhatsApp. -->
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap');
@@ -433,7 +432,7 @@
 
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1">Teléfono WhatsApp *</label>
-                        <input type="tel" id="client-phone" placeholder="Ej. 918591764" class="w-full text-sm p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
+                        <input type="tel" id="client-phone" placeholder="Ej. 930247419" class="w-full text-sm p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
                     </div>
 
                     <div>
@@ -534,9 +533,9 @@
 
             <div class="space-y-3">
                 <button type="button" onclick="sendToWhatsApp()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> Enviar ticket completo por WhatsApp
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Enviar comprobante completo por WhatsApp
                 </button>
-                <p class="text-xs text-gray-500 text-center">Se abrirá WhatsApp con el pedido completo listo para enviar. Solo pulsa “Enviar”.</p>
+                <p class="text-xs text-gray-500 text-center">El comprobante completo, con productos, importes, dirección y ubicación GPS, se abrirá en WhatsApp como mensaje listo para enviar.</p>
             </div>
 
         </div>
@@ -546,6 +545,7 @@
     <script>
         let cart = [];
         let discountApplied = false;
+        let quizCouponUsed = false;
         let leafletMap = null;
         let marker = null;
         let currentOrderData = null;
@@ -897,6 +897,10 @@
         }
 
         function applyQuizDiscount() {
+            if (quizCouponUsed) {
+                alert('Este cupón ya fue utilizado en un pedido. No se puede volver a aplicar.');
+                return;
+            }
             if (!quizCompleted) {
                 alert('Completa las 10 preguntas para activar el cupón.');
                 return;
@@ -997,12 +1001,23 @@
             if (rDiscountRow) rDiscountRow.style.display = currentOrderData.deliveryDiscount > 0 ? 'block' : 'none';
             if (rDiscount) rDiscount.innerText = `− S/ ${currentOrderData.deliveryDiscount.toFixed(2)}${currentOrderData.discountReason ? ' (' + currentOrderData.discountReason + ')' : ''}`;
 
-            // El pedido queda guardado en currentOrderData antes de vaciar el carrito.
-            // Así el comprobante y WhatsApp conservan el detalle original.
-            // El descuento ya quedó guardado en currentOrderData para este pedido.
-            // Reiniciarlo aquí evita que se herede en la siguiente compra.
+            // Guardar el uso del cupón solo cuando se genera un pedido con el descuento aplicado.
+            // El comprobante conserva los importes originales, pero el cupón no puede reutilizarse.
+            if (discountApplied) quizCouponUsed = true;
             cart = [];
             discountApplied = false;
+
+            // Reflejar visualmente que el cupón ya se consumió.
+            if (quizCouponUsed) {
+                const couponButton = document.querySelector('#quiz-result-container button[onclick="applyQuizDiscount()"]');
+                if (couponButton) {
+                    couponButton.disabled = true;
+                    couponButton.textContent = 'Cupón utilizado';
+                    couponButton.classList.add('opacity-60', 'cursor-not-allowed');
+                }
+                const couponCode = document.querySelector('#quiz-result-container .font-heading.text-xl');
+                if (couponCode) couponCode.insertAdjacentHTML('afterend', '<span class="block mt-2 text-xs font-bold text-red-600">Este cupón ya fue usado en un pedido.</span>');
+            }
             const discountBanner = document.getElementById('cart-discount-banner');
             if (discountBanner) discountBanner.classList.add('hidden');
             updateCartUI();
@@ -1029,12 +1044,11 @@
             const money = value => `S/ ${Number(value || 0).toFixed(2)}`;
             const itemsText = (order.items || [])
                 .map(item => `• ${item.quantity} x ${item.name} — ${money(item.price * item.quantity)}`)
-                .join('
-');
+                .join('\\n');
 
             return [
-                '🥭 *MANGUYÁ — NUEVO PEDIDO*',
-                `Pedido N.º: ${order.id}`,
+                '🥭 *MANGUYÁ — COMPROBANTE DE PEDIDO*',
+                `Comprobante / Pedido N.º: ${order.id}`,
                 `Fecha: ${order.date}`,
                 '',
                 '*DATOS DEL CLIENTE*',
@@ -1058,8 +1072,7 @@
                 `*TOTAL A PAGAR: ${money(order.total)}*`,
                 '',
                 '¡Gracias por elegir Manguyá! 🥭'
-            ].join('
-');
+            ].join('\\n');
         }
 
         function sendToWhatsApp() {
