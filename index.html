@@ -50,11 +50,11 @@
 <body class="text-gray-800 antialiased selection:bg-amber-200">
 
     <!-- Header Navigation -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-amber-100 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-28 flex items-center justify-between">
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-amber-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-32 flex items-center justify-between">
             <!-- Logo Grande y Destacado -->
             <a href="#" class="flex items-center gap-3 group py-2">
-                <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-24 sm:h-28 w-auto object-contain animate-float group-hover:scale-105 transition-transform">
+                <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-24 sm:h-32 w-auto object-contain animate-float group-hover:scale-105 transition-transform" style="max-height: 120px;">
             </a>
 
             <!-- Desktop Nav Links -->
@@ -69,7 +69,7 @@
 
             <!-- Action Buttons / Cart Icon -->
             <div class="flex items-center gap-4">
-                <button onclick="toggleCartModal()" class="relative p-3 bg-amber-100/80 hover:bg-amber-200 text-amber-800 rounded-2xl transition-all shadow-sm">
+                <button type="button" onclick="toggleCartModal()" class="relative p-3 bg-amber-100/80 hover:bg-amber-200 text-amber-800 rounded-2xl transition-all shadow-sm cursor-pointer">
                     <i class="fa-solid fa-basket-shopping text-xl"></i>
                     <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden shadow-sm">0</span>
                 </button>
@@ -129,7 +129,7 @@
                         </div>
                     </div>
 
-                    <!-- Hero Visual Showcase con Manguyá fondo.jpg -->
+                    <!-- Hero Visual Showcase -->
                     <div class="lg:col-span-6 relative flex justify-center">
                         <div class="relative w-full max-w-lg">
                             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 bg-gradient-to-tr from-amber-300 to-orange-400 rounded-full blur-3xl opacity-40 -z-10"></div>
@@ -146,7 +146,7 @@
                                         <span class="text-xs text-gray-500 block">Sabor Tropical</span>
                                         <span class="font-bold text-amber-600">Mango Kent + Maracuyá</span>
                                     </div>
-                                    <button onclick="addToCart('Botella Personal 330ml', 3.50, '330ml')" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95 cursor-pointer">
+                                    <button type="button" onclick="addToCart('Botella Personal 330ml', 3.50, '330ml')" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95 cursor-pointer">
                                         + Agregar S/ 3.50
                                     </button>
                                 </div>
@@ -158,7 +158,7 @@
             </div>
         </section>
 
-        <!-- Product Catalog Section (3 Presentaciones Exactas con PNGs reales) -->
+        <!-- Product Catalog Section (3 Presentaciones Exactas) -->
         <section id="productos" class="py-20 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
@@ -188,7 +188,7 @@
                                 <span class="text-xs text-gray-500 block">Precio individual</span>
                                 <span class="text-2xl font-bold text-gray-900">S/ 3.50</span>
                             </div>
-                            <button onclick="addToCart('Botella Personal 330ml', 3.50, '330ml')" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-md hover:from-amber-600 hover:to-orange-600 transition-all active:scale-95 text-sm cursor-pointer">
+                            <button type="button" onclick="addToCart('Botella Personal 330ml', 3.50, '330ml')" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-md hover:from-amber-600 hover:to-orange-600 transition-all active:scale-95 text-sm cursor-pointer">
                                 <i class="fa-solid fa-cart-plus mr-1"></i> Añadir
                             </button>
                         </div>
@@ -214,7 +214,7 @@
                                 <span class="text-xs text-gray-500 block">Precio individual</span>
                                 <span class="text-2xl font-bold text-gray-900">S/ 5.50</span>
                             </div>
-                            <button onclick="addToCart('Botella Mediana 500ml', 5.50, '500ml')" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-md hover:from-amber-600 hover:to-orange-600 transition-all active:scale-95 text-sm cursor-pointer">
+                            <button type="button" onclick="addToCart('Botella Mediana 500ml', 5.50, '500ml')" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-md hover:from-amber-600 hover:to-orange-600 transition-all active:scale-95 text-sm cursor-pointer">
                                 <i class="fa-solid fa-cart-plus mr-1"></i> Añadir
                             </button>
                         </div>
@@ -240,7 +240,7 @@
                                 <span class="text-xs text-gray-500 block">Precio especial</span>
                                 <span class="text-2xl font-bold text-gray-900">S/ 9.00</span>
                             </div>
-                            <button onclick="addToCart('Botella Familiar 1 Litro', 9.00, '1L')" class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-xl shadow-md hover:from-orange-600 hover:to-amber-600 transition-all active:scale-95 text-sm cursor-pointer">
+                            <button type="button" onclick="addToCart('Botella Familiar 1 Litro', 9.00, '1L')" class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-xl shadow-md hover:from-orange-600 hover:to-amber-600 transition-all active:scale-95 text-sm cursor-pointer">
                                 <i class="fa-solid fa-cart-plus mr-1"></i> Añadir
                             </button>
                         </div>
@@ -250,7 +250,7 @@
             </div>
         </section>
 
-        <!-- Origen de los Ingredientes con tus imágenes (Mango.webp, Maracuyá.jpg, Planta mango.webp, Planta maracuyá.jpg) -->
+        <!-- Origen de los Ingredientes -->
         <section id="origen" class="py-16 bg-amber-50/40 border-y border-amber-200/50">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-xl mx-auto mb-12 space-y-2">
@@ -310,7 +310,7 @@
                                 <span class="font-heading text-xl font-bold text-orange-600">QUIZ-TROPICAL-10</span>
                             </div>
                             <div>
-                                <button onclick="applyQuizDiscount()" class="px-8 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-lg hover:from-amber-600 hover:to-orange-600 transition-all cursor-pointer">
+                                <button type="button" onclick="applyQuizDiscount()" class="px-8 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-lg hover:from-amber-600 hover:to-orange-600 transition-all cursor-pointer">
                                     Aplicar Descuento al Carrito y Ver Pedido
                                 </button>
                             </div>
@@ -320,7 +320,7 @@
             </div>
         </section>
 
-        <!-- Brand Values / About Us Section con Batido de ambos.jpg -->
+        <!-- Brand Values / About Us Section -->
         <section id="nosotros" class="py-20 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid md:grid-cols-2 gap-12 items-center">
@@ -398,7 +398,7 @@
                         <i class="fa-solid fa-basket-shopping text-xl text-amber-500"></i>
                         <h3 class="font-heading text-xl font-bold text-gray-900">Tu Pedido Manguyá</h3>
                     </div>
-                    <button onclick="toggleCartModal()" class="text-gray-400 hover:text-gray-600 text-xl p-1 cursor-pointer">
+                    <button type="button" onclick="toggleCartModal()" class="text-gray-400 hover:text-gray-600 text-xl p-1 cursor-pointer">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
@@ -407,7 +407,7 @@
 
                 <div id="cart-discount-banner" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-6 text-xs text-emerald-800 flex items-center justify-between">
                     <span><i class="fa-solid fa-ticket text-emerald-500 mr-1"></i> Descuento aplicado: <strong>50% en Envío (Quiz 10 Preguntas)</strong></span>
-                    <button onclick="removeDiscount()" class="text-emerald-700 underline font-bold cursor-pointer">Quitar</button>
+                    <button type="button" onclick="removeDiscount()" class="text-emerald-700 underline font-bold cursor-pointer">Quitar</button>
                 </div>
 
                 <div id="checkout-form-section" class="space-y-4 border-t pt-6">
@@ -430,7 +430,7 @@
                         <input type="text" id="client-address" placeholder="Haz clic en el mapa para autocompletar la dirección" class="w-full text-sm p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
                     </div>
 
-                    <!-- MAPA HUARAL CON DISTANCIA REAL Y TARIFA CORRECTA -->
+                    <!-- MAPA HUARAL CON DISTANCIA REAL -->
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1 flex items-center justify-between">
                             <span>Ubica tu casa en el mapa de Huaral *</span>
@@ -472,7 +472,7 @@
                     </div>
                 </div>
 
-                <button onclick="processOrder()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 active:scale-95 text-base cursor-pointer">
+                <button type="button" onclick="processOrder()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 active:scale-95 text-base cursor-pointer">
                     <i class="fa-brands fa-whatsapp text-xl"></i> Confirmar y Enviar Pedido
                 </button>
             </div>
@@ -483,11 +483,11 @@
     <div id="receipt-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-6 max-h-[90vh] overflow-y-auto shadow-2xl relative">
             
-            <button onclick="closeReceiptModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl cursor-pointer">
+            <button type="button" onclick="closeReceiptModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <!-- Printable Receipt Area Corregido para PDF (100% Funcional y sin blancos) -->
+            <!-- Printable Receipt Area Blindado -->
             <div id="printable-receipt" style="background-color: #FAF7F2; padding: 24px; border-radius: 20px; border: 1px solid #E5E0D8; text-align: left; color: #2D402B;">
                 <div style="text-align: center; border-bottom: 1px dashed #E5E0D8; padding-bottom: 15px; margin-bottom: 15px;">
                     <img src="assets/img/Logo.png" alt="Manguyá Logo" style="height: 55px; margin: 0 auto 10px auto; object-fit: contain;">
@@ -517,10 +517,10 @@
             </div>
 
             <div class="space-y-3">
-                <button onclick="downloadPDFReceipt()" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
+                <button type="button" onclick="downloadPDFReceipt()" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
                     <i class="fa-solid fa-file-arrow-down"></i> Descargar Comprobante PDF
                 </button>
-                <button onclick="sendToWhatsApp()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
+                <button type="button" onclick="sendToWhatsApp()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
                     <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Mensaje a WhatsApp
                 </button>
             </div>
@@ -528,7 +528,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC DEFINITIVA -->
+    <!-- JAVASCRIPT ROBUSTO Y BLINDADO -->
     <script>
         let cart = [];
         let discountApplied = false;
@@ -536,7 +536,6 @@
         let marker = null;
         let currentOrderData = null;
 
-        // Coordenadas Origen: Av. Julio C. Tello 151, Esquivel - Huaral
         const ORIGIN_LAT = -11.496321;
         const ORIGIN_LNG = -77.2092;
         let currentDistanceKm = 0.5;
@@ -548,21 +547,19 @@
             const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
                       Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                       Math.sin(dLon/2) * Math.sin(dLon/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c;
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
         }
 
-        // TARIFA DE DELIVERY REAL POR DISTANCIA (HUARAL) CON DESCUENTO POR QUIZ
         function calculateShippingCost(distKm, subtotal) {
-            let cost = 2.00; // Tarifa base hasta 1 km
+            let cost = 2.00;
             if (distKm > 1.0) {
-                cost += (distKm - 1.0) * 0.80; // S/ 0.80 por km adicional
+                cost += (distKm - 1.0) * 0.80;
             }
             if (subtotal >= 20.00) {
-                cost = cost * 0.5; // 50% descuento en envío para compras > S/ 20
+                cost = cost * 0.5;
             }
             if (discountApplied) {
-                cost = cost * 0.5; // 50% descuento adicional en envío por el Quiz Tropical de 10 preguntas
+                cost = cost * 0.5;
             }
             return Math.max(1.50, cost);
         }
@@ -587,14 +584,16 @@
 
             function updateLoc(lat, lng) {
                 currentDistanceKm = calculateDistance(ORIGIN_LAT, ORIGIN_LNG, lat, lng);
-                document.getElementById('dist-km-display').innerText = `${currentDistanceKm.toFixed(2)} km`;
+                const distEl = document.getElementById('dist-km-display');
+                if (distEl) distEl.innerText = `${currentDistanceKm.toFixed(2)} km`;
                 updateCartUI();
 
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
                     .then(res => res.json())
                     .then(data => {
                         if (data && data.display_name) {
-                            document.getElementById('client-address').value = data.display_name;
+                            const addrEl = document.getElementById('client-address');
+                            if (addrEl) addrEl.value = data.display_name;
                         }
                     }).catch(() => {});
             }
@@ -612,7 +611,6 @@
             updateLoc(ORIGIN_LAT, ORIGIN_LNG);
         }
 
-        // AÑADIR AL CARRITO SIN ABRIR MODAL (ACUMULATIVO PURO)
         function addToCart(name, price, size) {
             const existingIndex = cart.findIndex(item => item.name === name);
             if (existingIndex > -1) {
@@ -634,6 +632,8 @@
         function updateCartUI() {
             const container = document.getElementById('cart-items-container');
             const badge = document.getElementById('cart-badge');
+            if (!container || !badge) return;
+
             const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
             
             if (totalItems > 0) {
@@ -659,9 +659,9 @@
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="flex items-center bg-white border border-gray-200 rounded-lg">
-                                <button onclick="updateQuantity(${index}, -1)" class="px-2 py-1 text-gray-500 hover:text-amber-600 cursor-pointer">-</button>
+                                <button type="button" onclick="updateQuantity(${index}, -1)" class="px-2 py-1 text-gray-500 hover:text-amber-600 cursor-pointer">-</button>
                                 <span class="px-2 text-xs font-bold">${item.quantity}</span>
-                                <button onclick="updateQuantity(${index}, 1)" class="px-2 py-1 text-gray-500 hover:text-amber-600 cursor-pointer">+</button>
+                                <button type="button" onclick="updateQuantity(${index}, 1)" class="px-2 py-1 text-gray-500 hover:text-amber-600 cursor-pointer">+</button>
                             </div>
                             <span class="font-bold text-sm text-gray-800">S/ ${(item.price * item.quantity).toFixed(2)}</span>
                         </div>
@@ -670,4 +670,217 @@
             }
 
             const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-            const deliveryFee = calculateShippingCost(currentDistance
+            const deliveryFee = calculateShippingCost(currentDistanceKm, subtotal);
+            const total = subtotal + deliveryFee;
+
+            const subEl = document.getElementById('summary-subtotal');
+            const delEl = document.getElementById('summary-delivery');
+            const totEl = document.getElementById('summary-total');
+
+            if (subEl) subEl.innerText = `S/ ${subtotal.toFixed(2)}`;
+            if (delEl) delEl.innerText = discountApplied ? `S/ ${deliveryFee.toFixed(2)} (50% desc)` : `S/ ${deliveryFee.toFixed(2)}`;
+            if (totEl) totEl.innerText = `S/ ${total.toFixed(2)}`;
+        }
+
+        function toggleCartModal(forceOpen = false) {
+            const modal = document.getElementById('cart-modal');
+            if (!modal) return;
+            if (forceOpen) {
+                modal.classList.remove('hidden');
+                setTimeout(() => { initMap(); if (leafletMap) leafletMap.invalidateSize(); }, 200);
+            } else {
+                modal.classList.toggle('hidden');
+                if (!modal.classList.contains('hidden')) {
+                    setTimeout(() => { initMap(); if (leafletMap) leafletMap.invalidateSize(); }, 200);
+                }
+            }
+        }
+
+        // QUIZ TROPICAL DE 10 PREGUNTAS
+        const quizQuestions = [
+            { q: "¿Cómo describes tu nivel de energía en este momento?", opts: ["🚀 Súper alto", "😌 Relajado", "🔋 Necesito recargar"] },
+            { q: "¿Qué clima disfrutas más para acompañar tu néctar?", opts: ["☀️ Soleado y caluroso", "⛅ Fresco de tarde", "🌙 Noche tranquila"] },
+            { q: "¿Con qué frecuencia consumes jugos naturales de fruta?", opts: ["📅 Todos los días", "⚡ 3 a 4 veces por semana", "🌱 Ocasionalmente"] },
+            { q: "¿Qué textura prefieres en una bebida artesanal?", opts: ["🥛 Cremosa y consistente", "💧 Ligera y refrescante", "⚖️ Balance perfecto"] },
+            { q: "¿Prefieres que tu bebida resalte más el dulce o el ácido?", opts: ["🥭 Dulzura del Mango", "🍋 Toque ácido Maracuyá", "🤝 50/50 Equilibrado"] },
+            { q: "¿En qué momento del día prefieres tomar tu Manguyá?", opts: ["🌅 En el desayuno", "🍱 Acompañando el almuerzo", "🌆 Media tarde"] },
+            { q: "¿Con quién te gusta compartir tus momentos de frescura?", opts: ["👨‍👩‍👧‍👦 En familia", "🤝 Con amigos", "🧘‍♂️ Disfrutando solo(a)"] },
+            { q: "¿Qué valoras más al comprar un producto en Huaral?", opts: ["🌿 100% natural sin químicos", "💰 Precio accesible", "🚀 Rapidez en delivery"] },
+            { q: "¿Qué tamaño de botella se acomoda mejor a tu rutina?", opts: ["🥤 Personal (330ml)", "🍾 Mediana (500ml)", "📦 Familiar (1 Litro)"] },
+            { q: "¿Estás listo para disfrutar del mejor néctar artesanal?", opts: ["🔥 ¡Súper listo!", "✨ ¡Claro que sí!", "🎉 ¡Quiero mi descuento!"] }
+        ];
+
+        let currentQuizIndex = 0;
+
+        function renderQuizQuestion() {
+            const container = document.getElementById('quiz-question-container');
+            const progressLabel = document.getElementById('quiz-progress-label');
+            if (!container || !progressLabel) return;
+
+            if (currentQuizIndex >= quizQuestions.length) {
+                container.classList.add('hidden');
+                const resContainer = document.getElementById('quiz-result-container');
+                if (resContainer) resContainer.classList.remove('hidden');
+                progressLabel.innerText = "¡Quiz Completado!";
+                return;
+            }
+
+            const qData = quizQuestions[currentQuizIndex];
+            progressLabel.innerText = `Pregunta ${currentQuizIndex + 1} de 10`;
+
+            container.innerHTML = `
+                <h3 class="text-base sm:text-lg font-bold text-gray-900 text-center mb-6">${currentQuizIndex + 1}. ${qData.q}</h3>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    ${qData.opts.map((opt, i) => `
+                        <button type="button" onclick="answerQuiz(${i})" class="p-4 rounded-2xl border-2 border-gray-100 hover:border-amber-400 bg-gray-50 hover:bg-amber-50 transition-all font-medium text-center space-y-2 cursor-pointer">
+                            <span class="text-sm font-bold text-amber-700 block">${opt}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function answerQuiz(optionIndex) {
+            currentQuizIndex++;
+            renderQuizQuestion();
+        }
+
+        function applyQuizDiscount() {
+            discountApplied = true;
+            const discountBanner = document.getElementById('cart-discount-banner');
+            if (discountBanner) discountBanner.classList.remove('hidden');
+            updateCartUI();
+            toggleCartModal(true);
+        }
+
+        function removeDiscount() {
+            discountApplied = false;
+            const discountBanner = document.getElementById('cart-discount-banner');
+            if (discountBanner) discountBanner.classList.add('hidden');
+            updateCartUI();
+        }
+
+        function processOrder() {
+            if (cart.length === 0) {
+                alert('Por favor agrega al menos un producto a tu carrito.');
+                return;
+            }
+
+            const nameEl = document.getElementById('client-name');
+            const phoneEl = document.getElementById('client-phone');
+            const addressEl = document.getElementById('client-address');
+            const payMethodEl = document.querySelector('input[name="payment-method"]:checked');
+
+            if (!nameEl || !phoneEl || !addressEl || !payMethodEl) return;
+
+            const name = nameEl.value.trim();
+            const phone = phoneEl.value.trim();
+            const address = addressEl.value.trim();
+            const paymentMethod = payMethodEl.value;
+
+            if (!name || !phone || !address) {
+                alert('Por favor completa todos los campos requeridos.');
+                return;
+            }
+
+            const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            const deliveryFee = calculateShippingCost(currentDistanceKm, subtotal);
+            const total = subtotal + deliveryFee;
+            const pos = marker ? marker.getLatLng() : { lat: ORIGIN_LAT, lng: ORIGIN_LNG };
+
+            currentOrderData = {
+                id: Math.floor(1000 + Math.random() * 9000),
+                date: new Date().toLocaleString('es-PE'),
+                name, phone, address,
+                dist: currentDistanceKm.toFixed(2),
+                coords: `${pos.lat.toFixed(5)}, ${pos.lng.toFixed(5)}`,
+                paymentMethod, items: [...cart], subtotal, deliveryFee, total
+            };
+
+            const rId = document.getElementById('receipt-id');
+            const rDate = document.getElementById('receipt-date');
+            const rName = document.getElementById('receipt-client-name');
+            const rPhone = document.getElementById('receipt-client-phone');
+            const rAddr = document.getElementById('receipt-client-address');
+            const rDist = document.getElementById('receipt-dist');
+            const rMethod = document.getElementById('receipt-payment-method');
+
+            if (rId) rId.innerText = currentOrderData.id;
+            if (rDate) rDate.innerText = currentOrderData.date;
+            if (rName) rName.innerText = currentOrderData.name;
+            if (rPhone) rPhone.innerText = currentOrderData.phone;
+            if (rAddr) rAddr.innerText = currentOrderData.address;
+            if (rDist) rDist.innerText = currentOrderData.dist;
+            if (rMethod) rMethod.innerText = currentOrderData.paymentMethod;
+
+            const rItems = document.getElementById('receipt-items-list');
+            if (rItems) {
+                rItems.innerHTML = currentOrderData.items.map(item => `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span>${item.quantity}x ${item.name}</span>
+                        <span style="font-weight: bold;">S/ ${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `).join('');
+            }
+
+            const rSub = document.getElementById('receipt-subtotal');
+            const rDel = document.getElementById('receipt-delivery');
+            const rTot = document.getElementById('receipt-total');
+
+            if (rSub) rSub.innerText = `S/ ${currentOrderData.subtotal.toFixed(2)}`;
+            if (rDel) rDel.innerText = `S/ ${currentOrderData.deliveryFee.toFixed(2)}`;
+            if (rTot) rTot.innerText = `S/ ${currentOrderData.total.toFixed(2)}`;
+
+            toggleCartModal(false);
+            const receiptModal = document.getElementById('receipt-modal');
+            if (receiptModal) receiptModal.classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            const receiptModal = document.getElementById('receipt-modal');
+            if (receiptModal) receiptModal.classList.add('hidden');
+        }
+
+        function sendToWhatsApp() {
+            if (!currentOrderData) return;
+
+            const itemsText = currentOrderData.items.map(i => `- ${i.quantity}x ${i.name} (S/ ${(i.price * i.quantity).toFixed(2)})`).join('\n');
+            
+            const rawMessage = `NUEVO PEDIDO MANGUYA\n\n` +
+                `Orden #: ${currentOrderData.id}\n` +
+                `Cliente: ${currentOrderData.name}\n` +
+                `Telefono: ${currentOrderData.phone}\n` +
+                `Direccion: ${currentOrderData.address}\n` +
+                `Distancia: ${currentOrderData.dist} km\n` +
+                `GPS: https://maps.google.com/?q=${currentOrderData.coords}\n` +
+                `Metodo de Pago: ${currentOrderData.paymentMethod}\n\n` +
+                `DETALLE DEL PEDIDO:\n${itemsText}\n\n` +
+                `Subtotal: S/ ${currentOrderData.subtotal.toFixed(2)}\n` +
+                `Delivery: S/ ${currentOrderData.deliveryFee.toFixed(2)}\n` +
+                `TOTAL A PAGAR: S/ ${currentOrderData.total.toFixed(2)}`;
+
+            const phone = "51918591764";
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(rawMessage)}`, '_blank');
+        }
+
+        function downloadPDFReceipt() {
+            const element = document.getElementById('printable-receipt');
+            if (!element) return;
+            const opt = {
+                margin:       0.4,
+                filename:     `Comprobante_Manguya_${currentOrderData ? currentOrderData.id : '001'}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // Inicializar al cargar el DOM con seguridad absoluta
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuizQuestion();
+            updateCartUI();
+        });
+    </script>
+</body>
+</html>
