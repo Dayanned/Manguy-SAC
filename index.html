@@ -1007,17 +1007,7 @@
             cart = [];
             discountApplied = false;
 
-            // Reflejar visualmente que el cupón ya se consumió.
-            if (quizCouponUsed) {
-                const couponButton = document.querySelector('#quiz-result-container button[onclick="applyQuizDiscount()"]');
-                if (couponButton) {
-                    couponButton.disabled = true;
-                    couponButton.textContent = 'Cupón utilizado';
-                    couponButton.classList.add('opacity-60', 'cursor-not-allowed');
-                }
-                const couponCode = document.querySelector('#quiz-result-container .font-heading.text-xl');
-                if (couponCode) couponCode.insertAdjacentHTML('afterend', '<span class="block mt-2 text-xs font-bold text-red-600">Este cupón ya fue usado en un pedido.</span>');
-            }
+            // El cupón se bloquea mediante quizCouponUsed; no se manipula el DOM del quiz aquí.
             const discountBanner = document.getElementById('cart-discount-banner');
             if (discountBanner) discountBanner.classList.add('hidden');
             updateCartUI();
