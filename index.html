@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manguyá — Néctar Artesanal de Mango y Maracuyá</title>
-    
+    <title>Manguyá — El Sabor del Paraíso Tropical</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,646 +11,392 @@
             theme: {
                 extend: {
                     colors: {
-                        cream: '#FAF7F2',
-                        botanical: '#2D402B',
-                        mangogold: '#E8822A',
-                        mangolight: '#FFF8EE',
-                        bordercolor: '#E5E0D8'
+                        mangoo: { 50: '#fffbeb', 100: '#fef3c7', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' },
+                        maracuya: { 400: '#facc15', 500: '#eab308', 600: '#ca8a04' },
+                        tropicalGreen: '#10b981',
+                        brandAccent: '#ff6b35'
                     },
-                    fontFamily: {
-                        serif: ['Fraunces', 'serif'],
-                        sans: ['Inter', 'sans-serif']
-                    }
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
                 }
             }
         }
     </script>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Leaflet CSS y JS -->
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS for Maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <!-- html2pdf.js -->
+    <!-- html2pdf.js for Receipt Download -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
+    
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FAF7F2;
-            color: #2D402B;
-        }
-        .font-serif {
-            font-family: 'Fraunces', serif;
-        }
-        #checkout-map {
-            height: 240px;
-            width: 100%;
-            border-radius: 1rem;
-            z-index: 1;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #fffdf9; }
+        .font-heading { font-family: 'Fredoka', cursive, sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255, 235, 200, 0.6); }
+        .hero-gradient { background: radial-gradient(circle at 70% 30%, #fef3c7 0%, #fffdf9 70%); }
+        #map { height: 250px; width: 100%; border-radius: 0.75rem; z-index: 1; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fff8f0; }
+        ::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 4px; }
         @keyframes floatSlow {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-8px) rotate(1deg); }
         }
-        .animate-float {
-            animation: floatSlow 5s ease-in-out infinite;
-        }
+        .animate-float { animation: floatSlow 4s ease-in-out infinite; }
     </style>
 </head>
-<body class="bg-cream text-botanical antialiased selection:bg-mangogold/20">
+<body class="text-gray-800 antialiased selection:bg-amber-200">
 
-    <!-- HEADER / NAVEGACIÓN -->
-    <header class="sticky top-0 z-50 bg-cream/95 backdrop-blur-md border-b border-bordercolor shadow-sm">
-        <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
-            <a href="#" class="flex items-center gap-3">
-                <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-20 sm:h-24 w-auto object-contain transition-transform hover:scale-105">
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-amber-100 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
+            <!-- Brand Logo Real y Prominente -->
+            <a href="#" class="flex items-center gap-3 group">
+                <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-16 sm:h-20 w-auto object-contain animate-float group-hover:scale-105 transition-transform">
             </a>
-            
-            <nav class="hidden md:flex items-center gap-8 font-medium text-sm">
-                <a href="#inicio" class="hover:text-mangogold transition">La Experiencia</a>
-                <a href="#origen" class="hover:text-mangogold transition">Origen Natural</a>
-                <a href="#juego" class="hover:text-mangogold transition flex items-center gap-1.5 text-mangogold font-semibold">
-                    <i data-lucide="sparkles" class="w-4 h-4"></i> Ruleta Tropical
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 font-medium text-gray-700">
+                <a href="#inicio" class="hover:text-amber-600 transition-colors">Inicio</a>
+                <a href="#productos" class="hover:text-amber-600 transition-colors">Productos</a>
+                <a href="#test" class="hover:text-amber-600 transition-colors flex items-center gap-1 text-amber-600 font-semibold bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Ruleta Tropical
                 </a>
-                <a href="#productos" class="hover:text-mangogold transition">Presentaciones</a>
+                <a href="#nosotros" class="hover:text-amber-600 transition-colors">Sobre Nosotros</a>
             </nav>
 
+            <!-- Action Buttons / Cart Icon -->
             <div class="flex items-center gap-4">
-                <button onclick="openCart()" class="relative p-3 rounded-2xl hover:bg-black/5 transition border border-bordercolor bg-white shadow-sm flex items-center gap-2">
-                    <i data-lucide="shopping-bag" class="w-5 h-5 text-botanical"></i>
-                    <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-mangogold text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md">0</span>
+                <button onclick="toggleCartModal()" class="relative p-3 bg-amber-100/80 hover:bg-amber-200 text-amber-800 rounded-2xl transition-all shadow-sm">
+                    <i class="fa-solid fa-basket-shopping text-xl"></i>
+                    <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden shadow-sm">0</span>
                 </button>
-                <a href="#productos" class="hidden sm:inline-flex bg-botanical text-white px-6 py-3 rounded-2xl font-semibold text-sm hover:bg-opacity-90 transition shadow-md">
+                <a href="#productos" class="hidden sm:inline-flex items-center justify-center px-6 py-3 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 transition-all shadow-md shadow-orange-500/20 active:scale-95">
                     Pedir Ahora
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <section id="inicio" class="max-w-6xl mx-auto px-6 pt-10 pb-16 text-center">
-        <div class="inline-flex items-center gap-2 bg-white border border-bordercolor px-5 py-2 rounded-full text-xs font-semibold mb-6 shadow-sm">
-            <span class="w-2.5 h-2.5 rounded-full bg-mangogold animate-ping"></span>
-            100% Artesanal — Sin Conservantes ni Azúcar Añadida
-        </div>
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="inicio" class="hero-gradient relative overflow-hidden pt-8 pb-16 lg:pt-16 lg:pb-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Hero Text Content -->
+                    <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 text-amber-800 text-xs sm:text-sm font-semibold border border-amber-200/80 shadow-sm">
+                            <span class="animate-pulse">✨</span> 100% Mango y Maracuyá Artesanal
+                        </div>
+                        <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
+                            El Sabor del <br>
+                            <span class="bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
+                                Paraíso Tropical
+                            </span>
+                        </h1>
+                        <p class="text-gray-600 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                            Descubre la combinación perfecta entre la dulzura cremosa del mango y el toque ácido y refrescante de la maracuyá natural. Sin conservantes ni azúcares añadidos.
+                        </p>
 
-        <h1 class="font-serif text-4xl sm:text-6xl font-bold leading-tight text-botanical max-w-4xl mx-auto">
-            El equilibrio sublime entre <br>
-            <span class="italic font-normal text-mangogold">Mango Kent</span> y <span class="text-mangogold">Maracuyá</span>
-        </h1>
-        
-        <p class="text-base sm:text-lg text-botanical/70 max-w-2xl mx-auto mt-6 leading-relaxed">
-            Néctar artesanal de cuerpo cremoso y acidez refrescante. Elaborado con fruta seleccionada del valle de Huaral.
-        </p>
+                        <!-- CTA Buttons -->
+                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                            <a href="#productos" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-xl shadow-orange-500/25 transition-all text-center hover:-translate-y-0.5">
+                                Ver Presentaciones <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </a>
+                            <a href="#test" class="w-full sm:w-auto px-6 py-4 rounded-xl font-bold text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 shadow-sm transition-all text-center flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-gamepad text-amber-500"></i> Ruleta Tropical
+                            </a>
+                        </div>
 
-        <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
-            <a href="#productos" class="bg-mangogold text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:bg-mangogold/90 transition flex items-center gap-2">
-                Elegir Presentación <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </a>
-            <a href="#juego" class="bg-white border border-bordercolor px-8 py-4 rounded-2xl font-semibold hover:bg-black/5 transition flex items-center gap-2 shadow-sm">
-                <i data-lucide="gift" class="w-4 h-4 text-mangogold"></i> Obtener Descuento Delivery
-            </a>
-        </div>
-
-        <div class="mt-12 max-w-4xl mx-auto relative">
-            <div class="bg-white p-4 sm:p-6 rounded-[2.5rem] shadow-xl border border-bordercolor overflow-hidden relative">
-                <img src="assets/img/Manguyá fondo.jpg" alt="Manguyá Néctar" class="w-full h-[360px] sm:h-[480px] object-cover rounded-[2rem] animate-float">
-            </div>
-        </div>
-    </section>
-
-    <!-- ORIGEN NATURAL / INGREDIENTES -->
-    <section id="origen" class="py-16 bg-white/70 border-y border-bordercolor">
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="text-center max-w-xl mx-auto mb-12">
-                <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Cosecha del Valle</span>
-                <h2 class="font-serif text-3xl font-bold mt-2">Fruta de origen 100% peruano</h2>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-cream rounded-[2rem] p-6 border border-bordercolor flex gap-5 items-center shadow-sm">
-                    <img src="assets/img/Mango.webp" alt="Mango Kent" class="w-28 h-28 object-cover rounded-2xl shrink-0">
-                    <div>
-                        <h3 class="font-serif text-lg font-bold mb-1">Mango Kent</h3>
-                        <p class="text-xs text-botanical/70 leading-relaxed">Cultivado bajo el sol del norte y valle central, aportando textura cremosa y dulzura natural.</p>
-                        <img src="assets/img/Planta mango.webp" alt="Planta de Mango" class="mt-2 h-12 w-full object-cover rounded-xl">
+                        <!-- Highlights Badge -->
+                        <div class="pt-6 grid grid-cols-3 gap-4 border-t border-amber-200/50">
+                            <div>
+                                <p class="font-bold text-gray-900 text-lg sm:text-xl">100%</p>
+                                <p class="text-xs text-gray-500 font-medium">Fruta Natural</p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-900 text-lg sm:text-xl">0%</p>
+                                <p class="text-xs text-gray-500 font-medium">Preservantes</p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-900 text-lg sm:text-xl">Yape/Plin</p>
+                                <p class="text-xs text-gray-500 font-medium">Contraentrega</p>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Hero Visual Showcase con Manguyá fondo.jpg -->
+                    <div class="lg:col-span-6 relative flex justify-center">
+                        <div class="relative w-full max-w-lg">
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 bg-gradient-to-tr from-amber-300 to-orange-400 rounded-full blur-3xl opacity-40 -z-10"></div>
+                            
+                            <div class="glass-card rounded-3xl p-4 sm:p-6 shadow-2xl relative overflow-hidden group">
+                                <div class="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+                                    ⭐ Más Vendido
+                                </div>
+                                <div class="relative aspect-square rounded-2xl overflow-hidden bg-white/50 flex items-center justify-center">
+                                    <img src="assets/img/Manguyá fondo.jpg" alt="Manguyá Néctar" class="w-full h-full object-cover rounded-2xl animate-float">
+                                </div>
+                                <div class="mt-4 flex items-center justify-between px-2">
+                                    <div>
+                                        <span class="text-xs text-gray-500 block">Sabor Tropical</span>
+                                        <span class="font-bold text-amber-600">Mango Kent + Maracuyá</span>
+                                    </div>
+                                    <button onclick="addToCart('Botella Personal 330ml', 3.50, '330ml')" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95">
+                                        + Agregar S/ 3.50
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Catalog Section (3 Productos Exactos con PNGs reales) -->
+        <section id="productos" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                    <span class="text-amber-600 font-bold uppercase text-xs tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Nuestras 3 Presentaciones</span>
+                    <h2 class="font-heading text-3xl sm:text-4xl font-bold text-gray-900">Elige la dosis de frescura que necesitas</h2>
+                    <p class="text-gray-600">Tarifario dinámico calculado por distancia desde Huaral (Av. Julio C. Tello 151).</p>
                 </div>
 
-                <div class="bg-cream rounded-[2rem] p-6 border border-bordercolor flex gap-5 items-center shadow-sm">
-                    <img src="assets/img/Maracuyá.jpg" alt="Maracuyá Fresca" class="w-28 h-28 object-cover rounded-2xl shrink-0">
-                    <div>
-                        <h3 class="font-serif text-lg font-bold mb-1">Maracuyá Seleccionada</h3>
-                        <p class="text-xs text-botanical/70 leading-relaxed">Seleccionadas a mano para garantizar el toque ácido y aromático exacto.</p>
-                        <img src="assets/img/Planta maracuyá.jpg" alt="Planta de Maracuyá" class="mt-2 h-12 w-full object-cover rounded-xl">
+                <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    
+                    <!-- Product 1: 330ml.png -->
+                    <div class="bg-amber-50/60 rounded-3xl p-8 border border-amber-100 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between group hover:-translate-y-1">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-24 h-32 bg-amber-100/50 rounded-2xl flex items-center justify-center p-2 shadow-inner mx-auto">
+                                    <img src="assets/img/330ml.png" alt="Botella 330ml" class="h-28 object-contain animate-float">
+                                </div>
+                                <span class="bg-white text-amber-800 text-xs font-bold px-3 py-1 rounded-full border border-amber-200 shadow-sm">Personal</span>
+                            </div>
+                            <h3 class="font-heading text-2xl font-bold text-gray-900 mb-2 text-center">Botella Personal 330ml</h3>
+                            <p class="text-gray-600 text-sm mb-6 text-center leading-relaxed">
+                                Ideal para acompañar tu almuerzo, llevar a la universidad o refrescarte en cualquier momento.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-amber-200/60 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-gray-500 block">Precio individual</span>
+                                <span class="text-2xl font-bold text-gray-900">S/ 3.50</span>
+                            </div>
+                            <button onclick="addToCart('Botella Personal 330ml', 3.50, '330ml')" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-md hover:from-amber-600 hover:to-orange-600 transition-all active:scale-95 text-sm">
+                                <i class="fa-solid fa-cart-plus mr-1"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 2: 500ml.png -->
+                    <div class="bg-amber-50/60 rounded-3xl p-8 border border-amber-100 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between group hover:-translate-y-1 relative">
+                        <div class="absolute -top-3 right-8 bg-amber-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Más Popular</div>
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-24 h-32 bg-amber-100/50 rounded-2xl flex items-center justify-center p-2 shadow-inner mx-auto">
+                                    <img src="assets/img/500ml.png" alt="Botella 500ml" class="h-28 object-contain animate-float">
+                                </div>
+                                <span class="bg-white text-amber-800 text-xs font-bold px-3 py-1 rounded-full border border-amber-200 shadow-sm">Mediana</span>
+                            </div>
+                            <h3 class="font-heading text-2xl font-bold text-gray-900 mb-2 text-center">Botella Mediana 500ml</h3>
+                            <p class="text-gray-600 text-sm mb-6 text-center leading-relaxed">
+                                El equilibrio perfecto para mantenerte activo e hidratado durante toda la tarde.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-amber-200/60 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-gray-500 block">Precio individual</span>
+                                <span class="text-2xl font-bold text-gray-900">S/ 5.50</span>
+                            </div>
+                            <button onclick="addToCart('Botella Mediana 500ml', 5.50, '500ml')" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-md hover:from-amber-600 hover:to-orange-600 transition-all active:scale-95 text-sm">
+                                <i class="fa-solid fa-cart-plus mr-1"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 3: 1L.png -->
+                    <div class="bg-gradient-to-b from-orange-50/80 to-amber-50/60 rounded-3xl p-8 border border-orange-200/80 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between group hover:-translate-y-1 relative">
+                        <div class="absolute -top-3 right-8 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Familiar</div>
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-24 h-32 bg-orange-100/50 rounded-2xl flex items-center justify-center p-2 shadow-inner mx-auto">
+                                    <img src="assets/img/1L.png" alt="Botella 1 Litro" class="h-32 object-contain animate-float">
+                                </div>
+                                <span class="bg-white text-orange-800 text-xs font-bold px-3 py-1 rounded-full border border-orange-200 shadow-sm">Familiar</span>
+                            </div>
+                            <h3 class="font-heading text-2xl font-bold text-gray-900 mb-2 text-center">Botella Familiar 1 Litro</h3>
+                            <p class="text-gray-600 text-sm mb-6 text-center leading-relaxed">
+                                Diseñado para compartir con la familia o amigos con mayor rendimiento y ahorro.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-orange-200/60 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-gray-500 block">Precio especial</span>
+                                <span class="text-2xl font-bold text-gray-900">S/ 9.00</span>
+                            </div>
+                            <button onclick="addToCart('Botella Familiar 1 Litro', 9.00, '1L')" class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-xl shadow-md hover:from-orange-600 hover:to-amber-600 transition-all active:scale-95 text-sm">
+                                <i class="fa-solid fa-cart-plus mr-1"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Origen de los Ingredientes con tus imágenes (Mango.webp, Maracuyá.jpg, Planta mango.webp, Planta maracuyá.jpg) -->
+        <section id="origen" class="py-16 bg-amber-50/40 border-y border-amber-200/50">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-xl mx-auto mb-12 space-y-2">
+                    <span class="text-amber-600 font-bold uppercase text-xs tracking-widest bg-amber-100 px-3 py-1 rounded-full border border-amber-200">Cosecha del Valle</span>
+                    <h2 class="font-heading text-3xl font-bold text-gray-900">Insumos 100% naturales de Huaral</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-3xl p-6 border border-amber-200 shadow-sm flex gap-4 items-center">
+                        <img src="assets/img/Mango.webp" alt="Mango Kent" class="w-28 h-28 object-cover rounded-2xl shrink-0 shadow-sm">
+                        <div class="space-y-1">
+                            <h4 class="font-heading text-lg font-bold text-gray-900">Mango Kent Seleccionado</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">Aporta una textura cremosa y un dulzor natural inigualable.</p>
+                            <img src="assets/img/Planta mango.webp" alt="Planta de Mango" class="h-12 w-full object-cover rounded-xl mt-2 shadow-inner">
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-6 border border-amber-200 shadow-sm flex gap-4 items-center">
+                        <img src="assets/img/Maracuyá.jpg" alt="Maracuyá" class="w-28 h-28 object-cover rounded-2xl shrink-0 shadow-sm">
+                        <div class="space-y-1">
+                            <h4 class="font-heading text-lg font-bold text-gray-900">Maracuyá Fresca del Valle</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">El toque exacto de acidez tropical y aroma vibrante.</p>
+                            <img src="assets/img/Planta maracuyá.jpg" alt="Planta de Maracuyá" class="h-12 w-full object-cover rounded-xl mt-2 shadow-inner">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- RULETA TROPICAL / MINIJUEGO PROFESIONAL -->
-    <section id="juego" class="py-16 max-w-4xl mx-auto px-6">
-        <div class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-bordercolor text-center shadow-lg relative overflow-hidden">
-            <span class="bg-mangogold text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">Promoción Exclusiva</span>
-            <h2 class="font-serif text-3xl font-bold mt-3 mb-2">Desafío Ruleta Manguyá</h2>
-            <p class="text-xs sm:text-sm text-botanical/70 max-w-md mx-auto mb-6">
-                Gira la ruleta y gana un **50% de descuento adicional** en tu tarifa de envío por distancia.
-            </p>
-
-            <div class="bg-cream border border-bordercolor p-6 rounded-3xl max-w-sm mx-auto shadow-inner mb-6">
-                <div class="flex justify-center items-center gap-4 text-4xl py-4 bg-white rounded-2xl border border-bordercolor mb-4">
-                    <span id="slot1">🥭</span>
-                    <span id="slot2">⭐</span>
-                    <span id="slot3">🍋</span>
-                </div>
-                <p id="game-status" class="text-xs font-semibold text-botanical">Presiona el botón para probar tu suerte</p>
-            </div>
-
-            <button onclick="spinSlots()" id="spin-btn" class="bg-mangogold text-white font-bold px-8 py-3.5 rounded-2xl shadow-lg hover:bg-mangogold/90 transition flex items-center gap-2 mx-auto">
-                <i data-lucide="dices" class="w-5 h-5"></i> Girar Ruleta Tropical
-            </button>
-
-            <div id="reward-banner" class="hidden mt-6 bg-botanical text-white p-4 rounded-2xl max-w-md mx-auto shadow-md">
-                <p class="font-bold text-sm">🎉 ¡Felicidades! Ganaste 50% de Descuento en Envío</p>
-                <p class="text-xs text-cream/80 mt-1">Cupón Aplicado: <span class="font-mono text-mangogold font-bold">ENVIO-MEDIO-MANGUYA</span></p>
-            </div>
-        </div>
-    </section>
-
-    <!-- PRODUCTOS Y PRESENTACIONES (3 PRODUCTOS EXACTOS) -->
-    <section id="productos" class="py-20 bg-white/70 border-y border-bordercolor">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center max-w-xl mx-auto mb-16">
-                <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Nuestras 3 Presentaciones</span>
-                <h2 class="font-serif text-3xl sm:text-4xl font-bold mt-2">Elige la dosis de frescura que necesitas</h2>
-                <p class="text-xs text-botanical/60 mt-2">🛵 Tarifario dinámico basado en distancia desde Huaral (Av. Julio C. Tello 151).</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- 1. Botella Personal 330ml -->
-                <div class="bg-cream rounded-[2.5rem] p-6 border border-bordercolor shadow-sm hover:shadow-md transition flex flex-col items-center text-center group">
-                    <div class="h-52 flex items-center justify-center mb-4">
-                        <img src="assets/img/330ml.jpg" alt="Botella 330ml" class="h-48 object-contain animate-float group-hover:scale-105 transition-transform">
+        <!-- Interactive Ruleta Tropical Section (Con Descuento Porcentual en Envío) -->
+        <section id="test" class="py-16 bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 border-y border-amber-200/60">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-3xl shadow-xl border border-amber-200/80 overflow-hidden">
+                    <div class="bg-gradient-to-r from-amber-500 to-orange-500 p-6 text-white text-center">
+                        <span class="bg-white/20 text-xs uppercase font-bold px-3 py-1 rounded-full">Minijuego Interactivo</span>
+                        <h2 class="font-heading text-2xl sm:text-3xl font-bold mt-2">Ruleta Tropical Manguyá</h2>
+                        <p class="text-xs sm:text-sm text-amber-100 mt-1">Gira para ganar un cupón de <strong>50% de descuento en el envío</strong></p>
                     </div>
-                    <span class="text-[10px] font-bold uppercase bg-white text-mangogold px-3 py-1 rounded-full mb-2 border border-bordercolor">Personal</span>
-                    <h3 class="font-serif text-xl font-bold mb-2">Botella Personal 330ml</h3>
-                    <p class="text-xs text-botanical/70 mb-6 leading-relaxed">Ideal para acompañar tu almuerzo, llevar a la universidad o refrescarte al instante.</p>
-                    <div class="mt-auto flex items-center justify-between w-full pt-4 border-t border-bordercolor">
-                        <span class="font-serif text-2xl font-bold text-mangogold">S/ 3.50</span>
-                        <button onclick="addToCart('Botella Personal 330ml', 3.50)" class="bg-botanical text-white px-5 py-2.5 rounded-xl font-semibold text-xs hover:bg-opacity-90 transition flex items-center gap-1.5 shadow-sm">
-                            <i data-lucide="plus" class="w-4 h-4"></i> Añadir
+
+                    <div class="p-6 sm:p-8 text-center space-y-6">
+                        <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-6 max-w-sm mx-auto shadow-inner">
+                            <div class="flex justify-center items-center gap-4 text-4xl py-4 bg-white rounded-2xl border border-amber-200 mb-4 shadow-sm">
+                                <span id="slot1">🥭</span>
+                                <span id="slot2">⭐</span>
+                                <span id="slot3">🍋</span>
+                            </div>
+                            <p id="game-status" class="text-xs font-semibold text-gray-700">Presiona el botón para girar la ruleta</p>
+                        </div>
+
+                        <button onclick="spinSlots()" id="spin-btn" class="px-8 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-lg hover:from-amber-600 hover:to-orange-600 transition-all">
+                            <i class="fa-solid fa-dice mr-2"></i> Girar Ruleta Tropical
                         </button>
-                    </div>
-                </div>
 
-                <!-- 2. Botella Mediana 500ml -->
-                <div class="bg-cream rounded-[2.5rem] p-6 border border-bordercolor shadow-sm hover:shadow-md transition flex flex-col items-center text-center relative overflow-hidden group">
-                    <span class="absolute top-4 right-4 bg-mangogold text-white text-[9px] font-bold px-2.5 py-1 rounded-full shadow-sm">Popular</span>
-                    <div class="h-52 flex items-center justify-center mb-4">
-                        <img src="assets/img/500ml.jpg" alt="Botella 500ml" class="h-48 object-contain animate-float group-hover:scale-105 transition-transform">
-                    </div>
-                    <span class="text-[10px] font-bold uppercase bg-white text-mangogold px-3 py-1 rounded-full mb-2 border border-bordercolor">Mediana</span>
-                    <h3 class="font-serif text-xl font-bold mb-2">Botella Mediana 500ml</h3>
-                    <p class="text-xs text-botanical/70 mb-6 leading-relaxed">El tamaño perfecto para mantenerte energizado y bien hidratado durante toda la tarde.</p>
-                    <div class="mt-auto flex items-center justify-between w-full pt-4 border-t border-bordercolor">
-                        <span class="font-serif text-2xl font-bold text-mangogold">S/ 5.50</span>
-                        <button onclick="addToCart('Botella Mediana 500ml', 5.50)" class="bg-botanical text-white px-5 py-2.5 rounded-xl font-semibold text-xs hover:bg-opacity-90 transition flex items-center gap-1.5 shadow-sm">
-                            <i data-lucide="plus" class="w-4 h-4"></i> Añadir
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 3. Botella Familiar 1 Litro -->
-                <div class="bg-cream rounded-[2.5rem] p-6 border border-bordercolor shadow-sm hover:shadow-md transition flex flex-col items-center text-center relative overflow-hidden group">
-                    <span class="absolute top-4 right-4 bg-botanical text-white text-[9px] font-bold px-2.5 py-1 rounded-full shadow-sm">Familiar</span>
-                    <div class="h-52 flex items-center justify-center mb-4">
-                        <img src="assets/img/1L.jpg" alt="Botella 1 Litro" class="h-48 object-contain animate-float group-hover:scale-105 transition-transform">
-                    </div>
-                    <span class="text-[10px] font-bold uppercase bg-white text-mangogold px-3 py-1 rounded-full mb-2 border border-bordercolor">Familiar</span>
-                    <h3 class="font-serif text-xl font-bold mb-2">Botella Familiar 1 Litro</h3>
-                    <p class="text-xs text-botanical/70 mb-6 leading-relaxed">Diseñado para compartir en familia o con amigos. Máximo sabor y rendimiento.</p>
-                    <div class="mt-auto flex items-center justify-between w-full pt-4 border-t border-bordercolor">
-                        <span class="font-serif text-2xl font-bold text-mangogold">S/ 9.00</span>
-                        <button onclick="addToCart('Botella Familiar 1 Litro', 9.00)" class="bg-botanical text-white px-5 py-2.5 rounded-xl font-semibold text-xs hover:bg-opacity-90 transition flex items-center gap-1.5 shadow-sm">
-                            <i data-lucide="plus" class="w-4 h-4"></i> Añadir
-                        </button>
+                        <div id="reward-banner" class="hidden bg-emerald-50 border border-emerald-300 rounded-2xl p-4 max-w-md mx-auto text-xs text-emerald-900 shadow-md">
+                            <p class="font-bold text-sm">🎉 ¡Ganaste 50% de Descuento en tu Delivery!</p>
+                            <p class="mt-1">Cupón Aplicado: <strong class="font-mono text-orange-600">ENVIO-MEDIO-MANGUYA</strong></p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- PROCESO Y BATIDO -->
-    <section class="py-16 max-w-5xl mx-auto px-6">
-        <div class="bg-cream rounded-[3rem] p-8 md:p-12 border border-bordercolor grid md:grid-cols-2 gap-8 items-center shadow-sm">
-            <div>
-                <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Elaboración Propia</span>
-                <h2 class="font-serif text-3xl font-bold mt-1 mb-3">Frescura garantizada en cada lote</h2>
-                <p class="text-xs sm:text-sm text-botanical/70 leading-relaxed">
-                    Nuestros jugos se preparan diariamente combinando pulpa natural de primera con estrictos estándares de higiene, asegurando un néctar vibrante, cremoso y delicioso.
-                </p>
+        <!-- Brand Values / About Us Section con Batido de ambos.jpg -->
+        <section id="nosotros" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6">
+                        <span class="text-amber-600 font-bold uppercase text-xs tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Nuestro Emprendimiento</span>
+                        <h2 class="font-heading text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
+                            Pasión por la fruta natural y la calidad artesanal
+                        </h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            <strong>Manguyá</strong> nace de la visión de ofrecer una alternativa de bebida verdaderamente refrescante y natural en Huaral. Seleccionamos cuidadosamente los mangos más jugosos y las maracuyás más aromáticas para brindarte una experiencia tropical incomparable.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-100">
+                                <i class="fa-solid fa-leaf text-2xl text-amber-500 mb-2"></i>
+                                <h4 class="font-bold text-gray-900 text-sm">Sin Químicos</h4>
+                                <p class="text-xs text-gray-500">Sin saborizantes ni colorantes artificiales.</p>
+                            </div>
+                            <div class="p-4 bg-orange-50/50 rounded-2xl border border-orange-100">
+                                <i class="fa-solid fa-truck-fast text-2xl text-orange-500 mb-2"></i>
+                                <h4 class="font-bold text-gray-900 text-sm">Entrega Rápida</h4>
+                                <p class="text-xs text-gray-500">Servicio de delivery basado en Huaral.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative flex justify-center">
+                        <div class="w-full max-w-md rounded-3xl overflow-hidden shadow-xl border border-amber-100">
+                            <img src="assets/img/Batido de ambos.jpg" alt="Batido Artesanal Manguyá" class="w-full h-80 object-cover">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div>
-                <img src="assets/img/Batido de ambos.jpg" alt="Batido Manguyá" class="rounded-2xl w-full h-64 object-cover shadow-md border border-bordercolor">
-            </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <!-- FOOTER INSTITUCIONAL -->
-    <footer class="bg-botanical text-cream pt-16 pb-10 border-t border-botanical/80">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid md:grid-cols-3 gap-10 pb-12 border-b border-white/10">
-                <div>
-                    <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-20 w-auto object-contain mb-4 filter brightness-200">
-                    <p class="text-xs text-cream/70 leading-relaxed">
-                        Néctar artesanal de mango y maracuyá. Proyecto de Administración y Marketing.
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-12 pb-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 pb-8 border-b border-gray-800">
+                <div class="space-y-3">
+                    <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-16 w-auto object-contain filter brightness-200">
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Emprendimiento dedicado a elaborar las mejores bebidas artesanales de Mango y Maracuyá.
                     </p>
                 </div>
                 <div>
-                    <h4 class="font-bold text-sm text-white mb-3 uppercase tracking-wider">Despacho Huaral</h4>
-                    <p class="text-xs text-cream/70 leading-relaxed mb-2">📍 Av. Julio C. Tello 151, Esquivel</p>
-                    <p class="text-xs text-cream/70 leading-relaxed">⏰ Lunes a Sábado: 8:00 AM - 7:00 PM</p>
+                    <h4 class="font-bold text-sm text-gray-200 mb-3">Contacto Directo</h4>
+                    <p class="text-xs text-gray-400 flex items-center gap-2 mb-2">
+                        <i class="fa-brands fa-whatsapp text-emerald-400 text-base"></i> Pedidos directos a WhatsApp
+                    </p>
+                    <p class="text-xs text-gray-400 flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot text-amber-400 text-base"></i> Av. Julio C. Tello 151, Esquivel — Huaral
+                    </p>
                 </div>
                 <div>
-                    <h4 class="font-bold text-sm text-white mb-3 uppercase tracking-wider">Métodos de Pago</h4>
-                    <div class="flex flex-wrap gap-2 text-xs">
-                        <span class="bg-white/10 px-3.5 py-1.5 rounded-xl">Yape</span>
-                        <span class="bg-white/10 px-3.5 py-1.5 rounded-xl">Plin</span>
-                        <span class="bg-white/10 px-3.5 py-1.5 rounded-xl">Contraentrega</span>
+                    <h4 class="font-bold text-sm text-gray-200 mb-3">Métodos de Pago</h4>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-purple-900/60 text-purple-200 text-xs font-bold px-3 py-1.5 rounded-lg border border-purple-700">YAPE</span>
+                        <span class="bg-cyan-900/60 text-cyan-200 text-xs font-bold px-3 py-1.5 rounded-lg border border-cyan-700">PLIN</span>
+                        <span class="bg-emerald-900/60 text-emerald-200 text-xs font-bold px-3 py-1.5 rounded-lg border border-emerald-700">Contraentrega</span>
                     </div>
                 </div>
             </div>
-            <div class="pt-8 text-center text-xs text-cream/50">
-                <p>&copy; 2026 Manguyá SAC. Todos los derechos reservados.</p>
+            <div class="pt-6 text-center text-xs text-gray-500">
+                <p>&copy; 2026 Manguyá. Todos los derechos reservados. Proyecto Académico de Administración y Marketing.</p>
             </div>
         </div>
     </footer>
 
-    <!-- MODAL DE CHECKOUT / CARRITO -->
-    <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-cream rounded-[2.5rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 relative border border-bordercolor shadow-2xl">
-            <button onclick="closeCart()" class="absolute top-6 right-6 p-2 rounded-full hover:bg-black/5 text-botanical">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
-
-            <h3 class="font-serif text-2xl font-bold mb-6">Tu Pedido Manguyá</h3>
-
-            <div id="cart-items-list" class="bg-white rounded-2xl p-4 border border-bordercolor mb-6 space-y-3"></div>
-
-            <form id="order-form" onsubmit="handleCheckout(event)" class="space-y-4">
-                <div class="grid sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-bold uppercase text-botanical/70 mb-1">Nombre Completo *</label>
-                        <input type="text" id="cust-name" required class="w-full bg-white border border-bordercolor rounded-2xl p-3.5 text-xs focus:outline-none focus:border-botanical shadow-sm" placeholder="Ej. Ana Trujillo">
+    <!-- CART & CHECKOUT MODAL -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden transition-opacity flex justify-end">
+        <div class="bg-white w-full max-w-lg h-full overflow-y-auto p-6 flex flex-col justify-between shadow-2xl">
+            <div>
+                <div class="flex items-center justify-between border-b pb-4 mb-6">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-basket-shopping text-xl text-amber-500"></i>
+                        <h3 class="font-heading text-xl font-bold text-gray-900">Tu Pedido Manguyá</h3>
                     </div>
-
-                    <div>
-                        <label class="block text-[11px] font-bold uppercase text-botanical/70 mb-1">Teléfono / WhatsApp *</label>
-                        <input type="tel" id="cust-phone" required class="w-full bg-white border border-bordercolor rounded-2xl p-3.5 text-xs focus:outline-none focus:border-botanical shadow-sm" placeholder="Ej. 918591764">
-                    </div>
+                    <button onclick="toggleCartModal()" class="text-gray-400 hover:text-gray-600 text-xl p-1">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
 
-                <div>
-                    <label class="block text-[11px] font-bold uppercase text-botanical/70 mb-1">Dirección de Entrega *</label>
-                    <input type="text" id="cust-address" required class="w-full bg-white border border-bordercolor rounded-2xl p-3.5 text-xs focus:outline-none focus:border-botanical shadow-sm" placeholder="Haz clic en el mapa para autocompletar">
-                </div>
+                <div id="cart-items-container" class="space-y-4 mb-6"></div>
 
-                <div>
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="text-[11px] font-bold uppercase text-botanical/70">Ubicación GPS en Huaral</label>
-                        <span class="text-[10px] text-mangogold font-semibold">(Calcula distancia exacta)</span>
-                    </div>
-                    <div id="checkout-map"></div>
-                    <p class="text-[11px] text-botanical/70 mt-1">Distancia estimada desde Tello 151: <span id="dist-km" class="font-bold text-mangogold">0.5 km</span></p>
-                </div>
-
-                <div>
-                    <label class="block text-[11px] font-bold uppercase text-botanical/70 mb-1">Método de Pago *</label>
-                    <select id="pay-method" class="w-full bg-white border border-bordercolor rounded-2xl p-3.5 text-xs focus:outline-none focus:border-botanical shadow-sm">
-                        <option value="Yape / Plin">Yape / Plin</option>
-                        <option value="Pago Contraentrega">Pago Contraentrega (Efectivo)</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="w-full bg-mangogold text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-mangogold/90 transition text-center flex items-center justify-center gap-2 mt-6 text-sm">
-                    <i data-lucide="check-circle" class="w-5 h-5"></i> Generar Resumen y Enviar Pedido
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL DE COMPROBANTE Y CONFIRMACIÓN -->
-    <div id="receipt-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-[2.5rem] max-w-md w-full p-8 text-center border border-bordercolor relative shadow-2xl max-h-[90vh] overflow-y-auto">
-            
-            <button onclick="closeReceipt()" class="absolute top-6 right-6 p-2 rounded-full hover:bg-black/5">
-                <i data-lucide="x" class="w-5 h-5 text-botanical"></i>
-            </button>
-
-            <!-- CONTENIDO IMPRESO PARA PDF (AISLADO Y CORREGIDO PARA NO SALIR EN BLANCO) -->
-            <div id="printable-receipt" style="background-color: #FAF7F2; padding: 24px; border-radius: 20px; border: 1px solid #E5E0D8; text-align: left; margin-bottom: 20px; color: #2D402B;">
-                <div style="text-align: center; border-bottom: 1px dashed #E5E0D8; padding-bottom: 15px; margin-bottom: 15px;">
-                    <img src="assets/img/Logo.png" alt="Manguyá Logo" style="height: 50px; margin: 0 auto 10px auto; object-fit: contain;">
-                    <p style="font-size: 10px; text-transform: uppercase; font-weight: bold; color: #2D402B;">Comprobante de Pedido #<span id="order-num"></span></p>
-                    <p style="font-size: 9px; color: #666;" id="order-date"></p>
-                </div>
-
-                <div style="font-size: 11px; line-height: 1.5; margin-bottom: 15px;">
-                    <p><strong>Cliente:</strong> <span id="rec-name"></span></p>
-                    <p><strong>Teléfono:</strong> <span id="rec-phone"></span></p>
-                    <p><strong>Dirección:</strong> <span id="rec-address"></span></p>
-                    <p><strong>Distancia:</strong> <span id="rec-dist"></span> km</p>
-                    <p><strong>Método de Pago:</strong> <span id="rec-method"></span></p>
-                </div>
-
-                <div style="border-top: 1px dashed #E5E0D8; border-bottom: 1px dashed #E5E0D8; padding: 10px 0; margin-bottom: 15px; font-size: 11px;" id="rec-items"></div>
-
-                <div style="font-size: 11px; text-align: right; line-height: 1.5;">
-                    <p style="color: #666;">Subtotal: <span id="rec-subtotal"></span></p>
-                    <p style="color: #666;">Envío por Distancia: <span id="rec-shipping"></span></p>
-                    <p style="font-weight: bold; font-size: 14px; color: #E8822A; margin-top: 5px;">TOTAL: <span id="rec-total"></span></p>
-                </div>
-            </div>
-
-            <!-- BOTONES DE ACCIÓN -->
-            <div class="space-y-3">
-                <button onclick="downloadPDF()" class="w-full bg-botanical text-white font-semibold py-3.5 rounded-2xl text-xs hover:bg-opacity-90 transition flex items-center justify-center gap-2 shadow-md">
-                    <i data-lucide="download" class="w-4 h-4"></i> Descargar Comprobante PDF
-                </button>
-                <a id="wa-btn-link" target="_blank" class="w-full bg-[#25D366] text-white font-semibold py-3.5 rounded-2xl text-xs hover:bg-opacity-90 transition flex items-center justify-center gap-2 shadow-md">
-                    <i data-lucide="message-circle" class="w-4 h-4"></i> Enviar Pedido a WhatsApp
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- SCRIPT DE LÓGICA -->
-    <script>
-        lucide.createIcons();
-
-        let cart = [];
-        let couponApplied = false;
-        let map, marker;
-
-        const ORIGIN_LAT = -11.496321;
-        const ORIGIN_LNG = -77.2092;
-        let selectedLat = ORIGIN_LAT;
-        let selectedLng = ORIGIN_LNG;
-        let currentDistanceKm = 0.5;
-        let currentOrderData = null;
-
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                      Math.sin(dLon/2) * Math.sin(dLon/2);
-            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
-        }
-
-        // LÓGICA DE ENVÍO POR DISTANCIA CON DESCUENTO POR CUPÓN
-        function calculateShippingCost(distKm, subtotal) {
-            let cost = 2.00; // Tarifa base hasta 1 km
-            if (distKm > 1.0) {
-                cost += (distKm - 1.0) * 0.80; // S/ 0.80 por km adicional
-            }
-            if (subtotal >= 20.00) {
-                cost = cost * 0.5; // Descuento 50% por volumen
-            }
-            if (couponApplied) {
-                cost = cost * 0.5; // 50% de descuento adicional en envío gracias a la ruleta
-            }
-            return Math.max(1.50, cost);
-        }
-
-        function addToCart(name, price) {
-            const item = cart.find(i => i.name === name);
-            if (item) item.qty++;
-            else cart.push({ name, price, qty: 1 });
-            updateCartUI();
-            openCart();
-        }
-
-        function updateCartUI() {
-            const badge = document.getElementById('cart-badge');
-            const totalQty = cart.reduce((acc, i) => acc + i.qty, 0);
-            badge.innerText = totalQty;
-
-            const list = document.getElementById('cart-items-list');
-            if (cart.length === 0) {
-                list.innerHTML = '<p class="text-xs text-botanical/60 text-center py-6">Tu carrito está vacío.</p>';
-                return;
-            }
-
-            const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-            const shippingCost = calculateShippingCost(currentDistanceKm, subtotal);
-            const total = subtotal + shippingCost;
-
-            list.innerHTML = cart.map(i => `
-                <div class="flex justify-between items-center text-xs py-1.5 border-b border-bordercolor/50">
-                    <div>
-                        <p class="font-bold">${i.name}</p>
-                        <p class="text-[10px] text-botanical/60">S/ ${i.price.toFixed(2)} x ${i.qty}</p>
-                    </div>
-                    <span class="font-bold text-mangogold">S/ ${(i.price * i.qty).toFixed(2)}</span>
-                </div>
-            `).join('') + `
-                <div class="pt-3 space-y-1.5 text-xs">
-                    <div class="flex justify-between text-botanical/70">
-                        <span>Subtotal:</span>
-                        <span>S/ ${subtotal.toFixed(2)}</span>
-                    </div>
-                    <div class="flex justify-between text-botanical/70">
-                        <span>Delivery (${currentDistanceKm.toFixed(1)} km):</span>
-                        <span class="${couponApplied ? 'text-green-600 font-bold' : ''}">${couponApplied ? 'S/ ' + shippingCost.toFixed(2) + ' (50% desc)' : 'S/ ' + shippingCost.toFixed(2)}</span>
-                    </div>
-                    <div class="flex justify-between font-bold text-sm pt-2 border-t border-bordercolor">
-                        <span>Total a Pagar:</span>
-                        <span class="text-mangogold">S/ ${total.toFixed(2)}</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        function openCart() {
-            document.getElementById('cart-modal').classList.remove('hidden');
-            setTimeout(initMap, 200);
-        }
-
-        function closeCart() {
-            document.getElementById('cart-modal').classList.add('hidden');
-        }
-
-        function initMap() {
-            if (map) return;
-            map = L.map('checkout-map').setView([ORIGIN_LAT, ORIGIN_LNG], 15);
-            
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
-
-            L.circleMarker([ORIGIN_LAT, ORIGIN_LNG], {
-                radius: 8,
-                color: '#2D402B',
-                fillColor: '#E8822A',
-                fillOpacity: 1
-            }).addTo(map).bindPopup('Punto de Despacho (Tello 151)');
-
-            marker = L.marker([selectedLat, selectedLng], { draggable: true }).addTo(map);
-
-            function updateLoc(lat, lng) {
-                selectedLat = parseFloat(lat.toFixed(6));
-                selectedLng = parseFloat(lng.toFixed(6));
-                currentDistanceKm = calculateDistance(ORIGIN_LAT, ORIGIN_LNG, selectedLat, selectedLng);
-                document.getElementById('dist-km').innerText = `${currentDistanceKm.toFixed(2)} km`;
-                updateCartUI();
-
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${selectedLat}&lon=${selectedLng}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data && data.display_name) {
-                            document.getElementById('cust-address').value = data.display_name;
-                        }
-                    }).catch(() => {});
-            }
-
-            marker.on('dragend', e => {
-                const pos = marker.getLatLng();
-                updateLoc(pos.lat, pos.lng);
-            });
-
-            map.on('click', e => {
-                marker.setLatLng(e.latlng);
-                updateLoc(e.latlng.lat, e.latlng.lng);
-            });
-
-            updateLoc(selectedLat, selectedLng);
-        }
-
-        function spinSlots() {
-            const btn = document.getElementById('spin-btn');
-            btn.disabled = true;
-            document.getElementById('game-status').innerText = 'Girando ruleta...';
-
-            const symbols = ['🥭', '⭐', '🍋'];
-            let count = 0;
-
-            const interval = setInterval(() => {
-                document.getElementById('slot1').innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                document.getElementById('slot2').innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                document.getElementById('slot3').innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                count++;
-
-                if (count > 12) {
-                    clearInterval(interval);
-                    document.getElementById('slot1').innerText = '⭐';
-                    document.getElementById('slot2').innerText = '⭐';
-                    document.getElementById('slot3').innerText = '⭐';
-                    
-                    document.getElementById('game-status').innerText = '¡CUPÓN ACTIVADO!';
-                    document.getElementById('reward-banner').classList.remove('hidden');
-                    couponApplied = true;
-                    updateCartUI();
-                    btn.disabled = false;
-                }
-            }, 100);
-        }
-
-        function handleCheckout(e) {
-            e.preventDefault();
-            if (cart.length === 0) {
-                alert('Tu carrito está vacío.');
-                return;
-            }
-
-            const name = document.getElementById('cust-name').value;
-            const phone = document.getElementById('cust-phone').value;
-            const address = document.getElementById('cust-address').value;
-            const method = document.getElementById('pay-method').value;
-
-            const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-            const shippingCost = calculateShippingCost(currentDistanceKm, subtotal);
-            const total = subtotal + shippingCost;
-            const orderNum = Math.floor(1000 + Math.random() * 9000);
-            const dateStr = new Date().toLocaleString('es-PE');
-
-            currentOrderData = {
-                orderNum, dateStr, name, phone, address, method, subtotal, shippingCost, total,
-                distanceKm: currentDistanceKm.toFixed(2),
-                items: [...cart], lat: selectedLat, lng: selectedLng
-            };
-
-            document.getElementById('order-num').innerText = orderNum;
-            document.getElementById('order-date').innerText = dateStr;
-            document.getElementById('rec-name').innerText = name;
-            document.getElementById('rec-phone').innerText = phone;
-            document.getElementById('rec-address').innerText = address;
-            document.getElementById('rec-dist').innerText = currentDistanceKm.toFixed(2);
-            document.getElementById('rec-method').innerText = method;
-
-            document.getElementById('rec-items').innerHTML = cart.map(i => `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                    <span>${i.qty}x ${i.name}</span>
-                    <span style="font-weight: bold;">S/ ${(i.price * i.qty).toFixed(2)}</span>
-                </div>
-            `).join('');
-
-            document.getElementById('rec-subtotal').innerText = `S/ ${subtotal.toFixed(2)}`;
-            document.getElementById('rec-shipping').innerText = `S/ ${shippingCost.toFixed(2)}`;
-            document.getElementById('rec-total').innerText = `S/ ${total.toFixed(2)}`;
-
-            // TEXTO LIMPIO PARA WHATSAPP (SIN EMOJIS ROTOS)
-            const itemsText = cart.map(i => `- ${i.qty}x ${i.name} (S/ ${(i.price * i.qty).toFixed(2)})`).join('\n');
-            const mapUrl = `https://www.google.com/maps?q=${selectedLat},${selectedLng}`;
-
-            const rawMessage = `NUEVO PEDIDO MANGUYA\n\n` +
-                `Orden #: ${orderNum}\n` +
-                `Cliente: ${name}\n` +
-                `Telefono: ${phone}\n` +
-                `Direccion: ${address}\n` +
-                `Distancia: ${currentDistanceKm.toFixed(2)} km\n` +
-                `GPS: ${mapUrl}\n` +
-                `Metodo de Pago: ${method}\n\n` +
-                `DETALLE:\n${itemsText}\n\n` +
-                `Subtotal: S/ ${subtotal.toFixed(2)}\n` +
-                `Envio: S/ ${shippingCost.toFixed(2)}\n` +
-                `TOTAL A PAGAR: S/ ${total.toFixed(2)}`;
-
-            document.getElementById('wa-btn-link').href = `https://wa.me/51918591764?text=${encodeURIComponent(rawMessage)}`;
-
-            closeCart();
-            document.getElementById('receipt-modal').classList.remove('hidden');
-
-            cart = [];
-            updateCartUI();
-        }
-
-        function closeReceipt() {
-            document.getElementById('receipt-modal').classList.add('hidden');
-        }
-
-        function downloadPDF() {
-            if (!currentOrderData) return;
-            const element = document.getElementById('printable-receipt');
-            const opt = {
-                margin:       0.4,
-                filename:     `Comprobante_Manguya_${currentOrderData.orderNum}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
-        }
-    </script>
-</body>
-</html>
+                <div id="cart-discount-banner" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-6 text-xs text-emerald-800 flex items-center justify-between">
+                    <span><i class="fa-solid fa-ticket text-emerald-500 mr-1"></i> Descuento aplicado: <strong>50% en Envío (Ruleta)</strong></span>
