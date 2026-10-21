@@ -45,6 +45,14 @@
             50% { transform: translateY(-8px) rotate(1deg); }
         }
         .animate-float { animation: floatSlow 4s ease-in-out infinite; }
+        .quiz-option { min-height: 116px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; text-align:left; padding:1.1rem; border:1px solid #f3dfbd; border-radius:1rem; background:linear-gradient(145deg,#fff 0%,#fffaf2 100%); transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+        .quiz-option:hover,.quiz-option:focus-visible { transform:translateY(-2px); border-color:#f59e0b; box-shadow:0 10px 24px rgba(146,64,14,.09); outline:none; }
+        .quiz-option .option-number { display:inline-flex; width:28px; height:28px; align-items:center; justify-content:center; border-radius:9px; background:#fef3c7; color:#92400e; font-weight:800; font-size:12px; margin-bottom:10px; }
+        .quiz-progress-track { height:5px; border-radius:99px; background:rgba(255,255,255,.3); overflow:hidden; margin-top:12px; }
+        .quiz-progress-fill { height:100%; background:#fff; border-radius:99px; transition:width .25s ease; }
+        #printable-receipt { background:#fff !important; color:#202820 !important; }
+        #printable-receipt * { color-adjust:exact; -webkit-print-color-adjust:exact; }
+        @media (prefers-reduced-motion: reduce) { .animate-float { animation:none; } *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
     </style>
 </head>
 <body class="text-gray-800 antialiased selection:bg-amber-200">
@@ -139,7 +147,7 @@
                                     ⭐ Más Vendido
                                 </div>
                                 <div class="relative aspect-square rounded-2xl overflow-hidden bg-white/50 flex items-center justify-center">
-                                    <img src="assets/img/Manguyá fondo.jpg" alt="Manguyá Néctar" class="w-full h-full object-cover rounded-2xl animate-float">
+                                    <img src="assets/img/Manguyá fondo.jpg" alt="Bebida artesanal de mango y maracuyá Manguyá" loading="lazy" class="w-full h-full object-cover rounded-2xl animate-float">
                                 </div>
                                 <div class="mt-4 flex items-center justify-between px-2">
                                     <div>
@@ -174,7 +182,7 @@
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="w-32 h-36 bg-amber-100/50 rounded-2xl flex items-center justify-center p-2 shadow-inner mx-auto">
-                                    <img src="assets/img/330ml.png" alt="Botella 330ml" class="h-32 object-contain animate-float">
+                                    <img src="assets/img/330ml.png" alt="Botella Manguyá de 330 ml" loading="lazy" class="h-32 object-contain animate-float">
                                 </div>
                                 <span class="bg-white text-amber-800 text-xs font-bold px-3 py-1 rounded-full border border-amber-200 shadow-sm">Personal</span>
                             </div>
@@ -200,7 +208,7 @@
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="w-32 h-36 bg-amber-100/50 rounded-2xl flex items-center justify-center p-2 shadow-inner mx-auto">
-                                    <img src="assets/img/500ml.png" alt="Botella 500ml" class="h-32 object-contain animate-float">
+                                    <img src="assets/img/500ml.png" alt="Botella Manguyá de 500 ml" loading="lazy" class="h-32 object-contain animate-float">
                                 </div>
                                 <span class="bg-white text-amber-800 text-xs font-bold px-3 py-1 rounded-full border border-amber-200 shadow-sm">Mediana</span>
                             </div>
@@ -226,7 +234,7 @@
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="w-32 h-36 bg-orange-100/50 rounded-2xl flex items-center justify-center p-2 shadow-inner mx-auto">
-                                    <img src="assets/img/1L.png" alt="Botella 1 Litro" class="h-32 object-contain animate-float">
+                                    <img src="assets/img/1L.png" alt="Botella Manguyá de 1 litro" loading="lazy" class="h-32 object-contain animate-float">
                                 </div>
                                 <span class="bg-white text-orange-800 text-xs font-bold px-3 py-1 rounded-full border border-orange-200 shadow-sm">Familiar</span>
                             </div>
@@ -260,20 +268,20 @@
 
                 <div class="grid md:grid-cols-2 gap-8">
                     <div class="bg-white rounded-3xl p-6 border border-amber-200 shadow-sm flex flex-col sm:flex-row gap-5 items-center">
-                        <img src="assets/img/Mango.webp" alt="Mango Kent" class="w-32 h-32 object-cover rounded-2xl shrink-0 shadow-sm">
+                        <img src="assets/img/Mango.webp" alt="Mango Kent seleccionado" loading="lazy" class="w-36 h-36 sm:w-40 sm:h-40 object-cover object-center rounded-2xl shrink-0 shadow-md ring-4 ring-amber-50">
                         <div class="space-y-2 w-full">
                             <h4 class="font-heading text-lg font-bold text-gray-900">Mango Kent Seleccionado</h4>
                             <p class="text-xs text-gray-600 leading-relaxed">Aporta una textura cremosa y un dulzor natural inigualable.</p>
-                            <img src="assets/img/Planta mango.webp" alt="Planta de Mango" class="h-20 w-full object-cover rounded-xl shadow-inner">
+                            <img src="assets/img/Planta mango.webp" alt="Cultivo de mango" loading="lazy" class="h-24 w-full object-cover object-center rounded-xl shadow-inner">
                         </div>
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-amber-200 shadow-sm flex flex-col sm:flex-row gap-5 items-center">
-                        <img src="assets/img/Maracuyá.jpg" alt="Maracuyá" class="w-32 h-32 object-cover rounded-2xl shrink-0 shadow-sm">
+                        <img src="assets/img/Maracuyá.jpg" alt="Maracuyá fresca" loading="lazy" class="w-36 h-36 sm:w-40 sm:h-40 object-cover object-center rounded-2xl shrink-0 shadow-md ring-4 ring-amber-50">
                         <div class="space-y-2 w-full">
                             <h4 class="font-heading text-lg font-bold text-gray-900">Maracuyá Fresca del Valle</h4>
                             <p class="text-xs text-gray-600 leading-relaxed">El toque exacto de acidez tropical y aroma vibrante.</p>
-                            <img src="assets/img/Planta maracuyá.jpg" alt="Planta de Maracuyá" class="h-20 w-full object-cover rounded-xl shadow-inner">
+                            <img src="assets/img/Planta maracuyá.jpg" alt="Cultivo de maracuyá" loading="lazy" class="h-24 w-full object-cover object-center rounded-xl shadow-inner">
                         </div>
                     </div>
                 </div>
@@ -287,7 +295,7 @@
                     <div class="bg-gradient-to-r from-amber-500 to-orange-500 p-6 text-white text-center">
                         <span class="bg-white/20 text-xs uppercase font-bold px-3 py-1 rounded-full">Quiz Tropical Manguyá</span>
                         <h2 class="font-heading text-2xl sm:text-3xl font-bold mt-2">Descubre tu perfil y gana tu cupón</h2>
-                        <p id="quiz-progress-label" class="text-xs sm:text-sm text-amber-100 mt-1">Pregunta 1 de 10</p>
+                        <p id="quiz-progress-label" class="text-xs sm:text-sm text-amber-100 mt-1">Pregunta 1 de 10</p><div class="quiz-progress-track"><div id="quiz-progress-fill" class="quiz-progress-fill" style="width:0%"></div></div>
                     </div>
 
                     <div class="p-6 sm:p-10">
@@ -306,7 +314,7 @@
                                 </p>
                             </div>
                             <div class="bg-amber-50 border border-dashed border-amber-400 rounded-2xl p-4 inline-block">
-                                <span class="text-xs text-amber-700 font-bold block uppercase">Cupón Aplicado Automáticamente:</span>
+                                <span class="text-xs text-amber-700 font-bold block uppercase">Cupón desbloqueado:</span>
                                 <span class="font-heading text-xl font-bold text-orange-600">QUIZ-TROPICAL-10</span>
                             </div>
                             <div>
@@ -434,10 +442,10 @@
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1 flex items-center justify-between">
                             <span>Ubica tu casa en el mapa de Huaral *</span>
-                            <span class="text-[10px] text-amber-600">(Calcula distancia exacta)</span>
+                            <span class="text-[10px] text-amber-600">(estimación en línea recta)</span>
                         </label>
                         <div id="map"></div>
-                        <p class="text-[11px] text-gray-500 mt-1">Distancia estimada desde Tello 151: <span id="dist-km-display" class="font-bold text-amber-600">0.0 km</span></p>
+                        <p class="text-[11px] text-gray-500 mt-1">Distancia estimada en línea recta desde Tello 151: <span id="dist-km-display" class="font-bold text-amber-600">0.0 km</span>. La ruta por carretera puede ser mayor.</p>
                     </div>
 
                     <div>
@@ -465,6 +473,10 @@
                     <div class="flex justify-between text-gray-500">
                         <span>Delivery</span>
                         <span id="summary-delivery">S/ 2.00</span>
+                    </div>
+                    <div id="summary-discount-row" class="hidden flex justify-between text-emerald-700">
+                        <span>Descuento en delivery</span>
+                        <span id="summary-discount">− S/ 0.00</span>
                     </div>
                     <div class="flex justify-between font-bold text-base text-gray-900 pt-2 border-t">
                         <span>Total a Pagar</span>
@@ -507,7 +519,8 @@
 
                 <div style="font-size: 11px; text-align: right; line-height: 1.5;">
                     <p style="color: #666;">Subtotal: <span id="receipt-subtotal">S/ 0.00</span></p>
-                    <p style="color: #666;">Delivery por Distancia: <span id="receipt-delivery">S/ 0.00</span></p>
+                    <p style="color: #666;">Delivery: <span id="receipt-delivery">S/ 0.00</span></p>
+                    <p id="receipt-discount-row" style="display:none;color:#047857;">Descuento en delivery: <span id="receipt-discount">− S/ 0.00</span></p>
                     <p style="font-weight: bold; font-size: 14px; color: #E8822A; margin-top: 5px;">TOTAL: <span id="receipt-total">S/ 0.00</span></p>
                 </div>
 
@@ -550,18 +563,35 @@
             return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
         }
 
+        // Tarifario inicial editable. La distancia disponible es en línea recta,
+        // no una ruta por carretera. Para cotización final debe integrarse un motor de rutas.
+        const SHIPPING_BASE = 2.00;
+        const SHIPPING_INCLUDED_KM = 1.00;
+        const SHIPPING_PER_EXTRA_KM = 0.80;
+        const SHIPPING_MINIMUM = 1.50;
+
+        function calculateShippingBreakdown(distKm, subtotal) {
+            const safeDistance = Math.max(0, Number(distKm) || 0);
+            const raw = Math.max(
+                SHIPPING_MINIMUM,
+                SHIPPING_BASE + Math.max(0, safeDistance - SHIPPING_INCLUDED_KM) * SHIPPING_PER_EXTRA_KM
+            );
+            // El cupón del quiz y la promoción por compra grande no se acumulan.
+            // Se aplica un único beneficio del 50% para evitar dobles descuentos.
+            const eligibleForOrderPromo = subtotal >= 20.00;
+            const hasAnyDiscount = discountApplied || eligibleForOrderPromo;
+            const finalFee = hasAnyDiscount ? raw * 0.5 : raw;
+            return {
+                raw: Number(raw.toFixed(2)),
+                fee: Number(finalFee.toFixed(2)),
+                discount: Number((raw - finalFee).toFixed(2)),
+                discountReason: discountApplied ? 'Cupón QUIZ-TROPICAL-10' :
+                    (eligibleForOrderPromo ? 'Promoción por compra desde S/ 20.00' : '')
+            };
+        }
+
         function calculateShippingCost(distKm, subtotal) {
-            let cost = 2.00;
-            if (distKm > 1.0) {
-                cost += (distKm - 1.0) * 0.80;
-            }
-            if (subtotal >= 20.00) {
-                cost = cost * 0.5;
-            }
-            if (discountApplied) {
-                cost = cost * 0.5;
-            }
-            return Math.max(1.50, cost);
+            return calculateShippingBreakdown(distKm, subtotal).fee;
         }
 
         function initMap() {
@@ -670,16 +700,24 @@
             }
 
             const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-            const deliveryFee = calculateShippingCost(currentDistanceKm, subtotal);
+            const shipping = calculateShippingBreakdown(currentDistanceKm, subtotal);
+            const deliveryFee = shipping.fee;
             const total = subtotal + deliveryFee;
 
             const subEl = document.getElementById('summary-subtotal');
             const delEl = document.getElementById('summary-delivery');
             const totEl = document.getElementById('summary-total');
+            const discountRow = document.getElementById('summary-discount-row');
+            const discountEl = document.getElementById('summary-discount');
 
             if (subEl) subEl.innerText = `S/ ${subtotal.toFixed(2)}`;
-            if (delEl) delEl.innerText = discountApplied ? `S/ ${deliveryFee.toFixed(2)} (50% desc)` : `S/ ${deliveryFee.toFixed(2)}`;
+            if (delEl) delEl.innerText = `S/ ${deliveryFee.toFixed(2)}`;
             if (totEl) totEl.innerText = `S/ ${total.toFixed(2)}`;
+            if (discountRow) discountRow.classList.toggle('hidden', shipping.discount <= 0);
+            if (discountEl) discountEl.innerText = `− S/ ${shipping.discount.toFixed(2)}`;
+
+            const discountBanner = document.getElementById('cart-discount-banner');
+            if (discountBanner) discountBanner.classList.toggle('hidden', !discountApplied);
         }
 
         function toggleCartModal(forceOpen = false) {
@@ -698,17 +736,61 @@
 
         // QUIZ TROPICAL DE 10 PREGUNTAS
         const quizQuestions = [
-            { q: "¿Cómo describes tu nivel de energía en este momento?", opts: ["🚀 Súper alto", "😌 Relajado", "🔋 Necesito recargar"] },
-            { q: "¿Qué clima disfrutas más para acompañar tu néctar?", opts: ["☀️ Soleado y caluroso", "⛅ Fresco de tarde", "🌙 Noche tranquila"] },
-            { q: "¿Con qué frecuencia consumes jugos naturales de fruta?", opts: ["📅 Todos los días", "⚡ 3 a 4 veces por semana", "🌱 Ocasionalmente"] },
-            { q: "¿Qué textura prefieres en una bebida artesanal?", opts: ["🥛 Cremosa y consistente", "💧 Ligera y refrescante", "⚖️ Balance perfecto"] },
-            { q: "¿Prefieres que tu bebida resalte más el dulce o el ácido?", opts: ["🥭 Dulzura del Mango", "🍋 Toque ácido Maracuyá", "🤝 50/50 Equilibrado"] },
-            { q: "¿En qué momento del día prefieres tomar tu Manguyá?", opts: ["🌅 En el desayuno", "🍱 Acompañando el almuerzo", "🌆 Media tarde"] },
-            { q: "¿Con quién te gusta compartir tus momentos de frescura?", opts: ["👨‍👩‍👧‍👦 En familia", "🤝 Con amigos", "🧘‍♂️ Disfrutando solo(a)"] },
-            { q: "¿Qué valoras más al comprar un producto en Huaral?", opts: ["🌿 100% natural sin químicos", "💰 Precio accesible", "🚀 Rapidez en delivery"] },
-            { q: "¿Qué tamaño de botella se acomoda mejor a tu rutina?", opts: ["🥤 Personal (330ml)", "🍾 Mediana (500ml)", "📦 Familiar (1 Litro)"] },
-            { q: "¿Estás listo para disfrutar del mejor néctar artesanal?", opts: ["🔥 ¡Súper listo!", "✨ ¡Claro que sí!", "🎉 ¡Quiero mi descuento!"] }
+            { q: "¿Qué perfil de sabor disfrutas más?", opts: [
+                { title: "Dulce y suave", detail: "Quiero notar más el mango.", score: [2,0,1] },
+                { title: "Ácido y vibrante", detail: "Me gusta el carácter de la maracuyá.", score: [0,2,1] },
+                { title: "Equilibrado", detail: "Busco una mezcla de ambos sabores.", score: [1,1,2] }
+            ]},
+            { q: "¿Qué sensación buscas al tomarlo?", opts: [
+                { title: "Frutal e intenso", detail: "Un sabor protagonista.", score: [2,1,1] },
+                { title: "Ligero y refrescante", detail: "Ideal para una pausa.", score: [1,2,1] },
+                { title: "Balanceado", detail: "Ni demasiado dulce ni demasiado ácido.", score: [1,1,2] }
+            ]},
+            { q: "¿En qué momento lo disfrutarías?", opts: [
+                { title: "Con el desayuno", detail: "Para empezar el día.", score: [1,1,1] },
+                { title: "Con el almuerzo", detail: "Como acompañamiento.", score: [1,1,1] },
+                { title: "En una pausa de la tarde", detail: "Un momento para refrescarme.", score: [1,1,1] }
+            ]},
+            { q: "¿Qué textura prefieres?", opts: [
+                { title: "Con cuerpo", detail: "Una sensación más frutal.", score: [2,0,1] },
+                { title: "Fresca y ligera", detail: "Que se sienta fácil de tomar.", score: [0,2,1] },
+                { title: "Intermedia", detail: "Un poco de cada sensación.", score: [1,1,2] }
+            ]},
+            { q: "¿Qué tan marcada quieres la acidez?", opts: [
+                { title: "Baja", detail: "Prefiero que destaque el dulzor.", score: [2,0,0] },
+                { title: "Notoria", detail: "Me gusta el toque ácido.", score: [0,2,0] },
+                { title: "Moderada", detail: "Busco armonía entre las frutas.", score: [1,1,2] }
+            ]},
+            { q: "¿Para quién estás eligiendo tu bebida?", opts: [
+                { title: "Solo para mí", detail: "Una porción personal.", score: [1,1,1] },
+                { title: "Para compartir", detail: "Quiero servir varios vasos.", score: [1,1,1] },
+                { title: "Para tener en casa", detail: "Una opción para la familia.", score: [1,1,1] }
+            ]},
+            { q: "¿Qué tamaño encaja mejor con tu día?", opts: [
+                { title: "330 ml", detail: "Práctico para llevar.", size: "330ml", score: [1,1,1] },
+                { title: "500 ml", detail: "Una porción para disfrutar con calma.", size: "500ml", score: [1,1,1] },
+                { title: "1 litro", detail: "Ideal para compartir.", size: "1L", score: [1,1,1] }
+            ]},
+            { q: "¿Qué valoras más en una bebida?", opts: [
+                { title: "Sabor de fruta", detail: "Quiero que las frutas sean protagonistas.", score: [1,1,1] },
+                { title: "Ingredientes sencillos", detail: "Prefiero una propuesta natural.", score: [1,1,1] },
+                { title: "Practicidad", detail: "Que encaje con mi rutina.", score: [1,1,1] }
+            ]},
+            { q: "¿Cómo te gusta comprar?", opts: [
+                { title: "Una botella personal", detail: "Para consumir al momento.", size: "330ml", score: [1,1,1] },
+                { title: "Una botella mediana", detail: "Mi tamaño habitual.", size: "500ml", score: [1,1,1] },
+                { title: "Formato familiar", detail: "Más cantidad para compartir.", size: "1L", score: [1,1,1] }
+            ]},
+            { q: "Última pregunta: ¿qué combinación te representa?", opts: [
+                { title: "Mango protagonista", detail: "Dulzor tropical como prioridad.", score: [2,0,0] },
+                { title: "Maracuyá protagonista", detail: "Un toque ácido con personalidad.", score: [0,2,0] },
+                { title: "Mezcla armoniosa", detail: "El punto medio entre ambas frutas.", score: [1,1,2] }
+            ]}
         ];
+
+        let quizScores = [0, 0, 0];
+        let quizPreferredSize = null;
+        let quizCompleted = false;
 
         let currentQuizIndex = 0;
 
@@ -721,31 +803,64 @@
                 container.classList.add('hidden');
                 const resContainer = document.getElementById('quiz-result-container');
                 if (resContainer) resContainer.classList.remove('hidden');
-                progressLabel.innerText = "¡Quiz Completado!";
+                progressLabel.innerText = "Perfil completado";
+                const resultTitle = document.querySelector('#quiz-result-container h3');
+                const resultCopy = document.querySelector('#quiz-result-container p');
+                const topScore = Math.max(...quizScores);
+                const profileIndex = quizScores.indexOf(topScore);
+                const profiles = [
+                    { title: 'Perfil Mango: dulce y envolvente', desc: 'Tus respuestas apuntan a un perfil donde el mango tiene más protagonismo.' },
+                    { title: 'Perfil Maracuyá: ácido y vibrante', desc: 'Tus respuestas apuntan a un perfil con mayor protagonismo de la maracuyá.' },
+                    { title: 'Perfil Tropical Equilibrado', desc: 'Tus respuestas apuntan a una mezcla equilibrada entre dulzor y acidez.' }
+                ];
+                if (resultTitle) resultTitle.innerText = profiles[profileIndex].title;
+                if (resultCopy) resultCopy.innerText = profiles[profileIndex].desc + ' Tu cupón reduce en 50% el delivery elegible; no se acumula con otra promoción de envío.';
+                const progressFill = document.getElementById('quiz-progress-fill');
+                if (progressFill) progressFill.style.width = '100%';
+                quizCompleted = true;
                 return;
             }
 
             const qData = quizQuestions[currentQuizIndex];
-            progressLabel.innerText = `Pregunta ${currentQuizIndex + 1} de 10`;
+            progressLabel.innerText = `Pregunta ${currentQuizIndex + 1} de ${quizQuestions.length}`;
+            const progressFill = document.getElementById('quiz-progress-fill');
+            if (progressFill) progressFill.style.width = `${(currentQuizIndex / quizQuestions.length) * 100}%`;
 
             container.innerHTML = `
-                <h3 class="text-base sm:text-lg font-bold text-gray-900 text-center mb-6">${currentQuizIndex + 1}. ${qData.q}</h3>
-                <div class="grid sm:grid-cols-3 gap-4">
+                <div class="flex items-center justify-between gap-3 mb-2">
+                    <span class="text-xs font-bold tracking-widest uppercase text-amber-700">Tu perfil de sabor</span>
+                    <span class="text-xs text-gray-400">${currentQuizIndex + 1} / ${quizQuestions.length}</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-5">${qData.q}</h3>
+                <div class="grid sm:grid-cols-3 gap-3">
                     ${qData.opts.map((opt, i) => `
-                        <button type="button" onclick="answerQuiz(${i})" class="p-4 rounded-2xl border-2 border-gray-100 hover:border-amber-400 bg-gray-50 hover:bg-amber-50 transition-all font-medium text-center space-y-2 cursor-pointer">
-                            <span class="text-sm font-bold text-amber-700 block">${opt}</span>
+                        <button type="button" onclick="answerQuiz(${i})" class="quiz-option">
+                            <span class="option-number">${String(i + 1).padStart(2, '0')}</span>
+                            <span class="text-sm font-bold text-gray-900">${opt.title}</span>
+                            <span class="text-xs leading-relaxed text-gray-500 mt-1">${opt.detail}</span>
                         </button>
                     `).join('')}
                 </div>
+                <p class="text-xs text-gray-400 mt-4">Elige la opción que mejor se adapte a ti. Puedes completar el cuestionario en menos de un minuto.</p>
             `;
         }
 
         function answerQuiz(optionIndex) {
+            if (quizCompleted) return;
+            const q = quizQuestions[currentQuizIndex];
+            const option = q && q.opts[optionIndex];
+            if (!option) return;
+            if (option.score) option.score.forEach((score, i) => quizScores[i] += score);
+            if (option.size) quizPreferredSize = option.size;
             currentQuizIndex++;
             renderQuizQuestion();
         }
 
         function applyQuizDiscount() {
+            if (!quizCompleted) {
+                alert('Completa las 10 preguntas para activar el cupón.');
+                return;
+            }
             discountApplied = true;
             const discountBanner = document.getElementById('cart-discount-banner');
             if (discountBanner) discountBanner.classList.remove('hidden');
@@ -784,7 +899,8 @@
             }
 
             const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-            const deliveryFee = calculateShippingCost(currentDistanceKm, subtotal);
+            const shipping = calculateShippingBreakdown(currentDistanceKm, subtotal);
+            const deliveryFee = shipping.fee;
             const total = subtotal + deliveryFee;
             const pos = marker ? marker.getLatLng() : { lat: ORIGIN_LAT, lng: ORIGIN_LNG };
 
@@ -794,7 +910,9 @@
                 name, phone, address,
                 dist: currentDistanceKm.toFixed(2),
                 coords: `${pos.lat.toFixed(5)}, ${pos.lng.toFixed(5)}`,
-                paymentMethod, items: [...cart], subtotal, deliveryFee, total
+                paymentMethod, items: cart.map(item => ({ ...item })), subtotal, deliveryFee,
+                deliveryBeforeDiscount: shipping.raw, deliveryDiscount: shipping.discount,
+                discountReason: shipping.discountReason, total
             };
 
             const rId = document.getElementById('receipt-id');
@@ -828,9 +946,17 @@
             const rTot = document.getElementById('receipt-total');
 
             if (rSub) rSub.innerText = `S/ ${currentOrderData.subtotal.toFixed(2)}`;
-            if (rDel) rDel.innerText = `S/ ${currentOrderData.deliveryFee.toFixed(2)}`;
+            if (rDel) rDel.innerText = `S/ ${currentOrderData.deliveryBeforeDiscount.toFixed(2)}`;
             if (rTot) rTot.innerText = `S/ ${currentOrderData.total.toFixed(2)}`;
+            const rDiscountRow = document.getElementById('receipt-discount-row');
+            const rDiscount = document.getElementById('receipt-discount');
+            if (rDiscountRow) rDiscountRow.style.display = currentOrderData.deliveryDiscount > 0 ? 'block' : 'none';
+            if (rDiscount) rDiscount.innerText = `− S/ ${currentOrderData.deliveryDiscount.toFixed(2)}${currentOrderData.discountReason ? ' (' + currentOrderData.discountReason + ')' : ''}`;
 
+            // El pedido queda guardado en currentOrderData antes de vaciar el carrito.
+            // Así el comprobante y WhatsApp conservan el detalle original.
+            cart = [];
+            updateCartUI();
             toggleCartModal(false);
             const receiptModal = document.getElementById('receipt-modal');
             if (receiptModal) receiptModal.classList.remove('hidden');
@@ -856,24 +982,88 @@
                 `Metodo de Pago: ${currentOrderData.paymentMethod}\n\n` +
                 `DETALLE DEL PEDIDO:\n${itemsText}\n\n` +
                 `Subtotal: S/ ${currentOrderData.subtotal.toFixed(2)}\n` +
-                `Delivery: S/ ${currentOrderData.deliveryFee.toFixed(2)}\n` +
+                `Delivery antes del descuento: S/ ${currentOrderData.deliveryBeforeDiscount.toFixed(2)}\n` +
+                (currentOrderData.deliveryDiscount > 0 ? `Descuento delivery: - S/ ${currentOrderData.deliveryDiscount.toFixed(2)} (${currentOrderData.discountReason})\n` : '') +
+                `Delivery final: S/ ${currentOrderData.deliveryFee.toFixed(2)}\n` +
                 `TOTAL A PAGAR: S/ ${currentOrderData.total.toFixed(2)}`;
 
             const phone = "51918591764";
             window.open(`https://wa.me/${phone}?text=${encodeURIComponent(rawMessage)}`, '_blank');
         }
 
-        function downloadPDFReceipt() {
-            const element = document.getElementById('printable-receipt');
-            if (!element) return;
-            const opt = {
-                margin:       0.4,
-                filename:     `Comprobante_Manguya_${currentOrderData ? currentOrderData.id : '001'}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
+        async function downloadPDFReceipt() {
+            const source = document.getElementById('printable-receipt');
+            if (!source || !currentOrderData) {
+                alert('Primero genera un pedido para crear su comprobante.');
+                return;
+            }
+            if (typeof html2pdf !== 'function') {
+                alert('No se pudo cargar el generador de PDF. Comprueba tu conexión e inténtalo de nuevo.');
+                return;
+            }
+
+            const button = document.querySelector('button[onclick="downloadPDFReceipt()"]');
+            const previousLabel = button ? button.innerHTML : '';
+            if (button) {
+                button.disabled = true;
+                button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparando comprobante…';
+            }
+
+            // Crear una copia aislada evita que estilos del modal, overflow o animaciones
+            // interfieran con la captura. Se coloca fuera de pantalla, pero no se oculta.
+            const staging = document.createElement('div');
+            staging.style.cssText = 'position:fixed;left:-10000px;top:0;width:720px;background:#ffffff;z-index:-1;pointer-events:none;';
+            const clone = source.cloneNode(true);
+            clone.removeAttribute('id');
+            clone.style.cssText += ';width:672px;max-width:none;min-height:0;box-sizing:border-box;background:#ffffff;color:#202820;border:1px solid #e5e0d8;border-radius:12px;padding:28px;font-family:Arial,sans-serif;overflow:visible;';
+            clone.querySelectorAll('*').forEach(node => {
+                node.style.maxWidth = '100%';
+                node.style.animation = 'none';
+                node.style.transform = 'none';
+            });
+            staging.appendChild(clone);
+            document.body.appendChild(staging);
+
+            try {
+                await document.fonts.ready;
+                const images = Array.from(clone.querySelectorAll('img'));
+                await Promise.all(images.map(img => {
+                    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+                    return new Promise(resolve => {
+                        img.onload = resolve;
+                        img.onerror = resolve;
+                        setTimeout(resolve, 2500);
+                    });
+                }));
+
+                const options = {
+                    margin: [10, 10, 10, 10],
+                    filename: `Comprobante_Manguya_${currentOrderData.id}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: false,
+                        backgroundColor: '#ffffff',
+                        logging: false,
+                        scrollX: 0,
+                        scrollY: 0,
+                        windowWidth: 800
+                    },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: ['css', 'legacy'] }
+                };
+                await html2pdf().set(options).from(clone).save();
+            } catch (error) {
+                console.error('Error al generar comprobante PDF:', error);
+                alert('No se pudo generar el PDF. Inténtalo otra vez; si el problema continúa, revisa la conexión y la consola del navegador.');
+            } finally {
+                staging.remove();
+                if (button) {
+                    button.disabled = false;
+                    button.innerHTML = previousLabel;
+                }
+            }
         }
 
         // Inicializar al cargar el DOM con seguridad absoluta
