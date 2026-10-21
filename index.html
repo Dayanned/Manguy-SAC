@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="es-PE" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manguyá — El Sabor del Paraíso Tropical</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mangoo: { 50: '#fffbeb', 100: '#fef3c7', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' },
+                        maracuya: { 400: '#facc15', 500: '#eab308', 600: '#ca8a04' },
+                        tropicalGreen: '#10b981',
+                        brandAccent: '#ff6b35'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS for Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- html2pdf.js for Receipt Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #fffdf9; }
+        .font-heading { font-family: 'Fredoka', cursive, sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255, 235, 200, 0.6); }
+        .hero-gradient { background: radial-gradient(circle at 70% 30%, #fef3c7 0%, #fffdf9 70%); }
+        #map { height: 250px; width: 100%; border-radius: 0.75rem; z-index: 1; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fff8f0; }
+        ::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 4px; }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+        }
+        .animate-float { animation: floatSlow 4s ease-in-out infinite; }
+        .quiz-option { min-height: 116px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; text-align:left; padding:1.1rem; border:1px solid #f3dfbd; border-radius:1rem; background:linear-gradient(145deg,#fff 0%,#fffaf2 100%); transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+        .quiz-option:hover,.quiz-option:focus-visible { transform:translateY(-2px); border-color:#f59e0b; box-shadow:0 10px 24px rgba(146,64,14,.09); outline:none; }
+        .quiz-option .option-number { display:inline-flex; width:28px; height:28px; align-items:center; justify-content:center; border-radius:9px; background:#fef3c7; color:#92400e; font-weight:800; font-size:12px; margin-bottom:10px; }
+        .quiz-progress-track { height:5px; border-radius:99px; background:rgba(255,255,255,.3); overflow:hidden; margin-top:12px; }
+        .quiz-progress-fill { height:100%; background:#fff; border-radius:99px; transition:width .25s ease; }
+        #printable-receipt { background:#fff !important; color:#202820 !important; }
+        #printable-receipt * { color-adjust:exact; -webkit-print-color-adjust:exact; }
+        @media (prefers-reduced-motion: reduce) { .animate-float { animation:none; } *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
+    </style>
+</head>
+<body class="text-gray-800 antialiased selection:bg-amber-200">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-amber-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-32 flex items-center justify-between">
+            <!-- Logo Grande y Destacado -->
+            <a href="#" class="flex items-center gap-3 group py-2">
+                <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-24 sm:h-32 w-auto object-contain animate-float group-hover:scale-105 transition-transform" style="max-height: 120px;">
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 font-medium text-gray-700">
+                <a href="#inicio" class="hover:text-amber-600 transition-colors">Inicio</a>
+                <a href="#productos" class="hover:text-amber-600 transition-colors">Productos</a>
+                <a href="#test" class="hover:text-amber-600 transition-colors flex items-center gap-1 text-amber-600 font-semibold bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Quiz Tropical (10 Preguntas)
+                </a>
+                <a href="#nosotros" class="hover:text-amber-600 transition-colors">Sobre Nosotros</a>
+            </nav>
+
+            <!-- Action Buttons / Cart Icon -->
+            <div class="flex items-center gap-4">
+                <button type="button" onclick="toggleCartModal()" class="relative p-3 bg-amber-100/80 hover:bg-amber-200 text-amber-800 rounded-2xl transition-all shadow-sm cursor-pointer">
+                    <i class="fa-solid fa-basket-shopping text-xl"></i>
+                    <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden shadow-sm">0</span>
+                </button>
+                <a href="#productos" class="hidden sm:inline-flex items-center justify-center px-6 py-3 rounded-2xl font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 transition-all shadow-md shadow-orange-500/20 active:scale-95">
+                    Pedir Ahora
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="inicio" class="hero-gradient relative overflow-hidden pt-8 pb-16 lg:pt-16 lg:pb-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Hero Text Content -->
+                    <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 text-amber-800 text-xs sm:text-sm font-semibold border border-amber-200/80 shadow-sm">
+                            <span class="animate-pulse">✨</span> 100% Mango y Maracuyá Artesanal
+                        </div>
+                        <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
+                            El Sabor del <br>
+                            <span class="bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
+                                Paraíso Tropical
+                            </span>
+                        </h1>
+                        <p class="text-gray-600 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                            Descubre la combinación perfecta entre la dulzura cremosa del mango y el toque ácido y refrescante de la maracuyá natural. Sin conservantes ni azúcares añadidos.
+                        </p>
+
+                        <!-- CTA Buttons -->
+                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                            <a href="#productos" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-xl shadow-orange-500/25 transition-all text-center hover:-translate-y-0.5">
+                                Ver Presentaciones <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </a>
+                            <a href="#test" class="w-full sm:w-auto px-6 py-4 rounded-xl font-bold text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 shadow-sm transition-all text-center flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-gamepad text-amber-500"></i> Iniciar Quiz Tropical
+                            </a>
+                        </div>
+
+                        <!-- Highlights Badge -->
+                        <div class="pt-6 grid grid-cols-3 gap-4 border-t border-amber-200/50">
+                            <div>
+                                <p class="font-bold text-gray-900 text-lg sm:text-xl">100%</p>
+                                <p class="text-xs text-gray-500 font-medium">Fruta Natural</p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-900 text-lg sm:text-xl">0%</p>
+                                <p class="text-xs text-gray-500 font-medium">Preservantes</p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-900 text-lg sm:text-xl">Yape/Plin</p>
+                                <p class="text-xs text-gray-500 font-medium">Contraentrega</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hero Visual Showcase -->
+                    <div class="lg:col-span-6 relative flex justify-center">
+                        <div class="relative w-full max-w-lg">
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 bg-gradient-to-tr from-amber-300 to-orange-400 rounded-full blur-3xl opacity-40 -z-10"></div>
+                            
+                            <div class="glass-card rounded-3xl p-4 sm:p-6 shadow-2xl relative overflow-hidden group">
+                                <div class="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+                                    ⭐ Más Vendido
+                                </div>
+                                <div class="relative aspect-square rounded-2xl overflow-hidden bg-white/50 flex items-center justify-center">
+                                    <img src="assets/img/Manguyá fondo.jpg" alt="Bebida artesanal de mango y maracuyá Manguyá" loading="lazy" class="w-full h-full object-cover rounded-2xl animate-float">
+                                </div>
+                                <div class="mt-4 flex items-center justify-between px-2">
+                                    <div>
+                                        <span class="text-xs text-gray-500 block">Sabor Tropical</span>
+                                        <span class="font-bold text-amber-600">Mango Kent + Maracuyá</span>
+                                    </div>
+                                    <button type="button" onclick="addToCart('Botella Personal 330ml', 3.50, '330ml')" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95 cursor-pointer">
+                                        + Agregar S/ 3.50
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Catalog Section (3 Presentaciones Exactas) -->
+        <section id="productos" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                    <span class="text-amber-600 font-bold uppercase text-xs tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Nuestras 3 Presentaciones</span>
+                    <h2 class="font-heading text-3xl sm:text-4xl font-bold text-gray-900">Elige la dosis de frescura que necesitas</h2>
+                    <p class="text-gray-600">Tarifario dinámico calculado por distancia desde Huaral (Av. Julio C. Tello 151).</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    
+                    <!-- Product 1: 330ml.png -->
+                    <div class="bg-amber-50/60 rounded-3xl p-8 border border-amber-100 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between group hover:-translate-y-1">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-32 h-36 bg-amber-100/50 rounded-2xl flex items-center justify-center p-2 shadow-inner mx-auto">
+                                    <img src="assets/img/330ml.png" alt="Botella Manguyá de 330 ml" loading="lazy" class="h-32 object-contain animate-float">
+                                </div>
+                                <span class="bg-white text-amber-800 text-xs font-bold px-3 py-1 rounded-full border border-amber-200 shadow-sm">Personal</span>
+                            </div>
+                            <h3 class="font-heading text-2xl font-bold text-gray-900 mb-2 text-center">Botella Personal 330ml</h3>
+                            <p class="text-gray-600 text-sm mb-6 text-center leading-relaxed">
+                                Ideal para acompañar tu almuerzo, llevar a la universidad o refrescarte en cualquier momento.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-amber-200/60 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-gray-500 block">Precio individual</span>
+                                <span class="text-2xl font-bold text-gray-900">S/ 3.50</span>
+                            </div>
+                            <button type="button" onclick="addToCart('Botella Personal 330ml', 3.50, '330ml')" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-md hover:from-amber-600 hover:to-orange-600 transition-all active:scale-95 text-sm cursor-pointer">
+                                <i class="fa-solid fa-cart-plus mr-1"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 2: 500ml.png -->
+                    <div class="bg-amber-50/60 rounded-3xl p-8 border border-amber-100 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between group hover:-translate-y-1 relative">
+                        <div class="absolute -top-3 right-8 bg-amber-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Más Popular</div>
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-32 h-36 bg-amber-100/50 rounded-2xl flex items-center justify-center p-2 shadow-inner mx-auto">
+                                    <img src="assets/img/500ml.png" alt="Botella Manguyá de 500 ml" loading="lazy" class="h-32 object-contain animate-float">
+                                </div>
+                                <span class="bg-white text-amber-800 text-xs font-bold px-3 py-1 rounded-full border border-amber-200 shadow-sm">Mediana</span>
+                            </div>
+                            <h3 class="font-heading text-2xl font-bold text-gray-900 mb-2 text-center">Botella Mediana 500ml</h3>
+                            <p class="text-gray-600 text-sm mb-6 text-center leading-relaxed">
+                                El equilibrio perfecto para mantenerte activo e hidratado durante toda la tarde.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-amber-200/60 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-gray-500 block">Precio individual</span>
+                                <span class="text-2xl font-bold text-gray-900">S/ 5.50</span>
+                            </div>
+                            <button type="button" onclick="addToCart('Botella Mediana 500ml', 5.50, '500ml')" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-md hover:from-amber-600 hover:to-orange-600 transition-all active:scale-95 text-sm cursor-pointer">
+                                <i class="fa-solid fa-cart-plus mr-1"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 3: 1L.png -->
+                    <div class="bg-gradient-to-b from-orange-50/80 to-amber-50/60 rounded-3xl p-8 border border-orange-200/80 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between group hover:-translate-y-1 relative">
+                        <div class="absolute -top-3 right-8 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Familiar</div>
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-32 h-36 bg-orange-100/50 rounded-2xl flex items-center justify-center p-2 shadow-inner mx-auto">
+                                    <img src="assets/img/1L.png" alt="Botella Manguyá de 1 litro" loading="lazy" class="h-32 object-contain animate-float">
+                                </div>
+                                <span class="bg-white text-orange-800 text-xs font-bold px-3 py-1 rounded-full border border-orange-200 shadow-sm">Familiar</span>
+                            </div>
+                            <h3 class="font-heading text-2xl font-bold text-gray-900 mb-2 text-center">Botella Familiar 1 Litro</h3>
+                            <p class="text-gray-600 text-sm mb-6 text-center leading-relaxed">
+                                Diseñado para compartir con la familia o amigos con mayor rendimiento y ahorro.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-orange-200/60 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-gray-500 block">Precio especial</span>
+                                <span class="text-2xl font-bold text-gray-900">S/ 9.00</span>
+                            </div>
+                            <button type="button" onclick="addToCart('Botella Familiar 1 Litro', 9.00, '1L')" class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-xl shadow-md hover:from-orange-600 hover:to-amber-600 transition-all active:scale-95 text-sm cursor-pointer">
+                                <i class="fa-solid fa-cart-plus mr-1"></i> Añadir
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Origen de los Ingredientes -->
+        <section id="origen" class="py-16 bg-amber-50/40 border-y border-amber-200/50">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-xl mx-auto mb-12 space-y-2">
+                    <span class="text-amber-600 font-bold uppercase text-xs tracking-widest bg-amber-100 px-3 py-1 rounded-full border border-amber-200">Cosecha del Valle</span>
+                    <h2 class="font-heading text-3xl font-bold text-gray-900">Insumos 100% naturales de Huaral</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-3xl p-6 border border-amber-200 shadow-sm flex flex-col sm:flex-row gap-5 items-center">
+                        <img src="assets/img/Mango.webp" alt="Mango Kent seleccionado" loading="lazy" class="w-36 h-36 sm:w-40 sm:h-40 object-cover object-center rounded-2xl shrink-0 shadow-md ring-4 ring-amber-50">
+                        <div class="space-y-2 w-full">
+                            <h4 class="font-heading text-lg font-bold text-gray-900">Mango Kent Seleccionado</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">Aporta una textura cremosa y un dulzor natural inigualable.</p>
+                            <img src="assets/img/Planta mango.webp" alt="Cultivo de mango" loading="lazy" class="h-24 w-full object-cover object-center rounded-xl shadow-inner">
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-6 border border-amber-200 shadow-sm flex flex-col sm:flex-row gap-5 items-center">
+                        <img src="assets/img/Maracuyá.jpg" alt="Maracuyá fresca" loading="lazy" class="w-36 h-36 sm:w-40 sm:h-40 object-cover object-center rounded-2xl shrink-0 shadow-md ring-4 ring-amber-50">
+                        <div class="space-y-2 w-full">
+                            <h4 class="font-heading text-lg font-bold text-gray-900">Maracuyá Fresca del Valle</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed">El toque exacto de acidez tropical y aroma vibrante.</p>
+                            <img src="assets/img/Planta maracuyá.jpg" alt="Cultivo de maracuyá" loading="lazy" class="h-24 w-full object-cover object-center rounded-xl shadow-inner">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUIZ TROPICAL DE 10 PREGUNTAS -->
+        <section id="test" class="py-16 bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 border-y border-amber-200/60">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-3xl shadow-xl border border-amber-200/80 overflow-hidden">
+                    <div class="bg-gradient-to-r from-amber-500 to-orange-500 p-6 text-white text-center">
+                        <span class="bg-white/20 text-xs uppercase font-bold px-3 py-1 rounded-full">Quiz Tropical Manguyá</span>
+                        <h2 class="font-heading text-2xl sm:text-3xl font-bold mt-2">Descubre tu perfil y gana tu cupón</h2>
+                        <p id="quiz-progress-label" class="text-xs sm:text-sm text-amber-100 mt-1">Pregunta 1 de 10</p><div class="quiz-progress-track"><div id="quiz-progress-fill" class="quiz-progress-fill" style="width:0%"></div></div>
+                    </div>
+
+                    <div class="p-6 sm:p-10">
+                        <div id="quiz-question-container" class="space-y-6">
+                            <!-- Inyectado dinámicamente por JS -->
+                        </div>
+
+                        <div id="quiz-result-container" class="hidden text-center space-y-6 py-6">
+                            <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
+                                🏆
+                            </div>
+                            <div>
+                                <h3 class="font-heading text-2xl font-bold text-gray-900">¡Quiz Tropical Completado con Éxito!</h3>
+                                <p class="text-gray-600 text-sm mt-2 max-w-md mx-auto">
+                                    Has respondido las 10 preguntas. ¡Has ganado un <strong>50% de descuento en la tarifa de envío</strong> de tu pedido!
+                                </p>
+                            </div>
+                            <div class="bg-amber-50 border border-dashed border-amber-400 rounded-2xl p-4 inline-block">
+                                <span class="text-xs text-amber-700 font-bold block uppercase">Cupón desbloqueado:</span>
+                                <span class="font-heading text-xl font-bold text-orange-600">QUIZ-TROPICAL-10</span>
+                            </div>
+                            <div>
+                                <button type="button" onclick="applyQuizDiscount()" class="px-8 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-lg hover:from-amber-600 hover:to-orange-600 transition-all cursor-pointer">
+                                    Aplicar Descuento al Carrito y Ver Pedido
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brand Values / About Us Section -->
+        <section id="nosotros" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6">
+                        <span class="text-amber-600 font-bold uppercase text-xs tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Nuestro Emprendimiento</span>
+                        <h2 class="font-heading text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
+                            Pasión por la fruta natural y la calidad artesanal
+                        </h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            <strong>Manguyá</strong> nace de la visión de ofrecer una alternativa de bebida verdaderamente refrescante y natural en Huaral. Seleccionamos cuidadosamente los mangos más jugosos y las maracuyás más aromáticas para brindarte una experiencia tropical incomparable.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-100">
+                                <i class="fa-solid fa-leaf text-2xl text-amber-500 mb-2"></i>
+                                <h4 class="font-bold text-gray-900 text-sm">Sin Químicos</h4>
+                                <p class="text-xs text-gray-500">Sin saborizantes ni colorantes artificiales.</p>
+                            </div>
+                            <div class="p-4 bg-orange-50/50 rounded-2xl border border-orange-100">
+                                <i class="fa-solid fa-truck-fast text-2xl text-orange-500 mb-2"></i>
+                                <h4 class="font-bold text-gray-900 text-sm">Entrega Rápida</h4>
+                                <p class="text-xs text-gray-500">Servicio de delivery basado en Huaral.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative flex justify-center">
+                        <div class="w-full max-w-md rounded-3xl overflow-hidden shadow-xl border border-amber-100">
+                            <img src="assets/img/Batido de ambos.jpg" alt="Batido Artesanal Manguyá" class="w-full h-80 object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-12 pb-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 pb-8 border-b border-gray-800">
+                <div class="space-y-3">
+                    <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-16 w-auto object-contain filter brightness-200">
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Emprendimiento dedicado a elaborar las mejores bebidas artesanales de Mango y Maracuyá.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-gray-200 mb-3">Contacto Directo</h4>
+                    <p class="text-xs text-gray-400 flex items-center gap-2 mb-2">
+                        <i class="fa-brands fa-whatsapp text-emerald-400 text-base"></i> Pedidos directos a WhatsApp
+                    </p>
+                    <p class="text-xs text-gray-400 flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot text-amber-400 text-base"></i> Av. Julio C. Tello 151, Esquivel — Huaral
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-gray-200 mb-3">Métodos de Pago</h4>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-purple-900/60 text-purple-200 text-xs font-bold px-3 py-1.5 rounded-lg border border-purple-700">YAPE</span>
+                        <span class="bg-cyan-900/60 text-cyan-200 text-xs font-bold px-3 py-1.5 rounded-lg border border-cyan-700">PLIN</span>
+                        <span class="bg-emerald-900/60 text-emerald-200 text-xs font-bold px-3 py-1.5 rounded-lg border border-emerald-700">Contraentrega</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-6 text-center text-xs text-gray-500">
+                <p>&copy; 2026 Manguyá. Todos los derechos reservados. Proyecto Académico de Administración y Marketing.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CART & CHECKOUT MODAL -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden transition-opacity flex justify-end">
+        <div class="bg-white w-full max-w-lg h-full overflow-y-auto p-6 flex flex-col justify-between shadow-2xl">
+            <div>
+                <div class="flex items-center justify-between border-b pb-4 mb-6">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-basket-shopping text-xl text-amber-500"></i>
+                        <h3 class="font-heading text-xl font-bold text-gray-900">Tu Pedido Manguyá</h3>
+                    </div>
+                    <button type="button" onclick="toggleCartModal()" class="text-gray-400 hover:text-gray-600 text-xl p-1 cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <div id="cart-items-container" class="space-y-4 mb-6"></div>
+
+                <div id="cart-discount-banner" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-6 text-xs text-emerald-800 flex items-center justify-between">
+                    <span><i class="fa-solid fa-ticket text-emerald-500 mr-1"></i> Descuento aplicado: <strong>50% en Envío (Quiz 10 Preguntas)</strong></span>
+                    <button type="button" onclick="removeDiscount()" class="text-emerald-700 underline font-bold cursor-pointer">Quitar</button>
+                </div>
+
+                <div id="checkout-form-section" class="space-y-4 border-t pt-6">
+                    <h4 class="font-bold text-sm text-gray-900 flex items-center gap-2">
+                        <i class="fa-solid fa-truck text-amber-500"></i> Datos para el Delivery
+                    </h4>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Nombre Completo *</label>
+                        <input type="text" id="client-name" placeholder="Ej. Ana Trujillo" class="w-full text-sm p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Teléfono WhatsApp *</label>
+                        <input type="tel" id="client-phone" placeholder="Ej. 918591764" class="w-full text-sm p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Dirección de Entrega *</label>
+                        <input type="text" id="client-address" placeholder="Haz clic en el mapa para autocompletar la dirección" class="w-full text-sm p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+
+                    <!-- MAPA HUARAL CON DISTANCIA REAL -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1 flex items-center justify-between">
+                            <span>Ubica tu casa en el mapa de Huaral *</span>
+                            <span class="text-[10px] text-amber-600">(estimación en línea recta)</span>
+                        </label>
+                        <div id="map"></div>
+                        <p class="text-[11px] text-gray-500 mt-1">Distancia de ruta por carretera desde Tello 151: <span id="dist-km-display" class="font-bold text-amber-600">0.0 km</span>. La cotización requiere conexión para calcular la ruta por carretera.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-2">Método de Pago (Contraentrega)</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="border-2 border-amber-500 bg-amber-50/50 rounded-xl p-3 flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-900">
+                                <input type="radio" name="payment-method" value="Yape / Plin" checked class="text-amber-500 focus:ring-amber-400">
+                                Yape / Plin
+                            </label>
+                            <label class="border-2 border-gray-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer text-xs font-bold text-gray-700">
+                                <input type="radio" name="payment-method" value="Efectivo" class="text-amber-500 focus:ring-amber-400">
+                                Efectivo
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t pt-4 mt-6 space-y-4">
+                <div class="space-y-1 text-sm">
+                    <div class="flex justify-between text-gray-500">
+                        <span>Subtotal</span>
+                        <span id="summary-subtotal">S/ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-gray-500">
+                        <span>Delivery</span>
+                        <span id="summary-delivery">S/ 2.00</span>
+                    </div>
+                    <div id="summary-discount-row" class="hidden flex justify-between text-emerald-700">
+                        <span>Descuento en delivery</span>
+                        <span id="summary-discount">− S/ 0.00</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-base text-gray-900 pt-2 border-t">
+                        <span>Total a Pagar</span>
+                        <span id="summary-total" class="text-amber-600">S/ 0.00</span>
+                    </div>
+                </div>
+
+                <button type="button" onclick="processOrder()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 active:scale-95 text-base cursor-pointer">
+                    <i class="fa-brands fa-whatsapp text-xl"></i> Confirmar y Enviar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ORDER RECEIPT MODAL -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-6 max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            
+            <button type="button" onclick="closeReceiptModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Printable Receipt Area Blindado -->
+            <div id="printable-receipt" style="background-color: #FAF7F2; padding: 24px; border-radius: 20px; border: 1px solid #E5E0D8; text-align: left; color: #2D402B;">
+                <div style="text-align: center; border-bottom: 1px dashed #E5E0D8; padding-bottom: 15px; margin-bottom: 15px;">
+                    <img src="assets/img/Logo.png" alt="Manguyá Logo" style="height: 55px; margin: 0 auto 10px auto; object-fit: contain;">
+                    <p style="font-size: 10px; text-transform: uppercase; font-weight: bold; color: #2D402B;">Comprobante de Pedido #<span id="receipt-id">001</span></p>
+                    <p style="font-size: 9px; color: #666;" id="receipt-date"></p>
+                </div>
+
+                <div style="font-size: 11px; line-height: 1.6; margin-bottom: 15px;">
+                    <p><strong>Cliente:</strong> <span id="receipt-client-name">-</span></p>
+                    <p><strong>Teléfono:</strong> <span id="receipt-client-phone">-</span></p>
+                    <p><strong>Dirección:</strong> <span id="receipt-client-address">-</span></p>
+                    <p><strong>Distancia:</strong> <span id="receipt-dist">-</span> km</p>
+                    <p><strong>Método de Pago:</strong> <span id="receipt-payment-method">Yape / Plin</span></p>
+                </div>
+
+                <div style="border-top: 1px dashed #E5E0D8; border-bottom: 1px dashed #E5E0D8; padding: 10px 0; margin-bottom: 15px; font-size: 11px;" id="receipt-items-list"></div>
+
+                <div style="font-size: 11px; text-align: right; line-height: 1.5;">
+                    <p style="color: #666;">Subtotal: <span id="receipt-subtotal">S/ 0.00</span></p>
+                    <p style="color: #666;">Delivery: <span id="receipt-delivery">S/ 0.00</span></p>
+                    <p id="receipt-discount-row" style="display:none;color:#047857;">Descuento en delivery: <span id="receipt-discount">− S/ 0.00</span></p>
+                    <p style="font-weight: bold; font-size: 14px; color: #E8822A; margin-top: 5px;">TOTAL: <span id="receipt-total">S/ 0.00</span></p>
+                </div>
+
+                <div style="background-color: #fef3c7; padding: 10px; border-radius: 12px; text-align: center; font-size: 9px; color: #92400e; margin-top: 15px;">
+                    ✨ ¡Gracias por apoyar nuestro emprendimiento de jugos naturales en Huaral!
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <button type="button" onclick="downloadPDFReceipt()" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
+                    <i class="fa-solid fa-file-arrow-down"></i> Descargar Comprobante PDF
+                </button>
+                <button type="button" onclick="sendToWhatsApp()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Mensaje a WhatsApp
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT ROBUSTO Y BLINDADO -->
+    <script>
+        let cart = [];
+        let discountApplied = false;
+        let leafletMap = null;
+        let marker = null;
+        let currentOrderData = null;
+
+        const ORIGIN_LAT = -11.496321;
+        const ORIGIN_LNG = -77.2092;
+        let currentDistanceKm = null;
+        let routeRequestId = 0;
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+        }
+
+        // Tarifario editable. La distancia se obtiene por carretera con OSRM.
+        const SHIPPING_BASE = 2.00;
+        const SHIPPING_INCLUDED_KM = 1.00;
+        const SHIPPING_PER_EXTRA_KM = 0.80;
+        const SHIPPING_MINIMUM = 1.50;
+
+        function calculateShippingBreakdown(distKm, subtotal) {
+            if (distKm === null || distKm === undefined || !Number.isFinite(Number(distKm))) return null;
+            const safeDistance = Math.max(0, Number(distKm));
+            const raw = Math.max(
+                SHIPPING_MINIMUM,
+                SHIPPING_BASE + Math.max(0, safeDistance - SHIPPING_INCLUDED_KM) * SHIPPING_PER_EXTRA_KM
+            );
+            // Se aplica un solo beneficio de 50%: cupón del quiz o promoción por compra.
+            const eligibleForOrderPromo = subtotal >= 20.00;
+            const hasAnyDiscount = discountApplied || eligibleForOrderPromo;
+            const finalFee = hasAnyDiscount ? raw * 0.5 : raw;
+            return {
+                raw: Number(raw.toFixed(2)),
+                fee: Number(finalFee.toFixed(2)),
+                discount: Number((raw - finalFee).toFixed(2)),
+                discountReason: discountApplied ? 'Cupón QUIZ-TROPICAL-10' :
+                    (eligibleForOrderPromo ? 'Promoción por compra desde S/ 20.00' : '')
+            };
+        }
+
+        function calculateShippingCost(distKm, subtotal) {
+            const breakdown = calculateShippingBreakdown(distKm, subtotal);
+            return breakdown ? breakdown.fee : null;
+        }
+
+        async function getDrivingDistanceKm(lat, lng) {
+            // OSRM espera longitud,latitud. La distancia es la ruta de conducción calculada.
+            const url = `https://router.project-osrm.org/route/v1/driving/${ORIGIN_LNG},${ORIGIN_LAT};${lng},${lat}?overview=false`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('No se pudo consultar la ruta por carretera.');
+            const data = await response.json();
+            if (data.code !== 'Ok' || !data.routes || !data.routes.length ||
+                !Number.isFinite(data.routes[0].distance)) {
+                throw new Error('No hay una ruta por carretera disponible para este punto.');
+            }
+            return data.routes[0].distance / 1000;
+        }
+
+        function initMap() {
+            if (leafletMap) return;
+            leafletMap = L.map('map').setView([ORIGIN_LAT, ORIGIN_LNG], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(leafletMap);
+
+            L.circleMarker([ORIGIN_LAT, ORIGIN_LNG], {
+                radius: 7,
+                color: '#d97706',
+                fillColor: '#f59e0b',
+                fillOpacity: 1
+            }).addTo(leafletMap).bindPopup('Local Manguyá (Tello 151)');
+
+            marker = L.marker([ORIGIN_LAT, ORIGIN_LNG], { draggable: true }).addTo(leafletMap);
+
+            async function updateLoc(lat, lng) {
+                const requestId = ++routeRequestId;
+                currentDistanceKm = null;
+                const distEl = document.getElementById('dist-km-display');
+                if (distEl) distEl.innerText = 'Calculando ruta…';
+                updateCartUI();
+
+                getDrivingDistanceKm(lat, lng).then(distanceKm => {
+                    if (requestId !== routeRequestId) return;
+                    currentDistanceKm = distanceKm;
+                    if (distEl) distEl.innerText = `${distanceKm.toFixed(2)} km por carretera`;
+                    updateCartUI();
+                }).catch(error => {
+                    if (requestId !== routeRequestId) return;
+                    currentDistanceKm = null;
+                    if (distEl) distEl.innerText = 'Ruta no disponible';
+                    updateCartUI();
+                    console.warn('No se pudo calcular el delivery por carretera:', error);
+                });
+
+                // Autocompletar dirección aproximada del punto seleccionado.
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error('No se pudo consultar la dirección.');
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data && data.display_name) {
+                            const addrEl = document.getElementById('client-address');
+                            if (addrEl) addrEl.value = data.display_name;
+                        }
+                    }).catch(() => {});
+            }
+
+            marker.on('dragend', function (e) {
+                const coord = marker.getLatLng();
+                updateLoc(coord.lat, coord.lng);
+            });
+
+            leafletMap.on('click', function(e) {
+                marker.setLatLng(e.latlng);
+                updateLoc(e.latlng.lat, e.latlng.lng);
+            });
+
+            updateLoc(ORIGIN_LAT, ORIGIN_LNG);
+        }
+
+        function addToCart(name, price, size) {
+            const existingIndex = cart.findIndex(item => item.name === name);
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += 1;
+            } else {
+                cart.push({ name, price, size, quantity: 1 });
+            }
+            updateCartUI();
+        }
+
+        function updateQuantity(index, delta) {
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const badge = document.getElementById('cart-badge');
+            if (!container || !badge) return;
+
+            const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+            
+            if (totalItems > 0) {
+                badge.innerText = totalItems;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-400 space-y-2">
+                        <i class="fa-solid fa-basket-shopping text-4xl"></i>
+                        <p class="text-sm">Tu carrito está vacío.</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = cart.map((item, index) => `
+                    <div class="flex items-center justify-between p-3 bg-amber-50/50 rounded-xl border border-amber-100">
+                        <div>
+                            <h5 class="font-bold text-sm text-gray-900">${item.name}</h5>
+                            <span class="text-xs text-amber-600 font-semibold">S/ ${item.price.toFixed(2)} c/u</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center bg-white border border-gray-200 rounded-lg">
+                                <button type="button" onclick="updateQuantity(${index}, -1)" class="px-2 py-1 text-gray-500 hover:text-amber-600 cursor-pointer">-</button>
+                                <span class="px-2 text-xs font-bold">${item.quantity}</span>
+                                <button type="button" onclick="updateQuantity(${index}, 1)" class="px-2 py-1 text-gray-500 hover:text-amber-600 cursor-pointer">+</button>
+                            </div>
+                            <span class="font-bold text-sm text-gray-800">S/ ${(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            const shipping = calculateShippingBreakdown(currentDistanceKm, subtotal);
+
+            const subEl = document.getElementById('summary-subtotal');
+            const delEl = document.getElementById('summary-delivery');
+            const totEl = document.getElementById('summary-total');
+            const discountRow = document.getElementById('summary-discount-row');
+            const discountEl = document.getElementById('summary-discount');
+
+            if (subEl) subEl.innerText = `S/ ${subtotal.toFixed(2)}`;
+            if (!shipping) {
+                if (delEl) delEl.innerText = 'Calculando ruta…';
+                if (totEl) totEl.innerText = 'Pendiente';
+                if (discountRow) discountRow.classList.add('hidden');
+                if (discountEl) discountEl.innerText = '− S/ 0.00';
+            } else {
+                // Mostrar delivery bruto y descuento por separado para que el total cuadre.
+                const total = subtotal + shipping.fee;
+                if (delEl) delEl.innerText = `S/ ${shipping.raw.toFixed(2)}`;
+                if (totEl) totEl.innerText = `S/ ${total.toFixed(2)}`;
+                if (discountRow) discountRow.classList.toggle('hidden', shipping.discount <= 0);
+                if (discountEl) discountEl.innerText = `− S/ ${shipping.discount.toFixed(2)}`;
+            }
+
+            const discountBanner = document.getElementById('cart-discount-banner');
+            if (discountBanner) discountBanner.classList.toggle('hidden', !discountApplied);
+        }
+
+        function toggleCartModal(forceOpen = false) {
+            const modal = document.getElementById('cart-modal');
+            if (!modal) return;
+            if (forceOpen) {
+                modal.classList.remove('hidden');
+                setTimeout(() => { initMap(); if (leafletMap) leafletMap.invalidateSize(); }, 200);
+            } else {
+                modal.classList.toggle('hidden');
+                if (!modal.classList.contains('hidden')) {
+                    setTimeout(() => { initMap(); if (leafletMap) leafletMap.invalidateSize(); }, 200);
+                }
+            }
+        }
+
+        // QUIZ TROPICAL DE 10 PREGUNTAS
+        const quizQuestions = [
+            { q: "¿Qué perfil de sabor disfrutas más?", opts: [
+                { title: "Dulce y suave", detail: "Quiero notar más el mango.", score: [2,0,1] },
+                { title: "Ácido y vibrante", detail: "Me gusta el carácter de la maracuyá.", score: [0,2,1] },
+                { title: "Equilibrado", detail: "Busco una mezcla de ambos sabores.", score: [1,1,2] }
+            ]},
+            { q: "¿Qué sensación buscas al tomarlo?", opts: [
+                { title: "Frutal e intenso", detail: "Un sabor protagonista.", score: [2,1,1] },
+                { title: "Ligero y refrescante", detail: "Ideal para una pausa.", score: [1,2,1] },
+                { title: "Balanceado", detail: "Ni demasiado dulce ni demasiado ácido.", score: [1,1,2] }
+            ]},
+            { q: "¿En qué momento lo disfrutarías?", opts: [
+                { title: "Con el desayuno", detail: "Para empezar el día.", score: [1,1,1] },
+                { title: "Con el almuerzo", detail: "Como acompañamiento.", score: [1,1,1] },
+                { title: "En una pausa de la tarde", detail: "Un momento para refrescarme.", score: [1,1,1] }
+            ]},
+            { q: "¿Qué textura prefieres?", opts: [
+                { title: "Con cuerpo", detail: "Una sensación más frutal.", score: [2,0,1] },
+                { title: "Fresca y ligera", detail: "Que se sienta fácil de tomar.", score: [0,2,1] },
+                { title: "Intermedia", detail: "Un poco de cada sensación.", score: [1,1,2] }
+            ]},
+            { q: "¿Qué tan marcada quieres la acidez?", opts: [
+                { title: "Baja", detail: "Prefiero que destaque el dulzor.", score: [2,0,0] },
+                { title: "Notoria", detail: "Me gusta el toque ácido.", score: [0,2,0] },
+                { title: "Moderada", detail: "Busco armonía entre las frutas.", score: [1,1,2] }
+            ]},
+            { q: "¿Para quién estás eligiendo tu bebida?", opts: [
+                { title: "Solo para mí", detail: "Una porción personal.", score: [1,1,1] },
+                { title: "Para compartir", detail: "Quiero servir varios vasos.", score: [1,1,1] },
+                { title: "Para tener en casa", detail: "Una opción para la familia.", score: [1,1,1] }
+            ]},
+            { q: "¿Qué tamaño encaja mejor con tu día?", opts: [
+                { title: "330 ml", detail: "Práctico para llevar.", size: "330ml", score: [1,1,1] },
+                { title: "500 ml", detail: "Una porción para disfrutar con calma.", size: "500ml", score: [1,1,1] },
+                { title: "1 litro", detail: "Ideal para compartir.", size: "1L", score: [1,1,1] }
+            ]},
+            { q: "¿Qué valoras más en una bebida?", opts: [
+                { title: "Sabor de fruta", detail: "Quiero que las frutas sean protagonistas.", score: [1,1,1] },
+                { title: "Ingredientes sencillos", detail: "Prefiero una propuesta natural.", score: [1,1,1] },
+                { title: "Practicidad", detail: "Que encaje con mi rutina.", score: [1,1,1] }
+            ]},
+            { q: "¿Cómo te gusta comprar?", opts: [
+                { title: "Una botella personal", detail: "Para consumir al momento.", size: "330ml", score: [1,1,1] },
+                { title: "Una botella mediana", detail: "Mi tamaño habitual.", size: "500ml", score: [1,1,1] },
+                { title: "Formato familiar", detail: "Más cantidad para compartir.", size: "1L", score: [1,1,1] }
+            ]},
+            { q: "Última pregunta: ¿qué combinación te representa?", opts: [
+                { title: "Mango protagonista", detail: "Dulzor tropical como prioridad.", score: [2,0,0] },
+                { title: "Maracuyá protagonista", detail: "Un toque ácido con personalidad.", score: [0,2,0] },
+                { title: "Mezcla armoniosa", detail: "El punto medio entre ambas frutas.", score: [1,1,2] }
+            ]}
+        ];
+
+        let quizScores = [0, 0, 0];
+        let quizPreferredSize = null;
+        let quizCompleted = false;
+
+        let currentQuizIndex = 0;
+
+        function renderQuizQuestion() {
+            const container = document.getElementById('quiz-question-container');
+            const progressLabel = document.getElementById('quiz-progress-label');
+            if (!container || !progressLabel) return;
+
+            if (currentQuizIndex >= quizQuestions.length) {
+                container.classList.add('hidden');
+                const resContainer = document.getElementById('quiz-result-container');
+                if (resContainer) resContainer.classList.remove('hidden');
+                progressLabel.innerText = "Perfil completado";
+                const resultTitle = document.querySelector('#quiz-result-container h3');
+                const resultCopy = document.querySelector('#quiz-result-container p');
+                const topScore = Math.max(...quizScores);
+                const profileIndex = quizScores.indexOf(topScore);
+                const profiles = [
+                    { title: 'Perfil Mango: dulce y envolvente', desc: 'Tus respuestas apuntan a un perfil donde el mango tiene más protagonismo.' },
+                    { title: 'Perfil Maracuyá: ácido y vibrante', desc: 'Tus respuestas apuntan a un perfil con mayor protagonismo de la maracuyá.' },
+                    { title: 'Perfil Tropical Equilibrado', desc: 'Tus respuestas apuntan a una mezcla equilibrada entre dulzor y acidez.' }
+                ];
+                if (resultTitle) resultTitle.innerText = profiles[profileIndex].title;
+                if (resultCopy) resultCopy.innerText = profiles[profileIndex].desc + ' Tu cupón reduce en 50% el delivery elegible; no se acumula con otra promoción de envío.';
+                const progressFill = document.getElementById('quiz-progress-fill');
+                if (progressFill) progressFill.style.width = '100%';
+                quizCompleted = true;
+                return;
+            }
+
+            const qData = quizQuestions[currentQuizIndex];
+            progressLabel.innerText = `Pregunta ${currentQuizIndex + 1} de ${quizQuestions.length}`;
+            const progressFill = document.getElementById('quiz-progress-fill');
+            if (progressFill) progressFill.style.width = `${(currentQuizIndex / quizQuestions.length) * 100}%`;
+
+            container.innerHTML = `
+                <div class="flex items-center justify-between gap-3 mb-2">
+                    <span class="text-xs font-bold tracking-widest uppercase text-amber-700">Tu perfil de sabor</span>
+                    <span class="text-xs text-gray-400">${currentQuizIndex + 1} / ${quizQuestions.length}</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-5">${qData.q}</h3>
+                <div class="grid sm:grid-cols-3 gap-3">
+                    ${qData.opts.map((opt, i) => `
+                        <button type="button" onclick="answerQuiz(${i})" class="quiz-option">
+                            <span class="option-number">${String(i + 1).padStart(2, '0')}</span>
+                            <span class="text-sm font-bold text-gray-900">${opt.title}</span>
+                            <span class="text-xs leading-relaxed text-gray-500 mt-1">${opt.detail}</span>
+                        </button>
+                    `).join('')}
+                </div>
+                <p class="text-xs text-gray-400 mt-4">Elige la opción que mejor se adapte a ti. Puedes completar el cuestionario en menos de un minuto.</p>
+            `;
+        }
+
+        function answerQuiz(optionIndex) {
+            if (quizCompleted) return;
+            const q = quizQuestions[currentQuizIndex];
+            const option = q && q.opts[optionIndex];
+            if (!option) return;
+            if (option.score) option.score.forEach((score, i) => quizScores[i] += score);
+            if (option.size) quizPreferredSize = option.size;
+            currentQuizIndex++;
+            renderQuizQuestion();
+        }
+
+        function applyQuizDiscount() {
+            if (!quizCompleted) {
+                alert('Completa las 10 preguntas para activar el cupón.');
+                return;
+            }
+            discountApplied = true;
+            const discountBanner = document.getElementById('cart-discount-banner');
+            if (discountBanner) discountBanner.classList.remove('hidden');
+            updateCartUI();
+            toggleCartModal(true);
+        }
+
+        function removeDiscount() {
+            discountApplied = false;
+            const discountBanner = document.getElementById('cart-discount-banner');
+            if (discountBanner) discountBanner.classList.add('hidden');
+            updateCartUI();
+        }
+
+        function processOrder() {
+            if (cart.length === 0) {
+                alert('Por favor agrega al menos un producto a tu carrito.');
+                return;
+            }
+            if (currentDistanceKm === null || currentDistanceKm === undefined || !Number.isFinite(Number(currentDistanceKm))) {
+                alert('Aún no se pudo calcular la ruta por carretera. Revisa tu conexión o mueve el marcador a otra ubicación e inténtalo de nuevo.');
+                return;
+            }
+
+            const nameEl = document.getElementById('client-name');
+            const phoneEl = document.getElementById('client-phone');
+            const addressEl = document.getElementById('client-address');
+            const payMethodEl = document.querySelector('input[name="payment-method"]:checked');
+
+            if (!nameEl || !phoneEl || !addressEl || !payMethodEl) return;
+
+            const name = nameEl.value.trim();
+            const phone = phoneEl.value.trim();
+            const address = addressEl.value.trim();
+            const paymentMethod = payMethodEl.value;
+
+            if (!name || !phone || !address) {
+                alert('Por favor completa todos los campos requeridos.');
+                return;
+            }
+
+            const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            const shipping = calculateShippingBreakdown(currentDistanceKm, subtotal);
+            const deliveryFee = shipping.fee;
+            const total = subtotal + deliveryFee;
+            const pos = marker ? marker.getLatLng() : { lat: ORIGIN_LAT, lng: ORIGIN_LNG };
+
+            currentOrderData = {
+                id: Math.floor(1000 + Math.random() * 9000),
+                date: new Date().toLocaleString('es-PE'),
+                name, phone, address,
+                dist: currentDistanceKm.toFixed(2),
+                coords: `${pos.lat.toFixed(5)}, ${pos.lng.toFixed(5)}`,
+                paymentMethod, items: cart.map(item => ({ ...item })), subtotal, deliveryFee,
+                deliveryBeforeDiscount: shipping.raw, deliveryDiscount: shipping.discount,
+                discountReason: shipping.discountReason, total
+            };
+
+            const rId = document.getElementById('receipt-id');
+            const rDate = document.getElementById('receipt-date');
+            const rName = document.getElementById('receipt-client-name');
+            const rPhone = document.getElementById('receipt-client-phone');
+            const rAddr = document.getElementById('receipt-client-address');
+            const rDist = document.getElementById('receipt-dist');
+            const rMethod = document.getElementById('receipt-payment-method');
+
+            if (rId) rId.innerText = currentOrderData.id;
+            if (rDate) rDate.innerText = currentOrderData.date;
+            if (rName) rName.innerText = currentOrderData.name;
+            if (rPhone) rPhone.innerText = currentOrderData.phone;
+            if (rAddr) rAddr.innerText = currentOrderData.address;
+            if (rDist) rDist.innerText = currentOrderData.dist;
+            if (rMethod) rMethod.innerText = currentOrderData.paymentMethod;
+
+            const rItems = document.getElementById('receipt-items-list');
+            if (rItems) {
+                rItems.innerHTML = currentOrderData.items.map(item => `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span>${item.quantity}x ${item.name}</span>
+                        <span style="font-weight: bold;">S/ ${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `).join('');
+            }
+
+            const rSub = document.getElementById('receipt-subtotal');
+            const rDel = document.getElementById('receipt-delivery');
+            const rTot = document.getElementById('receipt-total');
+
+            if (rSub) rSub.innerText = `S/ ${currentOrderData.subtotal.toFixed(2)}`;
+            if (rDel) rDel.innerText = `S/ ${currentOrderData.deliveryBeforeDiscount.toFixed(2)}`;
+            if (rTot) rTot.innerText = `S/ ${currentOrderData.total.toFixed(2)}`;
+            const rDiscountRow = document.getElementById('receipt-discount-row');
+            const rDiscount = document.getElementById('receipt-discount');
+            if (rDiscountRow) rDiscountRow.style.display = currentOrderData.deliveryDiscount > 0 ? 'block' : 'none';
+            if (rDiscount) rDiscount.innerText = `− S/ ${currentOrderData.deliveryDiscount.toFixed(2)}${currentOrderData.discountReason ? ' (' + currentOrderData.discountReason + ')' : ''}`;
+
+            // El pedido queda guardado en currentOrderData antes de vaciar el carrito.
+            // Así el comprobante y WhatsApp conservan el detalle original.
+            cart = [];
+            updateCartUI();
+            toggleCartModal(false);
+            const receiptModal = document.getElementById('receipt-modal');
+            if (receiptModal) receiptModal.classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            const receiptModal = document.getElementById('receipt-modal');
+            if (receiptModal) receiptModal.classList.add('hidden');
+        }
+
+        function sendToWhatsApp() {
+            if (!currentOrderData) return;
+
+            const itemsText = currentOrderData.items.map(i => `- ${i.quantity}x ${i.name} (S/ ${(i.price * i.quantity).toFixed(2)})`).join('\n');
+            
+            const rawMessage = `NUEVO PEDIDO MANGUYA\n\n` +
+                `Orden #: ${currentOrderData.id}\n` +
+                `Cliente: ${currentOrderData.name}\n` +
+                `Telefono: ${currentOrderData.phone}\n` +
+                `Direccion: ${currentOrderData.address}\n` +
+                `Distancia: ${currentOrderData.dist} km\n` +
+                `GPS: https://maps.google.com/?q=${currentOrderData.coords}\n` +
+                `Metodo de Pago: ${currentOrderData.paymentMethod}\n\n` +
+                `DETALLE DEL PEDIDO:\n${itemsText}\n\n` +
+                `Subtotal: S/ ${currentOrderData.subtotal.toFixed(2)}\n` +
+                `Delivery antes del descuento: S/ ${currentOrderData.deliveryBeforeDiscount.toFixed(2)}\n` +
+                (currentOrderData.deliveryDiscount > 0 ? `Descuento delivery: - S/ ${currentOrderData.deliveryDiscount.toFixed(2)} (${currentOrderData.discountReason})\n` : '') +
+                `Delivery final: S/ ${currentOrderData.deliveryFee.toFixed(2)}\n` +
+                `TOTAL A PAGAR: S/ ${currentOrderData.total.toFixed(2)}`;
+
+            const phone = "51918591764";
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(rawMessage)}`, '_blank');
+        }
+
+        async function downloadPDFReceipt() {
+            const order = currentOrderData;
+            if (!order) {
+                alert('Primero genera un pedido para crear su comprobante.');
+                return;
+            }
+
+            // Construir el comprobante desde los datos del pedido, sin copiar el DOM
+            // del modal: así no hereda su ancho, overflow ni estilos de Tailwind.
+            const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[char]));
+
+            const money = value => `S/ ${Number(value || 0).toFixed(2)}`;
+            const itemsRows = (order.items || []).map(item => `
+                <tr>
+                    <td>${escapeHTML(item.name)}</td>
+                    <td class="center">${Number(item.quantity || 0)}</td>
+                    <td class="right">${money(item.price)}</td>
+                    <td class="right">${money(Number(item.price || 0) * Number(item.quantity || 0))}</td>
+                </tr>`).join('');
+
+            const deliveryBeforeDiscount = Number(order.deliveryBeforeDiscount ?? order.deliveryFee ?? 0);
+            const deliveryDiscount = Number(order.deliveryDiscount || 0);
+            const logoUrl = new URL('assets/img/Logo.png', window.location.href).href;
+            const printWindow = window.open('', '_blank');
+            if (!printWindow) {
+                alert('El navegador bloqueó la ventana del comprobante. Permite las ventanas emergentes e inténtalo de nuevo.');
+                return;
+            }
+
+            const safeId = escapeHTML(order.id || 'pedido');
+            const discountRow = deliveryDiscount > 0
+                ? `<div class="summary-line discount"><span>Descuento en delivery${order.discountReason ? ` (${escapeHTML(order.discountReason)})` : ''}</span><strong>− ${money(deliveryDiscount)}</strong></div>`
+                : '';
+
+            const documentHtml = `<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comprobante Manguyá #${safeId}</title>
+<style>
+  @page { size: A4 portrait; margin: 12mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; width: 100%; color: #263626; background: #fff; font-family: Arial, Helvetica, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { padding: 0; }
+  .receipt { width: 100%; max-width: 186mm; margin: 0 auto; padding: 10mm; border: 1px solid #e5e0d8; border-radius: 4mm; background: #fffdf8; }
+  .brand { text-align: center; padding-bottom: 7mm; margin-bottom: 6mm; border-bottom: 1px dashed #d8d2c7; }
+  .logo { display: block; width: auto; height: 22mm; max-width: 70mm; object-fit: contain; margin: 0 auto 3mm; }
+  h1 { font-size: 18pt; margin: 0 0 2mm; color: #d97706; }
+  .subtitle { font-size: 9pt; color: #626b60; margin: 0; }
+  .order-id { font-weight: 700; font-size: 10pt; margin: 4mm 0 1mm; }
+  .date { font-size: 9pt; color: #667064; margin: 0; }
+  h2 { font-size: 11pt; margin: 0 0 3mm; color: #9a5b08; }
+  .customer { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 8mm; font-size: 9.5pt; margin-bottom: 7mm; }
+  .field { overflow-wrap: anywhere; }
+  .field.full { grid-column: 1 / -1; }
+  .field span { display: block; font-size: 8pt; color: #70766d; margin-bottom: 1mm; }
+  .field strong { font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9pt; margin: 2mm 0 6mm; }
+  thead { display: table-header-group; }
+  th { background: #fff0c2; color: #69420b; font-weight: 700; text-align: left; }
+  th, td { padding: 3mm 2mm; border-bottom: 1px solid #e8e2d8; overflow-wrap: anywhere; }
+  th:first-child, td:first-child { width: 43%; }
+  th:nth-child(2), td:nth-child(2) { width: 12%; }
+  th:nth-child(3), td:nth-child(3), th:nth-child(4), td:nth-child(4) { width: 22.5%; }
+  .center { text-align: center; }
+  .right { text-align: right; }
+  .summary { width: 100%; max-width: 100mm; margin: 0 0 0 auto; font-size: 9.5pt; }
+  .summary-line { display: flex; justify-content: space-between; gap: 8mm; padding: 1.5mm 0; }
+  .summary-line span { color: #636b61; }
+  .summary-line.discount, .summary-line.discount span { color: #047857; }
+  .summary-line.total { border-top: 1px solid #d8d2c7; margin-top: 2mm; padding-top: 4mm; font-size: 15pt; font-weight: 800; color: #e87924; }
+  .thanks { margin-top: 9mm; padding: 4mm; border-radius: 3mm; text-align: center; background: #fff1bf; color: #854d0e; font-size: 9pt; }
+  .footer { text-align: center; margin-top: 5mm; font-size: 8pt; color: #7b8177; }
+  @media screen { body { padding: 20px; background: #f3f4f6; } .receipt { box-shadow: 0 5px 24px #0001; } }
+  @media print { body { padding: 0; } .receipt { max-width: none; border-radius: 0; box-shadow: none; } tr { break-inside: avoid; page-break-inside: avoid; } }
+</style>
+</head>
+<body>
+<main class="receipt">
+  <header class="brand">
+    <img class="logo" src="${logoUrl}" alt="Logotipo Manguyá">
+    <h1>Manguyá</h1>
+    <p class="subtitle">Néctar artesanal de mango y maracuyá</p>
+    <p class="order-id">Comprobante de pedido #${safeId}</p>
+    <p class="date">${escapeHTML(order.date || '')}</p>
+  </header>
+  <section>
+    <h2>Datos del cliente</h2>
+    <div class="customer">
+      <div class="field"><span>Nombre</span><strong>${escapeHTML(order.name)}</strong></div>
+      <div class="field"><span>Teléfono</span><strong>${escapeHTML(order.phone)}</strong></div>
+      <div class="field full"><span>Dirección de entrega</span><strong>${escapeHTML(order.address)}</strong></div>
+      <div class="field"><span>Distancia estimada</span><strong>${escapeHTML(order.dist)} km</strong></div>
+      <div class="field"><span>Método de pago</span><strong>${escapeHTML(order.paymentMethod)}</strong></div>
+    </div>
+  </section>
+  <section>
+    <h2>Detalle del pedido</h2>
+    <table>
+      <thead><tr><th>Producto</th><th class="center">Cant.</th><th class="right">P. unitario</th><th class="right">Importe</th></tr></thead>
+      <tbody>${itemsRows || '<tr><td colspan="4">Sin productos registrados</td></tr>'}</tbody>
+    </table>
+  </section>
+  <section class="summary">
+    <div class="summary-line"><span>Subtotal</span><strong>${money(order.subtotal)}</strong></div>
+    <div class="summary-line"><span>Delivery antes del descuento</span><strong>${money(deliveryBeforeDiscount)}</strong></div>
+    ${discountRow}
+    <div class="summary-line"><span>Delivery final</span><strong>${money(order.deliveryFee)}</strong></div>
+    <div class="summary-line total"><span>TOTAL</span><strong>${money(order.total)}</strong></div>
+  </section>
+  <div class="thanks">¡Gracias por apoyar nuestro emprendimiento de bebidas frutales en Huaral!</div>
+  <div class="footer">Manguyá · Comprobante generado digitalmente</div>
+</main>
+<script>
+  window.addEventListener('load', () => {
+    const logo = document.querySelector('.logo');
+    const ready = !logo || logo.complete ? Promise.resolve() : new Promise(resolve => {
+      logo.addEventListener('load', resolve, { once: true });
+      logo.addEventListener('error', resolve, { once: true });
+      setTimeout(resolve, 2500);
+    });
+    ready.then(() => setTimeout(() => { window.focus(); window.print(); }, 500));
+  });
+<\/script>
+</body>
+</html>`;
+
+            printWindow.document.open();
+            printWindow.document.write(documentHtml);
+            printWindow.document.close();
+        }
+
+        // Inicializar al cargar el DOM con seguridad absoluta
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuizQuestion();
+            updateCartUI();
+        });
+    </script>
+</body>
+</html>
