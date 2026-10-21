@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- No se carga librería de PDF: el ticket se envía por WhatsApp. -->
+    <!-- El comprobante se puede descargar como HTML e imprimir/guardar como PDF. -->
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap');
@@ -533,10 +533,10 @@
 
             <div class="space-y-3">
                 <button type="button" onclick="downloadReceipt()" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
-                    <i class="fa-solid fa-download text-lg"></i> Descargar comprobante
+                    <span aria-hidden="true" style="font-size:18px">↓</span> Descargar comprobante
                 </button>
                 <button type="button" onclick="sendToWhatsApp()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> Enviar comprobante completo por WhatsApp
+                    <span aria-hidden="true" style="font-size:18px">↗</span> Enviar comprobante por WhatsApp
                 </button>
                 <p class="text-xs text-gray-500 text-center">El comprobante completo, con productos, importes, dirección y ubicación GPS, se abrirá en WhatsApp como mensaje listo para enviar.</p>
             </div>
@@ -548,7 +548,7 @@
     <script>
         let cart = [];
         let discountApplied = false;
-        let quizCouponUsed = false;
+        let quizCouponUsed = (() => { try { return localStorage.getItem('manguya_quiz_coupon_used') === '1'; } catch (_) { return false; } })();
         let leafletMap = null;
         let marker = null;
         let currentOrderData = null;
@@ -900,7 +900,8 @@
         }
 
         function applyQuizDiscount() {
-            if (quizCouponUsed) {
+            if (quizCouponUsed || (() => { try { return localStorage.getItem('manguya_quiz_coupon_used') === '1'; } catch (_) { return false; } })()) {
+                quizCouponUsed = true;
                 alert('Este cupón ya se utilizó en un pedido y no se puede volver a aplicar.');
                 return;
             }
@@ -1004,9 +1005,19 @@
             if (rDiscountRow) rDiscountRow.style.display = currentOrderData.deliveryDiscount > 0 ? 'block' : 'none';
             if (rDiscount) rDiscount.innerText = `− S/ ${currentOrderData.deliveryDiscount.toFixed(2)}${currentOrderData.discountReason ? ' (' + currentOrderData.discountReason + ')' : ''}`;
 
-            // Consumir el cupón únicamente si se aplicó en este pedido.
-            // Se mantiene el comprobante ya calculado y se limpia el carrito para la próxima compra.
-            if (discountApplied) quizCouponUsed = true;
+            // Si se usó el cupón, marcarlo como consumido de forma persistente.
+            // No abrir WhatsApp automáticamente: primero se muestra el comprobante y
+            // la persona elige Descargar o Enviar por WhatsApp, evitando perder el modal.
+            if (discountApplied) {
+                quizCouponUsed = true;
+                try { localStorage.setItem('manguya_quiz_coupon_used', '1'); } catch (_) {}
+                const quizApplyButton = document.querySelector('#quiz-result-container button[onclick="applyQuizDiscount()"]');
+                if (quizApplyButton) {
+                    quizApplyButton.disabled = true;
+                    quizApplyButton.textContent = 'Cupón utilizado';
+                    quizApplyButton.classList.add('opacity-60', 'cursor-not-allowed');
+                }
+            }
             cart = [];
             discountApplied = false;
             const discountBanner = document.getElementById('cart-discount-banner');
@@ -1014,16 +1025,12 @@
             updateCartUI();
             toggleCartModal(false);
             const receiptModal = document.getElementById('receipt-modal');
-            if (receiptModal) receiptModal.classList.remove('hidden');
-
-            // Abre WhatsApp con todos los datos al generar el pedido.
-            // El navegador/WhatsApp requiere que la persona pulse Enviar para confirmar.
-            const whatsappPhone = '51930247419';
-            const whatsappMessage = buildWhatsAppOrderMessage(currentOrderData);
-            window.open(
-                `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(whatsappMessage)}`,
-                '_blank'
-            );
+            if (receiptModal) {
+                receiptModal.classList.remove('hidden');
+                receiptModal.style.display = 'flex';
+                receiptModal.setAttribute('aria-modal', 'true');
+                receiptModal.setAttribute('role', 'dialog');
+            }
         }
 
         function closeReceiptModal() {
@@ -1038,7 +1045,7 @@
                 .join('\n');
 
             return [
-                '🥭 *MANGUYÁ — COMPROBANTE DE PEDIDO*',
+                '*MANGUYA - COMPROBANTE DE PEDIDO*',
                 `Comprobante / Pedido N.º: ${order.id}`,
                 `Fecha: ${order.date}`,
                 '',
@@ -1062,7 +1069,7 @@
                 `Delivery final: ${money(order.deliveryFee)}`,
                 `*TOTAL A PAGAR: ${money(order.total)}*`,
                 '',
-                '¡Gracias por elegir Manguyá! 🥭'
+                'Gracias por elegir Manguya.'
             ].join('\n');
         }
 
@@ -1100,7 +1107,9 @@
             }
             const phone = '51930247419';
             const message = buildWhatsAppOrderMessage(currentOrderData);
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            const whatsappWindow = window.open(url, '_blank', 'noopener,noreferrer');
+            if (!whatsappWindow) window.location.href = url;
         }
 
         // Inicializar al cargar el DOM con seguridad absoluta
