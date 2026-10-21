@@ -59,7 +59,7 @@
         }
         @keyframes floatSlow {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(1deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
         }
         .animate-float {
             animation: floatSlow 5s ease-in-out infinite;
@@ -72,7 +72,7 @@
     <header class="sticky top-0 z-50 bg-cream/95 backdrop-blur-md border-b border-bordercolor shadow-sm">
         <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
             <a href="#" class="flex items-center gap-3">
-                <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-16 sm:h-20 w-auto object-contain animate-float">
+                <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-20 sm:h-24 w-auto object-contain transition-transform hover:scale-105">
             </a>
             
             <nav class="hidden md:flex items-center gap-8 font-medium text-sm">
@@ -117,7 +117,7 @@
                 Elegir Presentación <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
             <a href="#juego" class="bg-white border border-bordercolor px-8 py-4 rounded-2xl font-semibold hover:bg-black/5 transition flex items-center gap-2 shadow-sm">
-                <i data-lucide="gift" class="w-4 h-4 text-mangogold"></i> Ganar Envío Gratis
+                <i data-lucide="gift" class="w-4 h-4 text-mangogold"></i> Obtener Descuento Delivery
             </a>
         </div>
 
@@ -128,19 +128,49 @@
         </div>
     </section>
 
-    <!-- RULETA TROPICAL / MINIJUEGO -->
+    <!-- ORIGEN NATURAL / INGREDIENTES -->
+    <section id="origen" class="py-16 bg-white/70 border-y border-bordercolor">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center max-w-xl mx-auto mb-12">
+                <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Cosecha del Valle</span>
+                <h2 class="font-serif text-3xl font-bold mt-2">Fruta de origen 100% peruano</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-cream rounded-[2rem] p-6 border border-bordercolor flex gap-5 items-center shadow-sm">
+                    <img src="assets/img/Mango.webp" alt="Mango Kent" class="w-28 h-28 object-cover rounded-2xl shrink-0">
+                    <div>
+                        <h3 class="font-serif text-lg font-bold mb-1">Mango Kent</h3>
+                        <p class="text-xs text-botanical/70 leading-relaxed">Cultivado bajo el sol del norte y valle central, aportando textura cremosa y dulzura natural.</p>
+                        <img src="assets/img/Planta mango.webp" alt="Planta de Mango" class="mt-2 h-12 w-full object-cover rounded-xl">
+                    </div>
+                </div>
+
+                <div class="bg-cream rounded-[2rem] p-6 border border-bordercolor flex gap-5 items-center shadow-sm">
+                    <img src="assets/img/Maracuyá.jpg" alt="Maracuyá Fresca" class="w-28 h-28 object-cover rounded-2xl shrink-0">
+                    <div>
+                        <h3 class="font-serif text-lg font-bold mb-1">Maracuyá Seleccionada</h3>
+                        <p class="text-xs text-botanical/70 leading-relaxed">Seleccionadas a mano para garantizar el toque ácido y aromático exacto.</p>
+                        <img src="assets/img/Planta maracuyá.jpg" alt="Planta de Maracuyá" class="mt-2 h-12 w-full object-cover rounded-xl">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RULETA TROPICAL / MINIJUEGO PROFESIONAL -->
     <section id="juego" class="py-16 max-w-4xl mx-auto px-6">
         <div class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-bordercolor text-center shadow-lg relative overflow-hidden">
-            <span class="bg-mangogold text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">Minijuego Interactivo</span>
-            <h2 class="font-serif text-3xl font-bold mt-3 mb-2">¡Desafío Ruleta Manguyá! 🥭🎰</h2>
+            <span class="bg-mangogold text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">Promoción Exclusiva</span>
+            <h2 class="font-serif text-3xl font-bold mt-3 mb-2">Desafío Ruleta Manguyá</h2>
             <p class="text-xs sm:text-sm text-botanical/70 max-w-md mx-auto mb-6">
-                Gira la ruleta tropical. Si consigues la combinación ganadora, ¡obtienes **Envío Gratis** en tu pedido!
+                Gira la ruleta y gana un **50% de descuento adicional** en tu tarifa de envío por distancia.
             </p>
 
             <div class="bg-cream border border-bordercolor p-6 rounded-3xl max-w-sm mx-auto shadow-inner mb-6">
                 <div class="flex justify-center items-center gap-4 text-4xl py-4 bg-white rounded-2xl border border-bordercolor mb-4">
                     <span id="slot1">🥭</span>
-                    <span id="slot2">❓</span>
+                    <span id="slot2">⭐</span>
                     <span id="slot3">🍋</span>
                 </div>
                 <p id="game-status" class="text-xs font-semibold text-botanical">Presiona el botón para probar tu suerte</p>
@@ -150,18 +180,18 @@
                 <i data-lucide="dices" class="w-5 h-5"></i> Girar Ruleta Tropical
             </button>
 
-            <div id="reward-banner" class="hidden mt-6 bg-botanical text-white p-4 rounded-2xl max-w-md mx-auto animate-bounce">
-                <p class="font-bold text-sm">🎉 ¡Felicidades! Has ganado Envío Gratis</p>
-                <p class="text-xs text-cream/80 mt-1">Cupón: <span class="font-mono text-mangogold font-bold">ENVIO-GRATIS-MANGUYA</span></p>
+            <div id="reward-banner" class="hidden mt-6 bg-botanical text-white p-4 rounded-2xl max-w-md mx-auto shadow-md">
+                <p class="font-bold text-sm">🎉 ¡Felicidades! Ganaste 50% de Descuento en Envío</p>
+                <p class="text-xs text-cream/80 mt-1">Cupón Aplicado: <span class="font-mono text-mangogold font-bold">ENVIO-MEDIO-MANGUYA</span></p>
             </div>
         </div>
     </section>
 
-    <!-- PRODUCTOS Y PRESENTACIONES (3 PRODUCTOS) -->
+    <!-- PRODUCTOS Y PRESENTACIONES (3 PRODUCTOS EXACTOS) -->
     <section id="productos" class="py-20 bg-white/70 border-y border-bordercolor">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center max-w-xl mx-auto mb-16">
-                <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Nuestras Presentaciones</span>
+                <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Nuestras 3 Presentaciones</span>
                 <h2 class="font-serif text-3xl sm:text-4xl font-bold mt-2">Elige la dosis de frescura que necesitas</h2>
                 <p class="text-xs text-botanical/60 mt-2">🛵 Tarifario dinámico basado en distancia desde Huaral (Av. Julio C. Tello 151).</p>
             </div>
@@ -191,7 +221,7 @@
                     </div>
                     <span class="text-[10px] font-bold uppercase bg-white text-mangogold px-3 py-1 rounded-full mb-2 border border-bordercolor">Mediana</span>
                     <h3 class="font-serif text-xl font-bold mb-2">Botella Mediana 500ml</h3>
-                    <p class="text-xs text-botanical/70 mb-6 leading-relaxed">El tamaño perfecto para mantenerte energizado y hidratado durante toda la tarde.</p>
+                    <p class="text-xs text-botanical/70 mb-6 leading-relaxed">El tamaño perfecto para mantenerte energizado y bien hidratado durante toda la tarde.</p>
                     <div class="mt-auto flex items-center justify-between w-full pt-4 border-t border-bordercolor">
                         <span class="font-serif text-2xl font-bold text-mangogold">S/ 5.50</span>
                         <button onclick="addToCart('Botella Mediana 500ml', 5.50)" class="bg-botanical text-white px-5 py-2.5 rounded-xl font-semibold text-xs hover:bg-opacity-90 transition flex items-center gap-1.5 shadow-sm">
@@ -220,12 +250,28 @@
         </div>
     </section>
 
+    <!-- PROCESO Y BATIDO -->
+    <section class="py-16 max-w-5xl mx-auto px-6">
+        <div class="bg-cream rounded-[3rem] p-8 md:p-12 border border-bordercolor grid md:grid-cols-2 gap-8 items-center shadow-sm">
+            <div>
+                <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Elaboración Propia</span>
+                <h2 class="font-serif text-3xl font-bold mt-1 mb-3">Frescura garantizada en cada lote</h2>
+                <p class="text-xs sm:text-sm text-botanical/70 leading-relaxed">
+                    Nuestros jugos se preparan diariamente combinando pulpa natural de primera con estrictos estándares de higiene, asegurando un néctar vibrante, cremoso y delicioso.
+                </p>
+            </div>
+            <div>
+                <img src="assets/img/Batido de ambos.jpg" alt="Batido Manguyá" class="rounded-2xl w-full h-64 object-cover shadow-md border border-bordercolor">
+            </div>
+        </div>
+    </section>
+
     <!-- FOOTER INSTITUCIONAL -->
     <footer class="bg-botanical text-cream pt-16 pb-10 border-t border-botanical/80">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid md:grid-cols-3 gap-10 pb-12 border-b border-white/10">
                 <div>
-                    <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-16 w-auto object-contain mb-4 filter brightness-200">
+                    <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-20 w-auto object-contain mb-4 filter brightness-200">
                     <p class="text-xs text-cream/70 leading-relaxed">
                         Néctar artesanal de mango y maracuyá. Proyecto de Administración y Marketing.
                     </p>
@@ -311,15 +357,15 @@
                 <i data-lucide="x" class="w-5 h-5 text-botanical"></i>
             </button>
 
-            <!-- CONTENIDO IMPRESO PARA PDF -->
-            <div id="printable-receipt" class="bg-cream p-6 rounded-3xl text-left border border-bordercolor mb-6 space-y-4">
-                <div class="text-center border-b border-bordercolor pb-4 space-y-2">
-                    <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-16 mx-auto object-contain">
-                    <p class="text-[10px] text-botanical/60 uppercase font-bold tracking-wider">Comprobante de Pedido #<span id="order-num"></span></p>
-                    <p class="text-[9px] text-botanical/50" id="order-date"></p>
+            <!-- CONTENIDO IMPRESO PARA PDF (AISLADO Y CORREGIDO PARA NO SALIR EN BLANCO) -->
+            <div id="printable-receipt" style="background-color: #FAF7F2; padding: 24px; border-radius: 20px; border: 1px solid #E5E0D8; text-align: left; margin-bottom: 20px; color: #2D402B;">
+                <div style="text-align: center; border-bottom: 1px dashed #E5E0D8; padding-bottom: 15px; margin-bottom: 15px;">
+                    <img src="assets/img/Logo.png" alt="Manguyá Logo" style="height: 50px; margin: 0 auto 10px auto; object-fit: contain;">
+                    <p style="font-size: 10px; text-transform: uppercase; font-weight: bold; color: #2D402B;">Comprobante de Pedido #<span id="order-num"></span></p>
+                    <p style="font-size: 9px; color: #666;" id="order-date"></p>
                 </div>
 
-                <div class="text-xs space-y-1.5 font-sans">
+                <div style="font-size: 11px; line-height: 1.5; margin-bottom: 15px;">
                     <p><strong>Cliente:</strong> <span id="rec-name"></span></p>
                     <p><strong>Teléfono:</strong> <span id="rec-phone"></span></p>
                     <p><strong>Dirección:</strong> <span id="rec-address"></span></p>
@@ -327,12 +373,12 @@
                     <p><strong>Método de Pago:</strong> <span id="rec-method"></span></p>
                 </div>
 
-                <div class="border-t border-b border-bordercolor py-3 space-y-2 text-xs" id="rec-items"></div>
+                <div style="border-top: 1px dashed #E5E0D8; border-bottom: 1px dashed #E5E0D8; padding: 10px 0; margin-bottom: 15px; font-size: 11px;" id="rec-items"></div>
 
-                <div class="text-xs space-y-1.5 text-right font-medium">
-                    <p class="text-botanical/70">Subtotal: <span id="rec-subtotal"></span></p>
-                    <p class="text-botanical/70">Envío por Distancia: <span id="rec-shipping"></span></p>
-                    <p class="font-bold text-base text-mangogold pt-1">TOTAL: <span id="rec-total"></span></p>
+                <div style="font-size: 11px; text-align: right; line-height: 1.5;">
+                    <p style="color: #666;">Subtotal: <span id="rec-subtotal"></span></p>
+                    <p style="color: #666;">Envío por Distancia: <span id="rec-shipping"></span></p>
+                    <p style="font-weight: bold; font-size: 14px; color: #E8822A; margin-top: 5px;">TOTAL: <span id="rec-total"></span></p>
                 </div>
             </div>
 
@@ -373,15 +419,17 @@
             return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
         }
 
-        // LÓGICA DE ENVÍO POR DISTANCIA (HUARAL)
+        // LÓGICA DE ENVÍO POR DISTANCIA CON DESCUENTO POR CUPÓN
         function calculateShippingCost(distKm, subtotal) {
-            if (couponApplied) return 0.00; // Solo gratis si ganó la ruleta
             let cost = 2.00; // Tarifa base hasta 1 km
             if (distKm > 1.0) {
                 cost += (distKm - 1.0) * 0.80; // S/ 0.80 por km adicional
             }
             if (subtotal >= 20.00) {
-                cost = cost * 0.5; // Descuento 50% en envíos > S/ 20
+                cost = cost * 0.5; // Descuento 50% por volumen
+            }
+            if (couponApplied) {
+                cost = cost * 0.5; // 50% de descuento adicional en envío gracias a la ruleta
             }
             return Math.max(1.50, cost);
         }
@@ -425,7 +473,7 @@
                     </div>
                     <div class="flex justify-between text-botanical/70">
                         <span>Delivery (${currentDistanceKm.toFixed(1)} km):</span>
-                        <span class="${couponApplied ? 'text-green-600 font-bold' : ''}">${couponApplied ? 'GRATIS' : 'S/ ' + shippingCost.toFixed(2)}</span>
+                        <span class="${couponApplied ? 'text-green-600 font-bold' : ''}">${couponApplied ? 'S/ ' + shippingCost.toFixed(2) + ' (50% desc)' : 'S/ ' + shippingCost.toFixed(2)}</span>
                     </div>
                     <div class="flex justify-between font-bold text-sm pt-2 border-t border-bordercolor">
                         <span>Total a Pagar:</span>
@@ -493,24 +541,24 @@
         function spinSlots() {
             const btn = document.getElementById('spin-btn');
             btn.disabled = true;
-            document.getElementById('game-status').innerText = 'Girando frutas... 🥭🍋';
+            document.getElementById('game-status').innerText = 'Girando ruleta...';
 
-            const fruits = ['🥭', '🍋', '🍹'];
+            const symbols = ['🥭', '⭐', '🍋'];
             let count = 0;
 
             const interval = setInterval(() => {
-                document.getElementById('slot1').innerText = fruits[Math.floor(Math.random() * fruits.length)];
-                document.getElementById('slot2').innerText = fruits[Math.floor(Math.random() * fruits.length)];
-                document.getElementById('slot3').innerText = fruits[Math.floor(Math.random() * fruits.length)];
+                document.getElementById('slot1').innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                document.getElementById('slot2').innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                document.getElementById('slot3').innerText = symbols[Math.floor(Math.random() * symbols.length)];
                 count++;
 
                 if (count > 12) {
                     clearInterval(interval);
-                    document.getElementById('slot1').innerText = '🥭';
-                    document.getElementById('slot2').innerText = '🍋';
-                    document.getElementById('slot3').innerText = '🍹';
+                    document.getElementById('slot1').innerText = '⭐';
+                    document.getElementById('slot2').innerText = '⭐';
+                    document.getElementById('slot3').innerText = '⭐';
                     
-                    document.getElementById('game-status').innerText = '¡COMBINACIÓN GANADORA!';
+                    document.getElementById('game-status').innerText = '¡CUPÓN ACTIVADO!';
                     document.getElementById('reward-banner').classList.remove('hidden');
                     couponApplied = true;
                     updateCartUI();
@@ -552,31 +600,32 @@
             document.getElementById('rec-method').innerText = method;
 
             document.getElementById('rec-items').innerHTML = cart.map(i => `
-                <div class="flex justify-between">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                     <span>${i.qty}x ${i.name}</span>
-                    <span class="font-bold">S/ ${(i.price * i.qty).toFixed(2)}</span>
+                    <span style="font-weight: bold;">S/ ${(i.price * i.qty).toFixed(2)}</span>
                 </div>
             `).join('');
 
             document.getElementById('rec-subtotal').innerText = `S/ ${subtotal.toFixed(2)}`;
-            document.getElementById('rec-shipping').innerText = couponApplied ? 'GRATIS' : `S/ ${shippingCost.toFixed(2)}`;
+            document.getElementById('rec-shipping').innerText = `S/ ${shippingCost.toFixed(2)}`;
             document.getElementById('rec-total').innerText = `S/ ${total.toFixed(2)}`;
 
-            const itemsText = cart.map(i => `• *${i.qty}x ${i.name}* — S/ ${(i.price * i.qty).toFixed(2)}`).join('\n');
+            // TEXTO LIMPIO PARA WHATSAPP (SIN EMOJIS ROTOS)
+            const itemsText = cart.map(i => `- ${i.qty}x ${i.name} (S/ ${(i.price * i.qty).toFixed(2)})`).join('\n');
             const mapUrl = `https://www.google.com/maps?q=${selectedLat},${selectedLng}`;
 
-            const rawMessage = `🥭 *NUEVO PEDIDO MANGUYÁ* 🥭\n\n` +
-                `📋 *Orden #:* ${orderNum}\n` +
-                `👤 *Cliente:* ${name}\n` +
-                `📱 *Teléfono:* ${phone}\n` +
-                `📍 *Dirección:* ${address}\n` +
-                `📏 *Distancia:* ${currentDistanceKm.toFixed(2)} km\n` +
-                `🗺️ *GPS:* ${mapUrl}\n` +
-                `💳 *Método de Pago:* ${method}\n\n` +
-                `🛒 *DETALLE:*\n${itemsText}\n\n` +
-                `💵 *Subtotal:* S/ ${subtotal.toFixed(2)}\n` +
-                `🛵 *Envío:* ${couponApplied ? 'GRATIS' : 'S/ ' + shippingCost.toFixed(2)}\n` +
-                `💰 *TOTAL:* S/ ${total.toFixed(2)}`;
+            const rawMessage = `NUEVO PEDIDO MANGUYA\n\n` +
+                `Orden #: ${orderNum}\n` +
+                `Cliente: ${name}\n` +
+                `Telefono: ${phone}\n` +
+                `Direccion: ${address}\n` +
+                `Distancia: ${currentDistanceKm.toFixed(2)} km\n` +
+                `GPS: ${mapUrl}\n` +
+                `Metodo de Pago: ${method}\n\n` +
+                `DETALLE:\n${itemsText}\n\n` +
+                `Subtotal: S/ ${subtotal.toFixed(2)}\n` +
+                `Envio: S/ ${shippingCost.toFixed(2)}\n` +
+                `TOTAL A PAGAR: S/ ${total.toFixed(2)}`;
 
             document.getElementById('wa-btn-link').href = `https://wa.me/51918591764?text=${encodeURIComponent(rawMessage)}`;
 
@@ -595,10 +644,10 @@
             if (!currentOrderData) return;
             const element = document.getElementById('printable-receipt');
             const opt = {
-                margin:       0.3,
+                margin:       0.4,
                 filename:     `Comprobante_Manguya_${currentOrderData.orderNum}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
             html2pdf().set(opt).from(element).save();
