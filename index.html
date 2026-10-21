@@ -62,7 +62,7 @@
                 <a href="#inicio" class="hover:text-amber-600 transition-colors">Inicio</a>
                 <a href="#productos" class="hover:text-amber-600 transition-colors">Productos</a>
                 <a href="#test" class="hover:text-amber-600 transition-colors flex items-center gap-1 text-amber-600 font-semibold bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Ruleta Tropical
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Quiz Tropical
                 </a>
                 <a href="#nosotros" class="hover:text-amber-600 transition-colors">Sobre Nosotros</a>
             </nav>
@@ -108,7 +108,7 @@
                                 Ver Presentaciones <i class="fa-solid fa-arrow-right ml-2"></i>
                             </a>
                             <a href="#test" class="w-full sm:w-auto px-6 py-4 rounded-xl font-bold text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 shadow-sm transition-all text-center flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-gamepad text-amber-500"></i> Ruleta Tropical
+                                <i class="fa-solid fa-gamepad text-amber-500"></i> Descubre tu Quiz
                             </a>
                         </div>
 
@@ -280,33 +280,94 @@
             </div>
         </section>
 
-        <!-- Interactive Ruleta Tropical Section (Con Descuento Porcentual en Envío) -->
+        <!-- Interactive Quiz Tropical Section (De Vuelta tu Quiz Mejorado) -->
         <section id="test" class="py-16 bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 border-y border-amber-200/60">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="bg-white rounded-3xl shadow-xl border border-amber-200/80 overflow-hidden">
                     <div class="bg-gradient-to-r from-amber-500 to-orange-500 p-6 text-white text-center">
-                        <span class="bg-white/20 text-xs uppercase font-bold px-3 py-1 rounded-full">Minijuego Interactivo</span>
-                        <h2 class="font-heading text-2xl sm:text-3xl font-bold mt-2">Ruleta Tropical Manguyá</h2>
-                        <p class="text-xs sm:text-sm text-amber-100 mt-1">Gira para ganar un cupón de <strong>50% de descuento en el envío</strong></p>
+                        <span class="bg-white/20 text-xs uppercase font-bold px-3 py-1 rounded-full">Quiz Tropical Interactivo</span>
+                        <h2 class="font-heading text-2xl sm:text-3xl font-bold mt-2">¿Qué tan Manguyá eres hoy?</h2>
+                        <p class="text-xs sm:text-sm text-amber-100 mt-1">Responde 3 preguntas y desbloquea un descuento porcentual para tu envío</p>
                     </div>
 
-                    <div class="p-6 sm:p-8 text-center space-y-6">
-                        <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-6 max-w-sm mx-auto shadow-inner">
-                            <div class="flex justify-center items-center gap-4 text-4xl py-4 bg-white rounded-2xl border border-amber-200 mb-4 shadow-sm">
-                                <span id="slot1">🥭</span>
-                                <span id="slot2">⭐</span>
-                                <span id="slot3">🍋</span>
+                    <div id="quiz-container" class="p-6 sm:p-8">
+                        <!-- Step 1 -->
+                        <div id="quiz-step-1" class="quiz-step space-y-6">
+                            <h3 class="text-lg font-bold text-gray-900 text-center">1. ¿Cómo va tu energía en este momento del día?</h3>
+                            <div class="grid sm:grid-cols-3 gap-4">
+                                <button onclick="selectQuizOption(1, 'Alta')" class="p-4 rounded-2xl border-2 border-gray-100 hover:border-amber-400 bg-gray-50 hover:bg-amber-50 transition-all font-medium text-center space-y-2">
+                                    <span class="text-2xl block font-bold text-amber-600">🚀</span>
+                                    <span class="text-sm block">A mil por hora</span>
+                                </button>
+                                <button onclick="selectQuizOption(1, 'Media')" class="p-4 rounded-2xl border-2 border-gray-100 hover:border-amber-400 bg-gray-50 hover:bg-amber-50 transition-all font-medium text-center space-y-2">
+                                    <span class="text-2xl block font-bold text-amber-600">😌</span>
+                                    <span class="text-sm block">Relajado pero activo</span>
+                                </button>
+                                <button onclick="selectQuizOption(1, 'Baja')" class="p-4 rounded-2xl border-2 border-gray-100 hover:border-amber-400 bg-gray-50 hover:bg-amber-50 transition-all font-medium text-center space-y-2">
+                                    <span class="text-2xl block font-bold text-amber-600">😴</span>
+                                    <span class="text-sm block">Necesito un impulso</span>
+                                </button>
                             </div>
-                            <p id="game-status" class="text-xs font-semibold text-gray-700">Presiona el botón para girar la ruleta</p>
                         </div>
 
-                        <button onclick="spinSlots()" id="spin-btn" class="px-8 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-lg hover:from-amber-600 hover:to-orange-600 transition-all">
-                            <i class="fa-solid fa-dice mr-2"></i> Girar Ruleta Tropical
-                        </button>
+                        <!-- Step 2 -->
+                        <div id="quiz-step-2" class="quiz-step hidden space-y-6">
+                            <h3 class="text-lg font-bold text-gray-900 text-center">2. ¿En qué ocasión disfrutarías más tu jugo Manguyá?</h3>
+                            <div class="grid sm:grid-cols-3 gap-4">
+                                <button onclick="selectQuizOption(2, 'Estudio')" class="p-4 rounded-2xl border-2 border-gray-100 hover:border-amber-400 bg-gray-50 hover:bg-amber-50 transition-all font-medium text-center space-y-2">
+                                    <span class="text-2xl block font-bold text-amber-600">📚</span>
+                                    <span class="text-sm block">Estudiando o trabajando</span>
+                                </button>
+                                <button onclick="selectQuizOption(2, 'Amigos')" class="p-4 rounded-2xl border-2 border-gray-100 hover:border-amber-400 bg-gray-50 hover:bg-amber-50 transition-all font-medium text-center space-y-2">
+                                    <span class="text-2xl block font-bold text-amber-600">🎉</span>
+                                    <span class="text-sm block">Reunión con amigos</span>
+                                </button>
+                                <button onclick="selectQuizOption(2, 'Comida')" class="p-4 rounded-2xl border-2 border-gray-100 hover:border-amber-400 bg-gray-50 hover:bg-amber-50 transition-all font-medium text-center space-y-2">
+                                    <span class="text-2xl block font-bold text-amber-600">🍱</span>
+                                    <span class="text-sm block">Acompañando mi almuerzo</span>
+                                </button>
+                            </div>
+                        </div>
 
-                        <div id="reward-banner" class="hidden bg-emerald-50 border border-emerald-300 rounded-2xl p-4 max-w-md mx-auto text-xs text-emerald-900 shadow-md">
-                            <p class="font-bold text-sm">🎉 ¡Ganaste 50% de Descuento en tu Delivery!</p>
-                            <p class="mt-1">Cupón Aplicado: <strong class="font-mono text-orange-600">ENVIO-MEDIO-MANGUYA</strong></p>
+                        <!-- Step 3 -->
+                        <div id="quiz-step-3" class="quiz-step hidden space-y-6">
+                            <h3 class="text-lg font-bold text-gray-900 text-center">3. ¿Qué sabor prefieres que resalte más?</h3>
+                            <div class="grid sm:grid-cols-3 gap-4">
+                                <button onclick="selectQuizOption(3, 'Dulce')" class="p-4 rounded-2xl border-2 border-gray-100 hover:border-amber-400 bg-gray-50 hover:bg-amber-50 transition-all font-medium text-center space-y-2">
+                                    <span class="text-2xl block font-bold text-amber-600">🥭</span>
+                                    <span class="text-sm block">Dulzura del Mango</span>
+                                </button>
+                                <button onclick="selectQuizOption(3, 'Acido')" class="p-4 rounded-2xl border-2 border-gray-100 hover:border-amber-400 bg-gray-50 hover:bg-amber-50 transition-all font-medium text-center space-y-2">
+                                    <span class="text-2xl block font-bold text-amber-600">💡</span>
+                                    <span class="text-sm block">El toque de Maracuyá</span>
+                                </button>
+                                <button onclick="selectQuizOption(3, 'Equilibrio')" class="p-4 rounded-2xl border-2 border-gray-100 hover:border-amber-400 bg-gray-50 hover:bg-amber-50 transition-all font-medium text-center space-y-2">
+                                    <span class="text-2xl block font-bold text-amber-600">⚖️</span>
+                                    <span class="text-sm block">50% Mango y 50% Maracuyá</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Result -->
+                        <div id="quiz-result" class="hidden text-center space-y-6 py-4">
+                            <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
+                                🏆
+                            </div>
+                            <div>
+                                <h3 class="font-heading text-2xl font-bold text-gray-900">¡Perfil Tropical Completado!</h3>
+                                <p class="text-gray-600 text-sm mt-2 max-w-md mx-auto">
+                                    Has completado el Quiz de Manguyá. ¡Has ganado un 50% de descuento en la tarifa de envío de tu pedido!
+                                </p>
+                            </div>
+                            <div class="bg-amber-50 border border-dashed border-amber-400 rounded-2xl p-4 inline-block">
+                                <span class="text-xs text-amber-700 font-bold block uppercase">Cupón Aplicado Automáticamente:</span>
+                                <span class="font-heading text-xl font-bold text-orange-600">QUIZ-TROPICAL-50</span>
+                            </div>
+                            <div>
+                                <button onclick="applyQuizDiscount()" class="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl shadow-lg hover:from-amber-600 hover:to-orange-600 transition-all">
+                                    Aplicar Descuento al Carrito
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -399,4 +460,77 @@
                 <div id="cart-items-container" class="space-y-4 mb-6"></div>
 
                 <div id="cart-discount-banner" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-6 text-xs text-emerald-800 flex items-center justify-between">
-                    <span><i class="fa-solid fa-ticket text-emerald-500 mr-1"></i> Descuento aplicado: <strong>50% en Envío (Ruleta)</strong></span>
+                    <span><i class="fa-solid fa-ticket text-emerald-500 mr-1"></i> Descuento aplicado: <strong>50% en Envío (Quiz Tropical)</strong></span>
+                    <button onclick="removeDiscount()" class="text-emerald-700 underline font-bold">Quitar</button>
+                </div>
+
+                <div id="checkout-form-section" class="space-y-4 border-t pt-6">
+                    <h4 class="font-bold text-sm text-gray-900 flex items-center gap-2">
+                        <i class="fa-solid fa-truck text-amber-500"></i> Datos para el Delivery
+                    </h4>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Nombre Completo *</label>
+                        <input type="text" id="client-name" placeholder="Ej. Ana Trujillo" class="w-full text-sm p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Teléfono WhatsApp *</label>
+                        <input type="tel" id="client-phone" placeholder="Ej. 918591764" class="w-full text-sm p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Dirección de Entrega *</label>
+                        <input type="text" id="client-address" placeholder="Haz clic en el mapa para autocompletar la dirección" class="w-full text-sm p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+
+                    <!-- MAPA HUARAL CON DISTANCIA REAL Y TARIFA CORRECTA -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1 flex items-center justify-between">
+                            <span>Ubica tu casa en el mapa de Huaral *</span>
+                            <span class="text-[10px] text-amber-600">(Calcula distancia exacta)</span>
+                        </label>
+                        <div id="map"></div>
+                        <p class="text-[11px] text-gray-500 mt-1">Distancia estimada desde Tello 151: <span id="dist-km-display" class="font-bold text-amber-600">0.0 km</span></p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-2">Método de Pago (Contraentrega)</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="border-2 border-amber-500 bg-amber-50/50 rounded-xl p-3 flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-900">
+                                <input type="radio" name="payment-method" value="Yape / Plin" checked class="text-amber-500 focus:ring-amber-400">
+                                Yape / Plin
+                            </label>
+                            <label class="border-2 border-gray-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer text-xs font-bold text-gray-700">
+                                <input type="radio" name="payment-method" value="Efectivo" class="text-amber-500 focus:ring-amber-400">
+                                Efectivo
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t pt-4 mt-6 space-y-4">
+                <div class="space-y-1 text-sm">
+                    <div class="flex justify-between text-gray-500">
+                        <span>Subtotal</span>
+                        <span id="summary-subtotal">S/ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-gray-500">
+                        <span>Delivery</span>
+                        <span id="summary-delivery">S/ 2.00</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-base text-gray-900 pt-2 border-t">
+                        <span>Total a Pagar</span>
+                        <span id="summary-total" class="text-amber-600">S/ 0.00</span>
+                    </div>
+                </div>
+
+                <button onclick="processOrder()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 active:scale-95 text-base">
+                    <i class="fa-brands fa-whatsapp text-xl"></i> Confirmar y Enviar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ORDER RECEIPT MOD
