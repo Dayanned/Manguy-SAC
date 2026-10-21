@@ -445,7 +445,7 @@
                             <span class="text-[10px] text-amber-600">(estimación en línea recta)</span>
                         </label>
                         <div id="map"></div>
-                        <p class="text-[11px] text-gray-500 mt-1">Distancia estimada en línea recta desde Tello 151: <span id="dist-km-display" class="font-bold text-amber-600">0.0 km</span>. La ruta por carretera puede ser mayor.</p>
+                        <p class="text-[11px] text-gray-500 mt-1">Distancia de ruta por carretera desde Tello 151: <span id="dist-km-display" class="font-bold text-amber-600">0.0 km</span>. La cotización requiere conexión para calcular la ruta por carretera.</p>
                     </div>
 
                     <div>
@@ -551,7 +551,8 @@
 
         const ORIGIN_LAT = -11.496321;
         const ORIGIN_LNG = -77.2092;
-        let currentDistanceKm = 0.5;
+        let currentDistanceKm = null;
+        let routeRequestId = 0;
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371;
@@ -563,21 +564,20 @@
             return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
         }
 
-        // Tarifario inicial editable. La distancia disponible es en línea recta,
-        // no una ruta por carretera. Para cotización final debe integrarse un motor de rutas.
+        // Tarifario editable. La distancia se obtiene por carretera con OSRM.
         const SHIPPING_BASE = 2.00;
         const SHIPPING_INCLUDED_KM = 1.00;
         const SHIPPING_PER_EXTRA_KM = 0.80;
         const SHIPPING_MINIMUM = 1.50;
 
         function calculateShippingBreakdown(distKm, subtotal) {
-            const safeDistance = Math.max(0, Number(distKm) || 0);
+            if (distKm === null || distKm === undefined || !Number.isFinite(Number(distKm))) return null;
+            const safeDistance = Math.max(0, Number(distKm));
             const raw = Math.max(
                 SHIPPING_MINIMUM,
                 SHIPPING_BASE + Math.max(0, safeDistance - SHIPPING_INCLUDED_KM) * SHIPPING_PER_EXTRA_KM
             );
-            // El cupón del quiz y la promoción por compra grande no se acumulan.
-            // Se aplica un único beneficio del 50% para evitar dobles descuentos.
+            // Se aplica un solo beneficio de 50%: cupón del quiz o promoción por compra.
             const eligibleForOrderPromo = subtotal >= 20.00;
             const hasAnyDiscount = discountApplied || eligibleForOrderPromo;
             const finalFee = hasAnyDiscount ? raw * 0.5 : raw;
@@ -591,7 +591,21 @@
         }
 
         function calculateShippingCost(distKm, subtotal) {
-            return calculateShippingBreakdown(distKm, subtotal).fee;
+            const breakdown = calculateShippingBreakdown(distKm, subtotal);
+            return breakdown ? breakdown.fee : null;
+        }
+
+        async function getDrivingDistanceKm(lat, lng) {
+            // OSRM espera longitud,latitud. La distancia es la ruta de conducción calculada.
+            const url = `https://router.project-osrm.org/route/v1/driving/${ORIGIN_LNG},${ORIGIN_LAT};${lng},${lat}?overview=false`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('No se pudo consultar la ruta por carretera.');
+            const data = await response.json();
+            if (data.code !== 'Ok' || !data.routes || !data.routes.length ||
+                !Number.isFinite(data.routes[0].distance)) {
+                throw new Error('No hay una ruta por carretera disponible para este punto.');
+            }
+            return data.routes[0].distance / 1000;
         }
 
         function initMap() {
@@ -612,14 +626,32 @@
 
             marker = L.marker([ORIGIN_LAT, ORIGIN_LNG], { draggable: true }).addTo(leafletMap);
 
-            function updateLoc(lat, lng) {
-                currentDistanceKm = calculateDistance(ORIGIN_LAT, ORIGIN_LNG, lat, lng);
+            async function updateLoc(lat, lng) {
+                const requestId = ++routeRequestId;
+                currentDistanceKm = null;
                 const distEl = document.getElementById('dist-km-display');
-                if (distEl) distEl.innerText = `${currentDistanceKm.toFixed(2)} km`;
+                if (distEl) distEl.innerText = 'Calculando ruta…';
                 updateCartUI();
 
+                getDrivingDistanceKm(lat, lng).then(distanceKm => {
+                    if (requestId !== routeRequestId) return;
+                    currentDistanceKm = distanceKm;
+                    if (distEl) distEl.innerText = `${distanceKm.toFixed(2)} km por carretera`;
+                    updateCartUI();
+                }).catch(error => {
+                    if (requestId !== routeRequestId) return;
+                    currentDistanceKm = null;
+                    if (distEl) distEl.innerText = 'Ruta no disponible';
+                    updateCartUI();
+                    console.warn('No se pudo calcular el delivery por carretera:', error);
+                });
+
+                // Autocompletar dirección aproximada del punto seleccionado.
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                    .then(res => res.json())
+                    .then(res => {
+                        if (!res.ok) throw new Error('No se pudo consultar la dirección.');
+                        return res.json();
+                    })
                     .then(data => {
                         if (data && data.display_name) {
                             const addrEl = document.getElementById('client-address');
@@ -701,8 +733,6 @@
 
             const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
             const shipping = calculateShippingBreakdown(currentDistanceKm, subtotal);
-            const deliveryFee = shipping.fee;
-            const total = subtotal + deliveryFee;
 
             const subEl = document.getElementById('summary-subtotal');
             const delEl = document.getElementById('summary-delivery');
@@ -711,10 +741,19 @@
             const discountEl = document.getElementById('summary-discount');
 
             if (subEl) subEl.innerText = `S/ ${subtotal.toFixed(2)}`;
-            if (delEl) delEl.innerText = `S/ ${deliveryFee.toFixed(2)}`;
-            if (totEl) totEl.innerText = `S/ ${total.toFixed(2)}`;
-            if (discountRow) discountRow.classList.toggle('hidden', shipping.discount <= 0);
-            if (discountEl) discountEl.innerText = `− S/ ${shipping.discount.toFixed(2)}`;
+            if (!shipping) {
+                if (delEl) delEl.innerText = 'Calculando ruta…';
+                if (totEl) totEl.innerText = 'Pendiente';
+                if (discountRow) discountRow.classList.add('hidden');
+                if (discountEl) discountEl.innerText = '− S/ 0.00';
+            } else {
+                // Mostrar delivery bruto y descuento por separado para que el total cuadre.
+                const total = subtotal + shipping.fee;
+                if (delEl) delEl.innerText = `S/ ${shipping.raw.toFixed(2)}`;
+                if (totEl) totEl.innerText = `S/ ${total.toFixed(2)}`;
+                if (discountRow) discountRow.classList.toggle('hidden', shipping.discount <= 0);
+                if (discountEl) discountEl.innerText = `− S/ ${shipping.discount.toFixed(2)}`;
+            }
 
             const discountBanner = document.getElementById('cart-discount-banner');
             if (discountBanner) discountBanner.classList.toggle('hidden', !discountApplied);
@@ -880,6 +919,10 @@
                 alert('Por favor agrega al menos un producto a tu carrito.');
                 return;
             }
+            if (currentDistanceKm === null || currentDistanceKm === undefined || !Number.isFinite(Number(currentDistanceKm))) {
+                alert('Aún no se pudo calcular la ruta por carretera. Revisa tu conexión o mueve el marcador a otra ubicación e inténtalo de nuevo.');
+                return;
+            }
 
             const nameEl = document.getElementById('client-name');
             const phoneEl = document.getElementById('client-phone');
@@ -1012,9 +1055,10 @@
             // Crear una copia aislada evita que estilos del modal, overflow o animaciones
             // interfieran con la captura. Se coloca fuera de pantalla, pero no se oculta.
             const staging = document.createElement('div');
-            staging.style.cssText = 'position:fixed;left:-10000px;top:0;width:720px;background:#ffffff;z-index:-1;pointer-events:none;';
+            staging.style.cssText = 'position:fixed;left:0;top:0;width:720px;background:#ffffff;z-index:2147483647;pointer-events:none;';
             const clone = source.cloneNode(true);
             clone.removeAttribute('id');
+            clone.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
             clone.style.cssText += ';width:672px;max-width:none;min-height:0;box-sizing:border-box;background:#ffffff;color:#202820;border:1px solid #e5e0d8;border-radius:12px;padding:28px;font-family:Arial,sans-serif;overflow:visible;';
             clone.querySelectorAll('*').forEach(node => {
                 node.style.maxWidth = '100%';
@@ -1048,7 +1092,8 @@
                         logging: false,
                         scrollX: 0,
                         scrollY: 0,
-                        windowWidth: 800
+                        windowWidth: 800,
+                        windowHeight: Math.max(1000, clone.scrollHeight + 100)
                     },
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                     pagebreak: { mode: ['css', 'legacy'] }
