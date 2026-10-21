@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manguyá — Néctar Artesanal de Mango y Maracuyá</title>
     
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -35,12 +35,12 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Leaflet CSS y JS (Mapa interactivo Esri sin error de API Key) -->
+    <!-- Leaflet CSS y JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- jsPDF para Comprobantes -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         body {
@@ -52,36 +52,52 @@
             font-family: 'Fraunces', serif;
         }
         #checkout-map {
-            height: 250px;
+            height: 240px;
             width: 100%;
             border-radius: 1rem;
             z-index: 1;
         }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(1.5deg); }
+        }
+        @keyframes floatReverse {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(10px) rotate(-1.5deg); }
+        }
+        .animate-float {
+            animation: floatSlow 5s ease-in-out infinite;
+        }
+        .animate-float-reverse {
+            animation: floatReverse 6s ease-in-out infinite;
+        }
     </style>
 </head>
-<body class="bg-cream text-botanical antialiased">
+<body class="bg-cream text-botanical antialiased selection:bg-mangogold/20">
 
-    <!-- HEADER / NAVBAR -->
-    <header class="sticky top-0 z-50 bg-cream/90 backdrop-blur-md border-b border-bordercolor">
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 bg-cream/95 backdrop-blur-md border-b border-bordercolor shadow-sm">
         <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
             <a href="#" class="flex items-center gap-3">
-                <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-12 w-auto object-contain">
+                <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-12 w-auto object-contain hover:scale-105 transition-transform">
             </a>
             
             <nav class="hidden md:flex items-center gap-8 font-medium text-sm">
                 <a href="#inicio" class="hover:text-mangogold transition">La Experiencia</a>
                 <a href="#origen" class="hover:text-mangogold transition">Origen Natural</a>
+                <a href="#juego" class="hover:text-mangogold transition flex items-center gap-1.5 text-mangogold font-semibold">
+                    <i data-lucide="gamepad-2" class="w-4 h-4"></i> Juego Tropical
+                </a>
                 <a href="#mezclador" class="hover:text-mangogold transition">Mezclador</a>
                 <a href="#productos" class="hover:text-mangogold transition">Presentaciones</a>
-                <a href="#faq" class="hover:text-mangogold transition">Dudas</a>
             </nav>
 
             <div class="flex items-center gap-4">
-                <button onclick="openCart()" class="relative p-2 rounded-full hover:bg-black/5 transition">
-                    <i data-lucide="shopping-bag" class="w-6 h-6"></i>
-                    <span id="cart-badge" class="absolute top-0 right-0 bg-mangogold text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                <button onclick="openCart()" class="relative p-2.5 rounded-full hover:bg-black/5 transition border border-bordercolor bg-white">
+                    <i data-lucide="shopping-bag" class="w-5 h-5 text-botanical"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-mangogold text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm">0</span>
                 </button>
-                <a href="#productos" class="bg-botanical text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-opacity-90 transition">
+                <a href="#productos" class="bg-botanical text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-opacity-90 transition shadow-md">
                     Pedir Ahora
                 </a>
             </div>
@@ -89,48 +105,39 @@
     </header>
 
     <!-- HERO SECTION -->
-    <section id="inicio" class="max-w-5xl mx-auto px-6 pt-12 pb-8 text-center">
-        <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-botanical max-w-3xl mx-auto">
-            El equilibrio sublime entre <span class="italic font-normal text-mangogold">Mango</span> y <span class="text-mangogold">Maracuyá.</span>
+    <section id="inicio" class="max-w-6xl mx-auto px-6 pt-10 pb-12 text-center">
+        <div class="inline-flex items-center gap-2 bg-white border border-bordercolor px-4 py-1.5 rounded-full text-xs font-semibold mb-6 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-mangogold animate-ping"></span>
+            100% Artesanal — Sin Conservantes ni Azúcar Añadida
+        </div>
+
+        <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-botanical max-w-4xl mx-auto">
+            El equilibrio sublime entre <br>
+            <span class="italic font-normal text-mangogold">Mango Kent</span> y <span class="text-mangogold">Maracuyá</span>
         </h1>
         
         <p class="text-base sm:text-lg text-botanical/70 max-w-2xl mx-auto mt-6 leading-relaxed">
-            Una bebida artesanal de cuerpo cremoso y acidez refrescante, elaborada con mangos seleccionados y maracuyá de huerto natural. La experiencia tropical definitiva.
+            Néctar artesanal de cuerpo cremoso y acidez refrescante. Elaborado con fruta seleccionada de huerto natural para revivir tus sentidos.
         </p>
 
-        <!-- BADGES -->
-        <div class="flex flex-wrap items-center justify-center gap-3 mt-8">
-            <span class="inline-flex items-center gap-1.5 bg-white px-4 py-2 rounded-full text-xs font-medium border border-bordercolor shadow-sm">
-                <i data-lucide="check" class="w-4 h-4 text-mangogold"></i> Endulzado Natural
-            </span>
-            <span class="inline-flex items-center gap-1.5 bg-white px-4 py-2 rounded-full text-xs font-medium border border-bordercolor shadow-sm">
-                <i data-lucide="check" class="w-4 h-4 text-mangogold"></i> Proceso Artesanal
-            </span>
-            <span class="inline-flex items-center gap-1.5 bg-white px-4 py-2 rounded-full text-xs font-medium border border-bordercolor shadow-sm">
-                <i data-lucide="check" class="w-4 h-4 text-mangogold"></i> Delivery en Huaral & Lima
-            </span>
-        </div>
-
-        <!-- BOTONES PRINCIPALES -->
         <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
             <a href="#productos" class="bg-mangogold text-white px-8 py-3.5 rounded-full font-semibold shadow-lg hover:bg-mangogold/90 transition flex items-center gap-2">
                 Elegir Presentación <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
-            <a href="#mezclador" class="bg-white border border-bordercolor px-7 py-3.5 rounded-full font-semibold hover:bg-black/5 transition flex items-center gap-2">
-                <i data-lucide="sliders" class="w-4 h-4 text-mangogold"></i> Probar Mezclador
+            <a href="#juego" class="bg-white border border-bordercolor px-7 py-3.5 rounded-full font-semibold hover:bg-black/5 transition flex items-center gap-2">
+                <i data-lucide="gift" class="w-4 h-4 text-mangogold"></i> Ganar Cupones
             </a>
         </div>
 
-        <!-- FOTO PRINCIPAL HERO -->
-        <div class="mt-12 max-w-3xl mx-auto">
-            <div class="bg-white p-4 rounded-[2.5rem] shadow-xl border border-bordercolor overflow-hidden">
-                <img src="assets/img/Manguyá fondo.jpg" alt="Manguyá Néctar Artesanal" class="w-full h-[380px] sm:h-[480px] object-cover rounded-[2rem]">
+        <div class="mt-12 max-w-4xl mx-auto relative">
+            <div class="bg-white p-4 sm:p-6 rounded-[2.5rem] shadow-2xl border border-bordercolor overflow-hidden relative">
+                <img src="assets/img/Manguyá fondo.jpg" alt="Manguyá Néctar Artesanal" class="w-full h-[360px] sm:h-[480px] object-cover rounded-[2rem] animate-float">
             </div>
         </div>
     </section>
 
-    <!-- ORIGEN NATURAL / INGREDIENTES -->
-    <section id="origen" class="py-16 bg-white/60 border-y border-bordercolor mt-10">
+    <!-- INGREDIENTES Y ORIGEN -->
+    <section id="origen" class="py-16 bg-white/70 border-y border-bordercolor">
         <div class="max-w-5xl mx-auto px-6">
             <div class="text-center max-w-xl mx-auto mb-12">
                 <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Fruta Seleccionada</span>
@@ -138,24 +145,22 @@
             </div>
 
             <div class="grid md:grid-cols-2 gap-8">
-                <!-- Mango -->
-                <div class="bg-cream rounded-3xl p-6 border border-bordercolor flex gap-5 items-center">
-                    <img src="assets/img/Mango.webp" alt="Mango Kent" class="w-32 h-32 object-cover rounded-2xl shadow-md shrink-0">
+                <div class="bg-cream rounded-3xl p-6 border border-bordercolor flex gap-5 items-center shadow-sm hover:shadow-md transition">
+                    <img src="assets/img/Mango.webp" alt="Mango Kent" class="w-28 h-28 object-cover rounded-2xl shadow-md shrink-0 animate-float-reverse">
                     <div>
                         <h3 class="font-serif text-xl font-bold mb-1">Mango Kent Premium</h3>
                         <p class="text-xs text-botanical/70 leading-relaxed">
-                            Aporta la textura cremosa, dulzura natural y el cuerpo sedoso característico de Manguyá.
+                            Aporta textura cremosa, dulzura natural y un cuerpo sedoso característico de Manguyá.
                         </p>
                     </div>
                 </div>
 
-                <!-- Maracuyá -->
-                <div class="bg-cream rounded-3xl p-6 border border-bordercolor flex gap-5 items-center">
-                    <img src="assets/img/Maracuyá.jpg" alt="Maracuyá Fresca" class="w-32 h-32 object-cover rounded-2xl shadow-md shrink-0">
+                <div class="bg-cream rounded-3xl p-6 border border-bordercolor flex gap-5 items-center shadow-sm hover:shadow-md transition">
+                    <img src="assets/img/Maracuyá.jpg" alt="Maracuyá Fresca" class="w-28 h-28 object-cover rounded-2xl shadow-md shrink-0 animate-float">
                     <div>
                         <h3 class="font-serif text-xl font-bold mb-1">Maracuyá de Huerto</h3>
                         <p class="text-xs text-botanical/70 leading-relaxed">
-                            Aporta el toque ácido, aromático y equilibrante que despierta tus sentidos en cada sorbo.
+                            Aporta el toque ácido, cítrico y aromático que equilibra la dulzura de la bebida.
                         </p>
                     </div>
                 </div>
@@ -163,66 +168,98 @@
         </div>
     </section>
 
-    <!-- MEZCLADOR INTERACTIVO DE SABOR -->
-    <section id="mezclador" class="py-16 max-w-4xl mx-auto px-6">
-        <div class="bg-mangolight rounded-[2.5rem] p-8 md:p-12 border border-mangogold/20 text-center">
-            <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Ajuste de Sabor</span>
-            <h2 class="font-serif text-3xl font-bold mt-2 mb-3">Mezclador Tropical de Sabor</h2>
-            <p class="text-sm text-botanical/70 max-w-lg mx-auto mb-8">
-                Desliza para calibrar la proporción de Mango Kent vs. Maracuyá y descubre la nota de cata perfecta.
+    <!-- MINIJUEGO INTERACTIVO -->
+    <section id="juego" class="py-16 max-w-4xl mx-auto px-6">
+        <div class="bg-gradient-to-br from-mangolight to-white rounded-[2.5rem] p-8 md:p-10 border border-mangogold/30 text-center shadow-lg relative overflow-hidden">
+            <span class="bg-mangogold text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Minijuego Interactivo</span>
+            <h2 class="font-serif text-3xl font-bold mt-3 mb-2">¡Desafío Ruleta Manguyá! 🥭🎰</h2>
+            <p class="text-xs sm:text-sm text-botanical/70 max-w-md mx-auto mb-6">
+                Gira la ruleta tropical. Si consigues la combinación de Mango y Maracuyá, ¡obtienes **Envío Gratis** en tu pedido!
             </p>
 
-            <div class="max-w-md mx-auto space-y-6">
-                <div>
-                    <div class="flex justify-between font-semibold text-sm mb-2">
-                        <span>🥭 Mango (<span id="mango-val">60</span>%)</span>
-                        <span>Maracuyá (<span id="maracuya-val">40</span>%) 🍋</span>
-                    </div>
-                    <input type="range" id="flavor-slider" min="20" max="80" value="60" class="w-full h-3 bg-white rounded-lg appearance-none cursor-pointer accent-mangogold" oninput="updateMixer(this.value)">
+            <div class="bg-white border border-bordercolor p-6 rounded-3xl max-w-sm mx-auto shadow-inner mb-6">
+                <div class="flex justify-center items-center gap-4 text-4xl py-4 bg-cream rounded-2xl border border-bordercolor mb-4">
+                    <span id="slot1" class="transition-transform">🥭</span>
+                    <span id="slot2" class="transition-transform">❓</span>
+                    <span id="slot3" class="transition-transform">🍋</span>
                 </div>
+                <p id="game-status" class="text-xs font-semibold text-botanical">Presiona el botón para probar tu suerte</p>
+            </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-bordercolor text-left shadow-sm">
+            <button onclick="spinSlots()" id="spin-btn" class="bg-mangogold text-white font-bold px-8 py-3.5 rounded-full shadow-lg hover:bg-mangogold/90 transition flex items-center gap-2 mx-auto">
+                <i data-lucide="dices" class="w-5 h-5"></i> Girar Ruleta Tropical
+            </button>
+
+            <div id="reward-banner" class="hidden mt-6 bg-botanical text-white p-4 rounded-2xl max-w-md mx-auto animate-bounce">
+                <p class="font-bold text-sm">🎉 ¡Felicidades! Has ganado un Cupón</p>
+                <p class="text-xs text-cream/80 mt-1">Código: <span class="font-mono text-mangogold font-bold">ENVIO-GRATIS-MANGUYA</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MEZCLADOR INTERACTIVO -->
+    <section id="mezclador" class="py-12 max-w-4xl mx-auto px-6">
+        <div class="bg-cream rounded-[2.5rem] p-8 md:p-10 border border-bordercolor text-center shadow-sm">
+            <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Personaliza tu nota</span>
+            <h2 class="font-serif text-3xl font-bold mt-1 mb-3">Mezclador Tropical de Sabor</h2>
+            <p class="text-xs sm:text-sm text-botanical/70 max-w-lg mx-auto mb-6">
+                Calibra la proporción exacta de Mango vs. Maracuyá para visualizar su perfil organoléptico.
+            </p>
+
+            <div class="max-w-md mx-auto space-y-5">
+                <div class="flex justify-between font-semibold text-sm">
+                    <span>🥭 Mango Kent (<span id="mango-val">60</span>%)</span>
+                    <span>Maracuyá (<span id="maracuya-val">40</span>%) 🍋</span>
+                </div>
+                <input type="range" id="flavor-slider" min="20" max="80" value="60" class="w-full h-3 bg-white rounded-lg appearance-none cursor-pointer accent-mangogold border border-bordercolor" oninput="updateMixer(this.value)">
+
+                <div class="bg-white p-5 rounded-2xl border border-bordercolor text-left shadow-sm">
                     <h4 class="font-bold text-xs text-mangogold uppercase tracking-wide mb-1" id="mix-title">Fórmula Equilibrada Clásica</h4>
-                    <p class="text-sm text-botanical/80 leading-relaxed" id="mix-desc">Entrada dulce y cremosa de Mango Kent que se funde con un toque acentuado y refrescante de Maracuyá al final.</p>
+                    <p class="text-xs text-botanical/80 leading-relaxed" id="mix-desc">Entrada dulce y cremosa de Mango Kent que se funde con un toque acentuado y refrescante de Maracuyá al final.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PRODUCTOS Y PRESENTACIONES -->
-    <section id="productos" class="py-16 bg-white/60 border-y border-bordercolor">
+    <!-- PRESENTACIONES Y PRODUCTOS -->
+    <section id="productos" class="py-16 bg-white/70 border-y border-bordercolor">
         <div class="max-w-5xl mx-auto px-6">
             <div class="text-center max-w-xl mx-auto mb-12">
                 <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Nuestras Presentaciones</span>
                 <h2 class="font-serif text-3xl sm:text-4xl font-bold mt-2">Elige la dosis de frescura que necesitas</h2>
+                <p class="text-xs text-botanical/60 mt-2">🛵 Calculador de delivery en tiempo real según tu distancia GPS desde nuestro punto en Huaral.</p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
                 <!-- 330ml Personal -->
-                <div class="bg-cream rounded-[2rem] p-8 border border-bordercolor shadow-sm hover:shadow-md transition flex flex-col items-center text-center">
-                    <img src="assets/img/Manguyá.png" alt="Botella Personal 330ml" class="h-60 object-contain mb-6">
+                <div class="bg-cream rounded-[2rem] p-8 border border-bordercolor shadow-sm hover:shadow-md transition flex flex-col items-center text-center group">
+                    <div class="h-56 flex items-center justify-center mb-4">
+                        <img src="assets/img/Manguyá.png" alt="Botella Personal 330ml" class="h-48 object-contain animate-float group-hover:scale-105 transition-transform">
+                    </div>
                     <span class="text-[10px] font-bold uppercase bg-mangolight text-mangogold px-3 py-1 rounded-full mb-2 border border-mangogold/20">Personal</span>
                     <h3 class="font-serif text-2xl font-bold mb-2">Botella Personal 330ml</h3>
                     <p class="text-xs text-botanical/70 mb-6 leading-relaxed">Ideal para acompañar tu almuerzo, llevar a la universidad o refrescarte en cualquier momento del día.</p>
                     <div class="mt-auto flex items-center justify-between w-full pt-4 border-t border-bordercolor">
                         <span class="font-serif text-2xl font-bold text-mangogold">S/ 3.50</span>
-                        <button onclick="addToCart('Botella Personal 330ml', 3.50)" class="bg-botanical text-white px-6 py-2.5 rounded-full font-semibold text-xs hover:bg-opacity-90 transition">
-                            Agregar
+                        <button onclick="addToCart('Botella Personal 330ml', 3.50)" class="bg-botanical text-white px-6 py-2.5 rounded-full font-semibold text-xs hover:bg-opacity-90 transition flex items-center gap-1.5">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Agregar
                         </button>
                     </div>
                 </div>
 
                 <!-- 1 Litro Familiar -->
-                <div class="bg-cream rounded-[2rem] p-8 border border-bordercolor shadow-sm hover:shadow-md transition flex flex-col items-center text-center relative overflow-hidden">
+                <div class="bg-cream rounded-[2rem] p-8 border border-bordercolor shadow-sm hover:shadow-md transition flex flex-col items-center text-center relative overflow-hidden group">
                     <span class="absolute top-4 right-4 bg-mangogold text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">Para Compartir</span>
-                    <img src="assets/img/Manguyá.png" alt="Botella Familiar 1 Litro" class="h-60 object-contain mb-6">
+                    <div class="h-56 flex items-center justify-center mb-4">
+                        <img src="assets/img/Manguyá.png" alt="Botella Familiar 1 Litro" class="h-52 object-contain animate-float-reverse group-hover:scale-105 transition-transform">
+                    </div>
                     <span class="text-[10px] font-bold uppercase bg-mangolight text-mangogold px-3 py-1 rounded-full mb-2 border border-mangogold/20">Familiar</span>
                     <h3 class="font-serif text-2xl font-bold mb-2">Botella Familiar 1 Litro</h3>
                     <p class="text-xs text-botanical/70 mb-6 leading-relaxed">Diseñado para compartir con la familia o amigos. Disfruta del máximo sabor rindiendo varias porciones.</p>
                     <div class="mt-auto flex items-center justify-between w-full pt-4 border-t border-bordercolor">
                         <span class="font-serif text-2xl font-bold text-mangogold">S/ 9.00</span>
-                        <button onclick="addToCart('Botella Familiar 1 Litro', 9.00)" class="bg-botanical text-white px-6 py-2.5 rounded-full font-semibold text-xs hover:bg-opacity-90 transition">
-                            Agregar
+                        <button onclick="addToCart('Botella Familiar 1 Litro', 9.00)" class="bg-botanical text-white px-6 py-2.5 rounded-full font-semibold text-xs hover:bg-opacity-90 transition flex items-center gap-1.5">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Agregar
                         </button>
                     </div>
                 </div>
@@ -230,14 +267,14 @@
         </div>
     </section>
 
-    <!-- PROCESO Y BOTÁNICA -->
+    <!-- PROCESO Y PLANTAS -->
     <section class="py-16 max-w-5xl mx-auto px-6">
         <div class="grid md:grid-cols-2 gap-10 items-center">
             <div>
                 <span class="text-mangogold font-semibold text-xs uppercase tracking-widest">Elaboración Artesanal</span>
                 <h2 class="font-serif text-3xl font-bold mt-2 mb-4">Hecho a mano, lote por lote</h2>
-                <p class="text-sm text-botanical/80 leading-relaxed mb-6">
-                    Prensamos y licuamos la pulpa de mango y maracuyá a baja velocidad para mantener intactas sus propiedades y su sabor original.
+                <p class="text-xs sm:text-sm text-botanical/80 leading-relaxed mb-6">
+                    Prensamos y mezclamos la pulpa de mango y maracuyá a baja velocidad para mantener intactas sus propiedades y su sabor original.
                 </p>
                 <div class="grid grid-cols-2 gap-4">
                     <img src="assets/img/Planta mango.webp" alt="Planta de Mango" class="rounded-2xl h-36 w-full object-cover shadow-sm border border-bordercolor">
@@ -250,330 +287,165 @@
         </div>
     </section>
 
-    <!-- PREGUNTAS FRECUENTES -->
-    <section id="faq" class="py-16 max-w-3xl mx-auto px-6">
-        <div class="text-center mb-10">
-            <h2 class="font-serif text-3xl font-bold">Resolvemos tus dudas</h2>
-            <p class="text-sm text-botanical/70 mt-2">Todo lo que necesitas saber antes de tu primer sorbo.</p>
+    <!-- FOOTER INSTITUCIONAL -->
+    <footer class="bg-botanical text-cream pt-12 pb-8 border-t border-botanical/80">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8 pb-8 border-b border-white/10">
+                <div>
+                    <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-10 w-auto object-contain mb-4 filter brightness-200">
+                    <p class="text-xs text-cream/70 leading-relaxed">
+                        Néctar artesanal elaborado con ingredientes 100% naturales. Proyecto desarrollado para la asignatura de Administración y Marketing.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-white mb-3 uppercase tracking-wider">Punto de Despacho</h4>
+                    <p class="text-xs text-cream/70 leading-relaxed mb-2">📍 Av. Julio C. Tello 151, Esquivel — Huaral</p>
+                    <p class="text-xs text-cream/70 leading-relaxed">⏰ Lunes a Sábado: 8:00 AM - 7:00 PM</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-white mb-3 uppercase tracking-wider">Métodos de Pago</h4>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="bg-white/10 px-3 py-1 rounded-full">Yape</span>
+                        <span class="bg-white/10 px-3 py-1 rounded-full">Plin</span>
+                        <span class="bg-white/10 px-3 py-1 rounded-full">Pago Contraentrega</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-6 text-center text-xs text-cream/50">
+                <p>&copy; 2026 Manguyá SAC. Todos los derechos reservados.</p>
+            </div>
         </div>
-
-        <div class="space-y-4">
-            <details class="bg-white rounded-2xl p-5 border border-bordercolor group cursor-pointer">
-                <summary class="font-semibold flex justify-between items-center list-none text-sm">
-                    <span>¿Manguyá tiene conservantes o azúcares añadidos?</span>
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-mangogold"></i>
-                </summary>
-                <p class="text-xs text-botanical/80 mt-3 leading-relaxed">
-                    No. Es un producto 100% natural libre de preservantes químicos, colorantes y azúcares procesados.
-                </p>
-            </details>
-
-            <details class="bg-white rounded-2xl p-5 border border-bordercolor group cursor-pointer">
-                <summary class="font-semibold flex justify-between items-center list-none text-sm">
-                    <span>¿Cuáles son los medios de pago disponibles?</span>
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-mangogold"></i>
-                </summary>
-                <p class="text-xs text-botanical/80 mt-3 leading-relaxed">
-                    Aceptamos transferencias mediante Yape y Plin, además de Pago Contraentrega en efectivo.
-                </p>
-            </details>
-
-            <details class="bg-white rounded-2xl p-5 border border-bordercolor group cursor-pointer">
-                <summary class="font-semibold flex justify-between items-center list-none text-sm">
-                    <span>¿Hacen envíos a domicilio?</span>
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-mangogold"></i>
-                </summary>
-                <p class="text-xs text-botanical/80 mt-3 leading-relaxed">
-                    Sí, contamos con entrega rápida local en Huaral y envíos programados hacia Lima.
-                </p>
-            </details>
-        </div>
-    </section>
+    </footer>
 
     <!-- MODAL DE CHECKOUT / CARRITO -->
-    <div id="cart-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-cream rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 relative border border-bordercolor">
-            <button onclick="closeCart()" class="absolute top-6 right-6 p-2 rounded-full hover:bg-black/5">
+    <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-cream rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative border border-bordercolor shadow-2xl">
+            <button onclick="closeCart()" class="absolute top-6 right-6 p-2 rounded-full hover:bg-black/5 text-botanical">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
 
-            <h3 class="font-serif text-2xl font-bold mb-6">Tu Pedido Manguyá</h3>
+            <h3 class="font-serif text-2xl font-bold mb-4">Tu Pedido Manguyá</h3>
 
-            <div id="cart-items-list" class="bg-white rounded-2xl p-4 border border-bordercolor mb-6 space-y-3"></div>
+            <div id="cart-items-list" class="bg-white rounded-2xl p-4 border border-bordercolor mb-4 space-y-3"></div>
 
             <form id="order-form" onsubmit="handleCheckout(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-botanical/70 mb-1">Nombre Completo *</label>
-                    <input type="text" id="cust-name" required class="w-full bg-white border border-bordercolor rounded-xl p-3 text-sm focus:outline-none focus:border-botanical" placeholder="Ej. Ana Trujillo">
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase text-botanical/70 mb-1">Nombre Completo *</label>
+                        <input type="text" id="cust-name" required class="w-full bg-white border border-bordercolor rounded-xl p-3 text-xs focus:outline-none focus:border-botanical" placeholder="Ej. Ana Trujillo">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase text-botanical/70 mb-1">Teléfono / WhatsApp *</label>
+                        <input type="tel" id="cust-phone" required class="w-full bg-white border border-bordercolor rounded-xl p-3 text-xs focus:outline-none focus:border-botanical" placeholder="Ej. 918591764">
+                    </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase text-botanical/70 mb-1">Teléfono / WhatsApp *</label>
-                    <input type="tel" id="cust-phone" required class="w-full bg-white border border-bordercolor rounded-xl p-3 text-sm focus:outline-none focus:border-botanical" placeholder="Ej. 918591764">
+                    <label class="block text-[11px] font-bold uppercase text-botanical/70 mb-1">Dirección de Entrega *</label>
+                    <input type="text" id="cust-address" required class="w-full bg-white border border-bordercolor rounded-xl p-3 text-xs focus:outline-none focus:border-botanical" placeholder="Haz clic en el mapa para autocompletar la dirección">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase text-botanical/70 mb-1">Dirección de Entrega *</label>
-                    <input type="text" id="cust-address" required class="w-full bg-white border border-bordercolor rounded-xl p-3 text-sm focus:outline-none focus:border-botanical" placeholder="Ej. Jr. General Varela, Huaral">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase text-botanical/70 mb-1">Ubica tu punto de entrega en el mapa</label>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-[11px] font-bold uppercase text-botanical/70">Marca tu casa en el mapa de Huaral</label>
+                        <span class="text-[10px] text-mangogold font-semibold">(Calcula distancia y tarifa exacta)</span>
+                    </div>
                     <div id="checkout-map"></div>
-                    <p class="text-xs text-botanical/60 mt-1">Coordenadas: <span id="map-coords" class="font-mono">Sin seleccionar</span></p>
+                    <p class="text-[10px] text-botanical/60 mt-1">Distancia estimada desde Tello 151: <span id="dist-km" class="font-bold text-botanical">0.0 km</span></p>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase text-botanical/70 mb-1">Método de Pago *</label>
-                    <select id="pay-method" class="w-full bg-white border border-bordercolor rounded-xl p-3 text-sm focus:outline-none focus:border-botanical">
+                    <label class="block text-[11px] font-bold uppercase text-botanical/70 mb-1">Método de Pago *</label>
+                    <select id="pay-method" class="w-full bg-white border border-bordercolor rounded-xl p-3 text-xs focus:outline-none focus:border-botanical">
                         <option value="Yape / Plin">Yape / Plin</option>
                         <option value="Pago Contraentrega">Pago Contraentrega (Efectivo)</option>
                     </select>
                 </div>
 
-                <button type="submit" class="w-full bg-mangogold text-white font-bold py-4 rounded-full shadow-lg hover:bg-mangogold/90 transition text-center flex items-center justify-center gap-2 mt-6">
-                    <i data-lucide="check-circle" class="w-5 h-5"></i> Generar Resumen y Enviar
+                <button type="submit" class="w-full bg-mangogold text-white font-bold py-3.5 rounded-full shadow-lg hover:bg-mangogold/90 transition text-center flex items-center justify-center gap-2 mt-4 text-sm">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i> Generar Resumen y Enviar Pedido
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL COMPROBANTE -->
-    <div id="receipt-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center border border-bordercolor relative">
-            <div class="w-16 h-16 bg-mangolight text-mangogold rounded-full flex items-center justify-center mx-auto mb-4">
-                <i data-lucide="check" class="w-8 h-8"></i>
+    <!-- MODAL DE COMPROBANTE Y CONFIRMACIÓN -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center border border-bordercolor relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            
+            <button onclick="closeReceipt()" class="absolute top-4 right-4 p-2 rounded-full hover:bg-black/5">
+                <i data-lucide="x" class="w-5 h-5 text-botanical"></i>
+            </button>
+
+            <!-- CONTENIDO IMPRESO PARA PDF -->
+            <div id="printable-receipt" class="bg-cream p-5 rounded-2xl text-left border border-bordercolor mb-4 space-y-3">
+                <div class="text-center border-b border-bordercolor pb-3">
+                    <img src="assets/img/Logo.png" alt="Manguyá Logo" class="h-10 mx-auto object-contain mb-1">
+                    <p class="text-[10px] text-botanical/60 uppercase font-bold tracking-wider">Comprobante de Pedido #<span id="order-num"></span></p>
+                    <p class="text-[9px] text-botanical/50" id="order-date"></p>
+                </div>
+
+                <div class="text-xs space-y-1 font-sans">
+                    <p><strong>Cliente:</strong> <span id="rec-name"></span></p>
+                    <p><strong>Teléfono:</strong> <span id="rec-phone"></span></p>
+                    <p><strong>Dirección:</strong> <span id="rec-address"></span></p>
+                    <p><strong>Distancia Delivery:</strong> <span id="rec-dist"></span> km</p>
+                    <p><strong>Método de Pago:</strong> <span id="rec-method"></span></p>
+                </div>
+
+                <div class="border-t border-b border-bordercolor py-2 space-y-1 text-xs" id="rec-items"></div>
+
+                <div class="text-xs space-y-1 text-right">
+                    <p class="text-botanical/70">Subtotal: <span id="rec-subtotal"></span></p>
+                    <p class="text-botanical/70">Envío por Distancia: <span id="rec-shipping"></span></p>
+                    <p class="font-bold text-sm text-mangogold">TOTAL: <span id="rec-total"></span></p>
+                </div>
             </div>
 
-            <h3 class="font-serif text-2xl font-bold text-botanical mb-1">¡Solicitud Generada!</h3>
-            <p class="text-xs text-botanical/60 mb-6">Comprobante de Pedido #<span id="order-num"></span></p>
-
-            <div id="receipt-details" class="bg-cream p-4 rounded-2xl text-left text-xs space-y-2 mb-6 font-mono border border-bordercolor"></div>
-
-            <div class="space-y-3">
-                <button onclick="downloadPDF()" class="w-full bg-botanical text-white font-semibold py-3 rounded-full text-sm hover:bg-opacity-90 transition flex items-center justify-center gap-2">
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="space-y-2.5">
+                <button onclick="downloadPDF()" class="w-full bg-botanical text-white font-semibold py-3 rounded-full text-xs hover:bg-opacity-90 transition flex items-center justify-center gap-2">
                     <i data-lucide="download" class="w-4 h-4"></i> Descargar Comprobante PDF
                 </button>
-                <a id="wa-btn-link" target="_blank" class="w-full bg-[#25D366] text-white font-semibold py-3 rounded-full text-sm hover:bg-opacity-90 transition flex items-center justify-center gap-2">
-                    <i data-lucide="message-circle" class="w-4 h-4"></i> Enviar Mensaje a WhatsApp (+51 918591764)
+                <a id="wa-btn-link" target="_blank" class="w-full bg-[#25D366] text-white font-semibold py-3 rounded-full text-xs hover:bg-opacity-90 transition flex items-center justify-center gap-2">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i> Enviar Pedido a WhatsApp
                 </a>
-                <button onclick="closeReceipt()" class="w-full text-xs text-botanical/60 font-semibold py-2">
-                    Cerrar
-                </button>
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- LÓGICA JAVASCRIPT -->
     <script>
         lucide.createIcons();
 
         let cart = [];
-        let map, marker, selectedLat = -11.4956, selectedLng = -77.2075;
+        let couponApplied = false;
+        let map, marker;
+        
+        // Coordenadas Origen: Av. Julio C. Tello 151, Esquivel - Huaral
+        const ORIGIN_LAT = -11.496321;
+        const ORIGIN_LNG = -77.211447;
+
+        let selectedLat = ORIGIN_LAT;
+        let selectedLng = ORIGIN_LNG;
+        let currentDistanceKm = 0.5; // Distancia inicial estimada
         let currentOrderData = null;
 
-        function addToCart(name, price) {
-            const item = cart.find(i => i.name === name);
-            if (item) {
-                item.qty++;
-            } else {
-                cart.push({ name, price, qty: 1 });
-            }
-            updateCartUI();
-            openCart();
+        // FÓRMULA HAVERSINE (DISTANCIA GPS REAL)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radio de la tierra en km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
         }
 
-        function updateCartUI() {
-            const badge = document.getElementById('cart-badge');
-            const totalQty = cart.reduce((acc, i) => acc + i.qty, 0);
-            badge.innerText = totalQty;
+        // CÁLCULO DE COSTO DE ENVÍO POR DISTANCIA
+        function calculateShippingCost(distanceKm, subtotal) {
+            if (couponApplied) return 0.00; // Cupón ruleta
 
-            const list = document.getElementById('cart-items-list');
-            if (cart.length === 0) {
-                list.innerHTML = '<p class="text-sm text-botanical/60 text-center py-4">Tu carrito está vacío.</p>';
-                return;
-            }
-
-            let subtotal = 0;
-            list.innerHTML = cart.map(i => {
-                const total = i.price * i.qty;
-                subtotal += total;
-                return `
-                    <div class="flex justify-between items-center text-sm">
-                        <div>
-                            <p class="font-bold">${i.name}</p>
-                            <p class="text-xs text-botanical/60">S/ ${i.price.toFixed(2)} x ${i.qty}</p>
-                        </div>
-                        <span class="font-bold text-mangogold">S/ ${total.toFixed(2)}</span>
-                    </div>
-                `;
-            }).join('') + `
-                <div class="pt-3 border-t border-bordercolor flex justify-between font-bold text-base">
-                    <span>Total:</span>
-                    <span class="text-mangogold">S/ ${subtotal.toFixed(2)}</span>
-                </div>
-            `;
-        }
-
-        function openCart() {
-            document.getElementById('cart-modal').classList.remove('hidden');
-            setTimeout(initMap, 200);
-        }
-
-        function closeCart() {
-            document.getElementById('cart-modal').classList.add('hidden');
-        }
-
-        function initMap() {
-            if (map) return;
-            map = L.map('checkout-map').setView([selectedLat, selectedLng], 14);
-            
-            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-                attribution: 'Tiles &copy; Esri'
-            }).addTo(map);
-
-            marker = L.marker([selectedLat, selectedLng], { draggable: true }).addTo(map);
-
-            function updateCoords(lat, lng) {
-                selectedLat = lat.toFixed(6);
-                selectedLng = lng.toFixed(6);
-                document.getElementById('map-coords').innerText = `${selectedLat}, ${selectedLng}`;
-            }
-
-            marker.on('dragend', function (e) {
-                const position = marker.getLatLng();
-                updateCoords(position.lat, position.lng);
-            });
-
-            map.on('click', function (e) {
-                marker.setLatLng(e.latlng);
-                updateCoords(e.latlng.lat, e.latlng.lng);
-            });
-
-            updateCoords(selectedLat, selectedLng);
-        }
-
-        function updateMixer(val) {
-            const mango = val;
-            const maracuya = 100 - val;
-            document.getElementById('mango-val').innerText = mango;
-            document.getElementById('maracuya-val').innerText = maracuya;
-
-            const title = document.getElementById('mix-title');
-            const desc = document.getElementById('mix-desc');
-
-            if (val > 65) {
-                title.innerText = 'Perfil Dulce & Cremoso';
-                desc.innerText = 'Predominancia limpia del Mango Kent, textura de cuerpo suave e ideal para paladares dulces.';
-            } else if (val < 45) {
-                title.innerText = 'Perfil Cítrico Refrescante';
-                desc.innerText = 'Sabor vibrante liderado por la Maracuyá, excelente para acompañar días calurosos.';
-            } else {
-                title.innerText = 'Fórmula Equilibrada Clásica';
-                desc.innerText = 'Entrada dulce y cremosa de Mango Kent que se funde con un toque acentuado y refrescante de Maracuyá al final.';
-            }
-        }
-
-        function handleCheckout(e) {
-            e.preventDefault();
-            if (cart.length === 0) {
-                alert('Añade al menos un producto al carrito');
-                return;
-            }
-
-            const name = document.getElementById('cust-name').value;
-            const phone = document.getElementById('cust-phone').value;
-            const address = document.getElementById('cust-address').value;
-            const method = document.getElementById('pay-method').value;
-
-            const total = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-            const orderNum = Math.floor(1000 + Math.random() * 9000);
-
-            currentOrderData = {
-                orderNum, name, phone, address, method, total,
-                items: [...cart],
-                lat: selectedLat, lng: selectedLng
-            };
-
-            document.getElementById('order-num').innerText = orderNum;
-            document.getElementById('receipt-details').innerHTML = `
-                <p><strong>Cliente:</strong> ${name}</p>
-                <p><strong>Teléfono:</strong> ${phone}</p>
-                <p><strong>Dirección:</strong> ${address}</p>
-                <p><strong>Método de Pago:</strong> ${method}</p>
-                <p><strong>GPS:</strong> ${selectedLat}, ${selectedLng}</p>
-                <hr class="my-2 border-bordercolor">
-                ${cart.map(i => `<p>${i.qty}x ${i.name} - S/ ${(i.price * i.qty).toFixed(2)}</p>`).join('')}
-                <hr class="my-2 border-bordercolor">
-                <p class="font-bold text-sm">TOTAL: S/ ${total.toFixed(2)}</p>
-            `;
-
-            const itemsText = cart.map(i => `• ${i.qty}x ${i.name} (S/ ${(i.price * i.qty).toFixed(2)})`).join('\n');
-            const mapUrl = `https://www.google.com/maps?q=${selectedLat},${selectedLng}`;
-            
-            const rawMessage = `¡NUEVO PEDIDO MANGUYÁ! 🥭🍋\n\n` +
-                `*Orden #${orderNum}*\n` +
-                `*Cliente:* ${name}\n` +
-                `*Teléfono:* ${phone}\n` +
-                `*Dirección:* ${address}\n` +
-                `*Método de Pago:* ${method}\n\n` +
-                `*Detalle del Pedido:*\n${itemsText}\n\n` +
-                `*TOTAL:* S/ ${total.toFixed(2)}\n\n` +
-                `*Ubicación GPS:* ${mapUrl}`;
-
-            const encodedMessage = encodeURIComponent(rawMessage);
-            document.getElementById('wa-btn-link').href = `https://wa.me/51918591764?text=${encodedMessage}`;
-
-            closeCart();
-            document.getElementById('receipt-modal').classList.remove('hidden');
-
-            cart = [];
-            updateCartUI();
-        }
-
-        function closeReceipt() {
-            document.getElementById('receipt-modal').classList.add('hidden');
-        }
-
-        function downloadPDF() {
-            if (!currentOrderData) return;
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(18);
-            doc.text('MANGUYÁ - Comprobante de Pedido', 15, 20);
-
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'normal');
-            doc.text(`Orden #: ${currentOrderData.orderNum}`, 15, 30);
-            doc.text(`Cliente: ${currentOrderData.name}`, 15, 36);
-            doc.text(`Teléfono: ${currentOrderData.phone}`, 15, 42);
-            doc.text(`Dirección: ${currentOrderData.address}`, 15, 48);
-            doc.text(`Método de Pago: ${currentOrderData.method}`, 15, 54);
-            doc.text(`Coordenadas GPS: ${currentOrderData.lat}, ${currentOrderData.lng}`, 15, 60);
-
-            doc.line(15, 66, 195, 66);
-
-            let y = 74;
-            doc.setFont('helvetica', 'bold');
-            doc.text('Detalle del Pedido:', 15, y);
-            y += 8;
-
-            doc.setFont('helvetica', 'normal');
-            currentOrderData.items.forEach(i => {
-                doc.text(`${i.qty}x ${i.name} - S/ ${(i.price * i.qty).toFixed(2)}`, 15, y);
-                y += 6;
-            });
-
-            doc.line(15, y, 195, y);
-            y += 8;
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            doc.text(`TOTAL: S/ ${currentOrderData.total.toFixed(2)}`, 15, y);
-
-            doc.save(`Comprobante_Manguya_${currentOrderData.orderNum}.pdf`);
-        }
-    </script>
-</body>
-</html>
+            // Tarifa base S/ 2.00 hasta 1km + S/ 0.80
