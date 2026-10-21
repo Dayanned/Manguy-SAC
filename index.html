@@ -798,7 +798,7 @@
                 date: new Date().toLocaleString('es-PE'),
                 name, phone, address,
                 dist: currentDistanceKm.toFixed(2),
-                coords: `${pos.lat.toFixed(5)},${pos.lng.toFixed(5)}`,
+                coords: `${pos.lat.toFixed(5)}, ${pos.lng.toFixed(5)}`,
                 paymentMethod, items: [...cart], subtotal, deliveryFee, total
             };
 
@@ -812,7 +812,7 @@
 
             document.getElementById('receipt-items-list').innerHTML = currentOrderData.items.map(item => `
                 <div class="flex justify-between">
-                    <span>${item.quantity}x${item.name}</span>
+                    <span>${item.quantity}x ${item.name}</span>
                     <span class="font-bold">S/ ${(item.price * item.quantity).toFixed(2)}</span>
                 </div>
             `).join('');
@@ -845,4 +845,23 @@
                 `🛒 *DETALLE DEL PEDIDO:*\n${itemsText}\n\n` +
                 `💵 *Subtotal:* S/ ${currentOrderData.subtotal.toFixed(2)}\n` +
                 `🛵 *Delivery:* ${currentOrderData.deliveryFee === 0 ? 'GRATIS' : 'S/ ' + currentOrderData.deliveryFee.toFixed(2)}\n` +
-                `💰 *TOTAL A PAGAR:* S/ ${currentOrderData.
+                `💰 *TOTAL A PAGAR:* S/ ${currentOrderData.total.toFixed(2)}`;
+
+            const phone = "51918591764";
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(rawMessage)}`, '_blank');
+        }
+
+        function downloadPDFReceipt() {
+            const element = document.getElementById('printable-receipt');
+            const opt = {
+                margin:       0.4,
+                filename:     `Comprobante_Manguya_${currentOrderData ? currentOrderData.id : '001'}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+</html>
