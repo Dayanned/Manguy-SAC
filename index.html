@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manguyá — El Sabor del Paraíso Tropical</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -1041,17 +1042,16 @@
         function buildWhatsAppOrderMessage(order) {
             const money = value => `S/ ${Number(value || 0).toFixed(2)}`;
             const itemsText = (order.items || [])
-                .map(item => `- ${item.quantity} x ${item.name}: ${money(item.price * item.quantity)}`)
+                .map(item => `  ${item.quantity} x ${item.name} - ${money(item.price * item.quantity)}`)
                 .join('\n');
-
-            // Mensaje de texto plano: sin emojis ni caracteres decorativos que puedan
-            // convertirse en el caracter de reemplazo ( ) en algunos dispositivos.
-            return [
-                'MANGUYA - COMPROBANTE DE PEDIDO',
+            const lines = [
+                'MANGUYA | COMPROBANTE DE PEDIDO',
+                '================================',
                 `Pedido Nro.: ${order.id}`,
                 `Fecha: ${order.date}`,
                 '',
                 'DATOS DEL CLIENTE',
+                '-----------------',
                 `Nombre: ${order.name}`,
                 `Telefono: ${order.phone}`,
                 `Direccion: ${order.address}`,
@@ -1061,46 +1061,130 @@
                 `Metodo de pago: ${order.paymentMethod}`,
                 '',
                 'DETALLE DEL PEDIDO',
-                itemsText || 'Sin productos',
+                '------------------',
+                itemsText || '  Sin productos',
                 '',
+                'RESUMEN DEL PAGO',
+                '----------------',
                 `Subtotal: ${money(order.subtotal)}`,
                 `Delivery antes del descuento: ${money(order.deliveryBeforeDiscount)}`,
-                ...(Number(order.deliveryDiscount) > 0
-                    ? [`Descuento en delivery (${order.discountReason || 'promocion'}): - ${money(order.deliveryDiscount)}`]
-                    : []),
+                ...(Number(order.deliveryDiscount) > 0 ? [`Descuento en delivery (${order.discountReason || 'promocion'}): - ${money(order.deliveryDiscount)}`] : []),
                 `Delivery final: ${money(order.deliveryFee)}`,
                 `TOTAL A PAGAR: ${money(order.total)}`,
                 '',
                 'Gracias por elegir Manguya.'
-            ].join('\n');
+            ];
+            return lines.join('\n');
         }
 
         function downloadReceipt() {
             if (!currentOrderData) {
-                alert('Primero genera un pedido para guardar el comprobante.');
+                alert('Primero genera un pedido para descargar el comprobante.');
                 return;
             }
+            if (!window.jspdf || !window.jspdf.jsPDF) {
+                alert('No se pudo cargar el generador PDF. Comprueba tu conexion a internet y vuelve a intentarlo.');
+                return;
+            }
+
             const order = currentOrderData;
-            const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-            }[ch]));
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const margin = 18;
+            const contentWidth = pageWidth - margin * 2;
+            let y = 20;
             const money = value => `S/ ${Number(value || 0).toFixed(2)}`;
-            const items = (order.items || []).map(item =>
-                `<tr><td>${escapeHtml(item.quantity)} x ${escapeHtml(item.name)}</td><td>${money(item.price * item.quantity)}</td></tr>`
-            ).join('');
-            const discount = Number(order.deliveryDiscount) > 0
-                ? `<p>Descuento en delivery (${escapeHtml(order.discountReason || 'promocion')}): - ${money(order.deliveryDiscount)}</p>` : '';
-            const receiptHtml = `<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Comprobante Manguya #${escapeHtml(order.id)}</title><style>
-                @page{size:A4;margin:18mm}*{box-sizing:border-box}body{font:14px Arial,Helvetica,sans-serif;color:#2d402b;max-width:700px;margin:0 auto;padding:18px;background:white}h1{text-align:center;color:#b95d1b;margin-bottom:4px}.subtitle{text-align:center;color:#555;margin-top:0}.section{font-weight:bold;border-bottom:1px solid #ccc;padding-bottom:5px;margin-top:22px}.data p{margin:6px 0;overflow-wrap:anywhere}table{width:100%;border-collapse:collapse;margin:18px 0}th,td{padding:10px 6px;border-bottom:1px solid #ddd;text-align:left}th:last-child,td:last-child{text-align:right;white-space:nowrap}.totals{text-align:right;line-height:1.7}.total{font-size:18px;font-weight:bold;color:#b95d1b;border-top:2px solid #b95d1b;padding-top:8px}.thanks{text-align:center;margin-top:30px;padding:14px;background:#f8f1e5;border-radius:8px}@media print{body{padding:0}}
-                </style></head><body><h1>MANGUYA</h1><p class="subtitle">COMPROBANTE DE PEDIDO #${escapeHtml(order.id)}<br>${escapeHtml(order.date)}</p><div class="section">DATOS DEL CLIENTE</div><div class="data"><p><b>Nombre:</b> ${escapeHtml(order.name)}</p><p><b>Telefono:</b> ${escapeHtml(order.phone)}</p><p><b>Direccion:</b> ${escapeHtml(order.address)}</p><p><b>Distancia:</b> ${escapeHtml(order.dist)} km</p><p><b>Metodo de pago:</b> ${escapeHtml(order.paymentMethod)}</p><p><b>Ubicacion GPS:</b> https://maps.google.com/?q=${escapeHtml(order.coords)}</p><p><b>Coordenadas:</b> ${escapeHtml(order.coords)}</p></div><div class="section">DETALLE DEL PEDIDO</div><table><thead><tr><th>Producto</th><th>Importe</th></tr></thead><tbody>${items}</tbody></table><div class="totals"><p>Subtotal: ${money(order.subtotal)}</p><p>Delivery antes del descuento: ${money(order.deliveryBeforeDiscount)}</p>${discount}<p>Delivery final: ${money(order.deliveryFee)}</p><p class="total">TOTAL A PAGAR: ${money(order.total)}</p></div><div class="thanks">Gracias por elegir Manguya.</div><script>window.addEventListener('load',()=>{setTimeout(()=>window.print(),300)});<\/script></body></html>`;
-            const printWindow = window.open('', '_blank');
-            if (!printWindow) {
-                alert('El navegador bloqueo la ventana del comprobante. Permite las ventanas emergentes y vuelve a pulsar Guardar comprobante como PDF.');
-                return;
+            const safe = value => String(value ?? '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
+            const addLine = (label, value, options = {}) => {
+                const text = `${label}${safe(value)}`;
+                const lines = pdf.splitTextToSize(text, contentWidth);
+                pdf.setFont('helvetica', options.bold ? 'bold' : 'normal');
+                pdf.setFontSize(options.size || 10.5);
+                pdf.setTextColor(...(options.color || [45, 64, 43]));
+                pdf.text(lines, margin, y);
+                y += lines.length * (options.leading || 5.5);
+            };
+            const section = title => {
+                y += 5;
+                pdf.setDrawColor(220, 211, 195);
+                pdf.line(margin, y, pageWidth - margin, y);
+                y += 7;
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(11);
+                pdf.setTextColor(45, 64, 43);
+                pdf.text(title, margin, y);
+                y += 7;
+            };
+
+            pdf.setFillColor(250, 247, 242);
+            pdf.roundedRect(margin - 3, 12, contentWidth + 6, 27, 3, 3, 'F');
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(21);
+            pdf.setTextColor(185, 93, 27);
+            pdf.text('MANGUYA', pageWidth / 2, 22, { align: 'center' });
+            pdf.setFontSize(10);
+            pdf.setTextColor(65, 65, 65);
+            pdf.text(`COMPROBANTE DE PEDIDO Nro. ${safe(order.id)}`, pageWidth / 2, 29, { align: 'center' });
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(9);
+            pdf.text(safe(order.date), pageWidth / 2, 35, { align: 'center' });
+            y = 49;
+
+            section('DATOS DEL CLIENTE');
+            addLine('Nombre: ', order.name);
+            addLine('Telefono: ', order.phone);
+            addLine('Direccion: ', order.address);
+            addLine('Distancia: ', `${order.dist} km`);
+            addLine('Metodo de pago: ', order.paymentMethod);
+            addLine('Ubicacion GPS: ', `https://maps.google.com/?q=${order.coords}`);
+            addLine('Coordenadas: ', order.coords);
+
+            section('DETALLE DEL PEDIDO');
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(9.5);
+            pdf.text('PRODUCTO', margin, y);
+            pdf.text('IMPORTE', pageWidth - margin, y, { align: 'right' });
+            y += 3;
+            pdf.setDrawColor(220, 211, 195);
+            pdf.line(margin, y, pageWidth - margin, y);
+            y += 6;
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(10);
+            for (const item of (order.items || [])) {
+                const productLines = pdf.splitTextToSize(`${safe(item.quantity)} x ${safe(item.name)}`, contentWidth - 35);
+                pdf.text(productLines, margin, y);
+                pdf.text(money(item.price * item.quantity), pageWidth - margin, y, { align: 'right' });
+                y += Math.max(productLines.length * 5, 6);
+                if (y > 255) { pdf.addPage(); y = 20; }
             }
-            printWindow.document.open();
-            printWindow.document.write(receiptHtml);
-            printWindow.document.close();
+
+            section('RESUMEN DEL PAGO');
+            const totalLine = (label, value, bold = false) => {
+                pdf.setFont('helvetica', bold ? 'bold' : 'normal');
+                pdf.setFontSize(bold ? 13 : 10.5);
+                pdf.setTextColor(...(bold ? [185, 93, 27] : [45, 64, 43]));
+                pdf.text(label, margin, y);
+                pdf.text(money(value), pageWidth - margin, y, { align: 'right' });
+                y += bold ? 8 : 6;
+            };
+            totalLine('Subtotal', order.subtotal);
+            totalLine('Delivery antes del descuento', order.deliveryBeforeDiscount);
+            if (Number(order.deliveryDiscount) > 0) totalLine(`Descuento en delivery (${safe(order.discountReason || 'promocion')})`, -Number(order.deliveryDiscount));
+            totalLine('Delivery final', order.deliveryFee);
+            y += 2;
+            pdf.setDrawColor(185, 93, 27);
+            pdf.setLineWidth(0.6);
+            pdf.line(margin, y, pageWidth - margin, y);
+            y += 8;
+            totalLine('TOTAL A PAGAR', order.total, true);
+            y += 8;
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(10);
+            pdf.setTextColor(90, 90, 90);
+            pdf.text('Gracias por elegir Manguya.', pageWidth / 2, y, { align: 'center' });
+
+            pdf.save(`Manguya_Comprobante_${safe(order.id).replace(/[^a-zA-Z0-9_-]/g, '')}.pdf`);
         }
 
         function sendToWhatsApp() {
