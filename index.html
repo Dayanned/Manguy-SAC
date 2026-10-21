@@ -999,11 +999,25 @@
 
             // El pedido queda guardado en currentOrderData antes de vaciar el carrito.
             // Así el comprobante y WhatsApp conservan el detalle original.
+            // El descuento ya quedó guardado en currentOrderData para este pedido.
+            // Reiniciarlo aquí evita que se herede en la siguiente compra.
             cart = [];
+            discountApplied = false;
+            const discountBanner = document.getElementById('cart-discount-banner');
+            if (discountBanner) discountBanner.classList.add('hidden');
             updateCartUI();
             toggleCartModal(false);
             const receiptModal = document.getElementById('receipt-modal');
             if (receiptModal) receiptModal.classList.remove('hidden');
+
+            // Abre WhatsApp con todos los datos al generar el pedido.
+            // El navegador/WhatsApp requiere que la persona pulse Enviar para confirmar.
+            const whatsappPhone = '51930247419';
+            const whatsappMessage = buildWhatsAppOrderMessage(currentOrderData);
+            window.open(
+                `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(whatsappMessage)}`,
+                '_blank'
+            );
         }
 
         function closeReceiptModal() {
@@ -1011,21 +1025,16 @@
             if (receiptModal) receiptModal.classList.add('hidden');
         }
 
-        function sendToWhatsApp() {
-            const order = currentOrderData;
-            if (!order) {
-                alert('Primero genera un pedido para enviar el ticket.');
-                return;
-            }
-
+        function buildWhatsAppOrderMessage(order) {
             const money = value => `S/ ${Number(value || 0).toFixed(2)}`;
-            const itemsText = order.items
+            const itemsText = (order.items || [])
                 .map(item => `• ${item.quantity} x ${item.name} — ${money(item.price * item.quantity)}`)
-                .join('\n');
+                .join('
+');
 
-            const message = [
-                '🥭 *MANGUYÁ — TICKET DE PEDIDO*',
-                `Pedido N.º ${order.id}`,
+            return [
+                '🥭 *MANGUYÁ — NUEVO PEDIDO*',
+                `Pedido N.º: ${order.id}`,
                 `Fecha: ${order.date}`,
                 '',
                 '*DATOS DEL CLIENTE*',
@@ -1033,162 +1042,34 @@
                 `Teléfono: ${order.phone}`,
                 `Dirección: ${order.address}`,
                 `Distancia: ${order.dist} km`,
-                `Ubicación: https://maps.google.com/?q=${order.coords}`,
-                `Pago: ${order.paymentMethod}`,
+                `Ubicación GPS: https://maps.google.com/?q=${order.coords}`,
+                `Coordenadas: ${order.coords}`,
+                `Método de pago: ${order.paymentMethod}`,
                 '',
-                '*PRODUCTOS*',
-                itemsText,
+                '*DETALLE DEL PEDIDO*',
+                itemsText || 'Sin productos',
                 '',
                 `Subtotal: ${money(order.subtotal)}`,
-                `Delivery: ${money(order.deliveryBeforeDiscount)}`,
-                ...(order.deliveryDiscount > 0
-                    ? [`Descuento en delivery: - ${money(order.deliveryDiscount)}`]
+                `Delivery antes del descuento: ${money(order.deliveryBeforeDiscount)}`,
+                ...(Number(order.deliveryDiscount) > 0
+                    ? [`Descuento (${order.discountReason || 'promoción'}): - ${money(order.deliveryDiscount)}`]
                     : []),
-                `TOTAL A PAGAR: ${money(order.total)}`,
+                `Delivery final: ${money(order.deliveryFee)}`,
+                `*TOTAL A PAGAR: ${money(order.total)}*`,
                 '',
                 '¡Gracias por elegir Manguyá! 🥭'
-            ].join('\n');
-
-            // WhatsApp no permite adjuntar archivos automáticamente mediante wa.me;
-            // abre el chat con el ticket completo como mensaje listo para enviar.
-            const phone = '51918591764';
-            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+            ].join('
+');
         }
 
-        async function downloadPDFReceipt() {
-            const order = currentOrderData;
-            if (!order) {
-                alert('Primero genera un pedido para crear su comprobante.');
+        function sendToWhatsApp() {
+            if (!currentOrderData) {
+                alert('Primero genera un pedido para enviar el ticket.');
                 return;
             }
-
-            // Construir el comprobante desde los datos del pedido, sin copiar el DOM
-            // del modal: así no hereda su ancho, overflow ni estilos de Tailwind.
-            const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-            }[char]));
-
-            const money = value => `S/ ${Number(value || 0).toFixed(2)}`;
-            const itemsRows = (order.items || []).map(item => `
-                <tr>
-                    <td>${escapeHTML(item.name)}</td>
-                    <td class="center">${Number(item.quantity || 0)}</td>
-                    <td class="right">${money(item.price)}</td>
-                    <td class="right">${money(Number(item.price || 0) * Number(item.quantity || 0))}</td>
-                </tr>`).join('');
-
-            const deliveryBeforeDiscount = Number(order.deliveryBeforeDiscount ?? order.deliveryFee ?? 0);
-            const deliveryDiscount = Number(order.deliveryDiscount || 0);
-            const logoUrl = new URL('assets/img/Logo.png', window.location.href).href;
-            const printWindow = window.open('', '_blank');
-            if (!printWindow) {
-                alert('El navegador bloqueó la ventana del comprobante. Permite las ventanas emergentes e inténtalo de nuevo.');
-                return;
-            }
-
-            const safeId = escapeHTML(order.id || 'pedido');
-            const discountRow = deliveryDiscount > 0
-                ? `<div class="summary-line discount"><span>Descuento en delivery${order.discountReason ? ` (${escapeHTML(order.discountReason)})` : ''}</span><strong>− ${money(deliveryDiscount)}</strong></div>`
-                : '';
-
-            const documentHtml = `<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Comprobante Manguyá #${safeId}</title>
-<style>
-  @page { size: A4 portrait; margin: 12mm; }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; width: 100%; color: #263626; background: #fff; font-family: Arial, Helvetica, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  body { padding: 0; }
-  .receipt { width: 100%; max-width: 186mm; margin: 0 auto; padding: 10mm; border: 1px solid #e5e0d8; border-radius: 4mm; background: #fffdf8; }
-  .brand { text-align: center; padding-bottom: 7mm; margin-bottom: 6mm; border-bottom: 1px dashed #d8d2c7; }
-  .logo { display: block; width: auto; height: 22mm; max-width: 70mm; object-fit: contain; margin: 0 auto 3mm; }
-  h1 { font-size: 18pt; margin: 0 0 2mm; color: #d97706; }
-  .subtitle { font-size: 9pt; color: #626b60; margin: 0; }
-  .order-id { font-weight: 700; font-size: 10pt; margin: 4mm 0 1mm; }
-  .date { font-size: 9pt; color: #667064; margin: 0; }
-  h2 { font-size: 11pt; margin: 0 0 3mm; color: #9a5b08; }
-  .customer { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 8mm; font-size: 9.5pt; margin-bottom: 7mm; }
-  .field { overflow-wrap: anywhere; }
-  .field.full { grid-column: 1 / -1; }
-  .field span { display: block; font-size: 8pt; color: #70766d; margin-bottom: 1mm; }
-  .field strong { font-weight: 600; }
-  table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9pt; margin: 2mm 0 6mm; }
-  thead { display: table-header-group; }
-  th { background: #fff0c2; color: #69420b; font-weight: 700; text-align: left; }
-  th, td { padding: 3mm 2mm; border-bottom: 1px solid #e8e2d8; overflow-wrap: anywhere; }
-  th:first-child, td:first-child { width: 43%; }
-  th:nth-child(2), td:nth-child(2) { width: 12%; }
-  th:nth-child(3), td:nth-child(3), th:nth-child(4), td:nth-child(4) { width: 22.5%; }
-  .center { text-align: center; }
-  .right { text-align: right; }
-  .summary { width: 100%; max-width: 100mm; margin: 0 0 0 auto; font-size: 9.5pt; }
-  .summary-line { display: flex; justify-content: space-between; gap: 8mm; padding: 1.5mm 0; }
-  .summary-line span { color: #636b61; }
-  .summary-line.discount, .summary-line.discount span { color: #047857; }
-  .summary-line.total { border-top: 1px solid #d8d2c7; margin-top: 2mm; padding-top: 4mm; font-size: 15pt; font-weight: 800; color: #e87924; }
-  .thanks { margin-top: 9mm; padding: 4mm; border-radius: 3mm; text-align: center; background: #fff1bf; color: #854d0e; font-size: 9pt; }
-  .footer { text-align: center; margin-top: 5mm; font-size: 8pt; color: #7b8177; }
-  @media screen { body { padding: 20px; background: #f3f4f6; } .receipt { box-shadow: 0 5px 24px #0001; } }
-  @media print { body { padding: 0; } .receipt { max-width: none; border-radius: 0; box-shadow: none; } tr { break-inside: avoid; page-break-inside: avoid; } }
-</style>
-</head>
-<body>
-<main class="receipt">
-  <header class="brand">
-    <img class="logo" src="${logoUrl}" alt="Logotipo Manguyá">
-    <h1>Manguyá</h1>
-    <p class="subtitle">Néctar artesanal de mango y maracuyá</p>
-    <p class="order-id">Comprobante de pedido #${safeId}</p>
-    <p class="date">${escapeHTML(order.date || '')}</p>
-  </header>
-  <section>
-    <h2>Datos del cliente</h2>
-    <div class="customer">
-      <div class="field"><span>Nombre</span><strong>${escapeHTML(order.name)}</strong></div>
-      <div class="field"><span>Teléfono</span><strong>${escapeHTML(order.phone)}</strong></div>
-      <div class="field full"><span>Dirección de entrega</span><strong>${escapeHTML(order.address)}</strong></div>
-      <div class="field"><span>Distancia estimada</span><strong>${escapeHTML(order.dist)} km</strong></div>
-      <div class="field"><span>Método de pago</span><strong>${escapeHTML(order.paymentMethod)}</strong></div>
-    </div>
-  </section>
-  <section>
-    <h2>Detalle del pedido</h2>
-    <table>
-      <thead><tr><th>Producto</th><th class="center">Cant.</th><th class="right">P. unitario</th><th class="right">Importe</th></tr></thead>
-      <tbody>${itemsRows || '<tr><td colspan="4">Sin productos registrados</td></tr>'}</tbody>
-    </table>
-  </section>
-  <section class="summary">
-    <div class="summary-line"><span>Subtotal</span><strong>${money(order.subtotal)}</strong></div>
-    <div class="summary-line"><span>Delivery antes del descuento</span><strong>${money(deliveryBeforeDiscount)}</strong></div>
-    ${discountRow}
-    <div class="summary-line"><span>Delivery final</span><strong>${money(order.deliveryFee)}</strong></div>
-    <div class="summary-line total"><span>TOTAL</span><strong>${money(order.total)}</strong></div>
-  </section>
-  <div class="thanks">¡Gracias por apoyar nuestro emprendimiento de bebidas frutales en Huaral!</div>
-  <div class="footer">Manguyá · Comprobante generado digitalmente</div>
-</main>
-<script>
-  window.addEventListener('load', () => {
-    const logo = document.querySelector('.logo');
-    const ready = !logo || logo.complete ? Promise.resolve() : new Promise(resolve => {
-      logo.addEventListener('load', resolve, { once: true });
-      logo.addEventListener('error', resolve, { once: true });
-      setTimeout(resolve, 2500);
-    });
-    ready.then(() => setTimeout(() => { window.focus(); window.print(); }, 500));
-  });
-<\/script>
-</body>
-</html>`;
-
-            printWindow.document.open();
-            printWindow.document.write(documentHtml);
-            printWindow.document.close();
+            const phone = '51930247419';
+            const message = buildWhatsAppOrderMessage(currentOrderData);
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
         // Inicializar al cargar el DOM con seguridad absoluta
