@@ -1040,75 +1040,50 @@
                 alert('Primero genera un pedido para crear su comprobante.');
                 return;
             }
-            if (typeof html2pdf !== 'function') {
-                alert('No se pudo cargar el generador de PDF. Comprueba tu conexión e inténtalo de nuevo.');
+
+            // Usar una ventana de impresión independiente evita que html2canvas capture
+            // el comprobante con el ancho/escala del modal. Desde el diálogo se puede
+            // elegir “Guardar como PDF”.
+            const printWindow = window.open('', '_blank', 'width=900,height=750');
+            if (!printWindow) {
+                alert('El navegador bloqueó la ventana del comprobante. Permite las ventanas emergentes e inténtalo de nuevo.');
                 return;
             }
 
-            const button = document.querySelector('button[onclick="downloadPDFReceipt()"]');
-            const previousLabel = button ? button.innerHTML : '';
-            if (button) {
-                button.disabled = true;
-                button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparando comprobante…';
-            }
-
-            // Crear una copia aislada evita que estilos del modal, overflow o animaciones
-            // interfieran con la captura. Se coloca fuera de pantalla, pero no se oculta.
-            const staging = document.createElement('div');
-            staging.style.cssText = 'position:fixed;left:0;top:0;width:720px;background:#ffffff;z-index:2147483647;pointer-events:none;';
-            const clone = source.cloneNode(true);
-            clone.removeAttribute('id');
-            clone.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
-            clone.style.cssText += ';width:672px;max-width:none;min-height:0;box-sizing:border-box;background:#ffffff;color:#202820;border:1px solid #e5e0d8;border-radius:12px;padding:28px;font-family:Arial,sans-serif;overflow:visible;';
-            clone.querySelectorAll('*').forEach(node => {
-                node.style.maxWidth = '100%';
-                node.style.animation = 'none';
-                node.style.transform = 'none';
-            });
-            staging.appendChild(clone);
-            document.body.appendChild(staging);
-
-            try {
-                await document.fonts.ready;
-                const images = Array.from(clone.querySelectorAll('img'));
-                await Promise.all(images.map(img => {
-                    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
-                    return new Promise(resolve => {
-                        img.onload = resolve;
-                        img.onerror = resolve;
-                        setTimeout(resolve, 2500);
-                    });
-                }));
-
-                const options = {
-                    margin: [10, 10, 10, 10],
-                    filename: `Comprobante_Manguya_${currentOrderData.id}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: {
-                        scale: 2,
-                        useCORS: true,
-                        allowTaint: false,
-                        backgroundColor: '#ffffff',
-                        logging: false,
-                        scrollX: 0,
-                        scrollY: 0,
-                        windowWidth: 800,
-                        windowHeight: Math.max(1000, clone.scrollHeight + 100)
-                    },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak: { mode: ['css', 'legacy'] }
-                };
-                await html2pdf().set(options).from(clone).save();
-            } catch (error) {
-                console.error('Error al generar comprobante PDF:', error);
-                alert('No se pudo generar el PDF. Inténtalo otra vez; si el problema continúa, revisa la conexión y la consola del navegador.');
-            } finally {
-                staging.remove();
-                if (button) {
-                    button.disabled = false;
-                    button.innerHTML = previousLabel;
-                }
-            }
+            const safeId = String(currentOrderData.id || 'pedido').replace(/[^a-zA-Z0-9_-]/g, '');
+            const receiptHtml = source.innerHTML;
+            printWindow.document.open();
+            printWindow.document.write(`<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comprobante Manguyá ${safeId}</title>
+<style>
+  @page { size: A4 portrait; margin: 14mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #fff; color: #202820; font-family: Arial, Helvetica, sans-serif; }
+  body { width: 100%; }
+  .receipt { width: 100%; max-width: 182mm; margin: 0 auto; padding: 10mm; background: #FAF7F2; color: #2D402B; border: 1px solid #E5E0D8; border-radius: 4mm; overflow-wrap: anywhere; }
+  .receipt img { max-width: 100%; height: auto; object-fit: contain; }
+  p { margin: 0 0 3mm; }
+  @media screen { body { padding: 18px; } .receipt { width: 720px; max-width: 100%; margin: 0 auto; } }
+  @media print { .receipt { width: 100%; max-width: none; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+<main class="receipt">${receiptHtml}</main>
+<script>
+  window.addEventListener('load', () => {
+    const imgs = Array.from(document.images);
+    Promise.all(imgs.map(img => img.decode ? img.decode().catch(() => {}) : Promise.resolve())).then(() => {
+      setTimeout(() => { window.focus(); window.print(); }, 300);
+    });
+  });
+<\/script>
+</body>
+</html>`);
+            printWindow.document.close();
         }
 
         // Inicializar al cargar el DOM con seguridad absoluta
